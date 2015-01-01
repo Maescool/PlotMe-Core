@@ -5,6 +5,7 @@ import com.worldcretornica.plotme_core.api.IPlayer;
 import com.worldcretornica.plotme_core.api.IWorld;
 
 import java.sql.Date;
+import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -32,6 +33,8 @@ public class Plot implements Comparable<Plot> {
     private String currentbidder;
     private double currentbid;
     private UUID currentbidderId;
+    private String plotName;
+    private Timestamp lastPlotClear;
 
     public Plot(PlotMe_Core plugin) {
         this.plugin = plugin;
@@ -56,6 +59,7 @@ public class Plot implements Comparable<Plot> {
         setCurrentBidder(null);
         setCurrentBidderId(null);
         setCurrentBid(0.0);
+        setLastPlotClear(null);
     }
 
     public Plot(PlotMe_Core plugin, String owner, UUID uuid, IWorld world, String plotid, int days) {
@@ -85,11 +89,12 @@ public class Plot implements Comparable<Plot> {
         setCurrentBidder(null);
         setCurrentBidderId(null);
         setCurrentBid(0.0);
+        setLastPlotClear(null);
     }
 
     public Plot(PlotMe_Core plugin, String owner, UUID ownerId, String world, String biome, Date expiredDate, boolean finished,
                 PlayerList allowed, String id, double customPrice, boolean sale, String finishedDate,
-                boolean protect, String bidder, UUID bidderId, double bid, boolean isAuctioned, PlayerList denied) {
+                boolean protect, String bidder, UUID bidderId, double bid, boolean isAuctioned, PlayerList denied, Timestamp lastPlotClear) {
         this.plugin = plugin;
         setOwner(owner);
         setOwnerId(ownerId);
@@ -108,6 +113,7 @@ public class Plot implements Comparable<Plot> {
         setCurrentBidderId(bidderId);
         setCurrentBid(bid);
         this.denied = denied;
+        setLastPlotClear(lastPlotClear);
     }
 
     public void resetExpire(int days) {
@@ -519,5 +525,17 @@ public class Plot implements Comparable<Plot> {
 
     public final void setCurrentBid(double currentbid) {
         this.currentbid = currentbid;
+    }
+
+    public void setPlotName(String plotName) {
+        this.plotName = plotName;
+    }
+
+    public Timestamp getLastPlotClear() {
+        return lastPlotClear;
+    }
+
+    public void setLastPlotClear(Timestamp lastPlotClear) {
+        this.lastPlotClear = lastPlotClear;
     }
 }

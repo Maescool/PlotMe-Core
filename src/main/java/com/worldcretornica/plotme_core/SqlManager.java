@@ -110,6 +110,14 @@ public class SqlManager {
                 set.close();
 
                 /*** END Version 0.13d changes ***/
+                
+                // LastPlotClear
+                set = statement.executeQuery("SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = '" + schema + "' AND " + "TABLE_NAME='plotmePlots' AND column_name='lastplotclear'");
+                if (!set.next()) {
+                    statement.execute("ALTER TABLE plotmePlots ADD lastplotclear datetime NULL;");
+                    conn.commit();
+                }
+                set.close();
 
             } else {
 
@@ -181,6 +189,21 @@ public class SqlManager {
                 set.close();
 
                 /*** END Version 0.13d changes ***/
+                
+                // LastPlotClear
+                set = statement.executeQuery("PRAGMA table_info(`plotmePlots`)");
+
+                while (set.next() && !found) {
+                    column = set.getString(2);
+                    if ("lastplotclear".equalsIgnoreCase(column))
+                        found = true;
+                }
+
+                if (!found) {
+                    statement.execute("ALTER TABLE plotmePlots ADD lastplotclear datetime NULL;");
+                    conn.commit();
+                }
+                set.close();
 
             }
         } catch (SQLException ex) {
@@ -290,6 +313,7 @@ public class SqlManager {
                                             + "`currentbidder` VARCHAR(32)," //18
                                             + "`currentbidderId` BLOB(16)," //19
                                             + "`ownerId` BLOB(16)," //20
+                                            + "`lastplotclear` DATETIME" //21
                                             + "PRIMARY KEY (idX, idZ, world) "
                                             + ");";
                 st.executeUpdate(PLOT_TABLE);
@@ -379,6 +403,8 @@ public class SqlManager {
                         boolean auctionned = setPlots.getBoolean("auctionned");
                         String currentbidder = setPlots.getString("currentbidder");
                         double currentbid = setPlots.getDouble("currentbid");
+                        
+                        Timestamp lastPlotClear = setPlots.getTimestamp("lastplotclear");
 
                         byte[] byOwner = setPlots.getBytes("ownerId");
                         byte[] byBidder = setPlots.getBytes("currentbidderid");
@@ -420,7 +446,7 @@ public class SqlManager {
                         Plot plot = new Plot(plugin, owner, ownerId, world, biome,
                                                     expireddate, finished, allowed, idX + ";" + idZ, customprice,
                                                     forsale, finisheddate, protect, currentbidder, currentbidderid, currentbid,
-                                                    auctionned, denied);
+                                                    auctionned, denied, lastPlotClear);
                         addPlot(plot, idX, idZ, topX, bottomX, topZ, bottomZ);
 
                         size++;
@@ -523,8 +549,8 @@ public class SqlManager {
 
             strSql.append("INSERT INTO plotmePlots (idX, idZ, owner, world, topX, bottomX, topZ, bottomZ, ");
             strSql.append("biome, expireddate, finished, customprice, forsale, finisheddate, protected,");
-            strSql.append("auctionned, currentbid, currentbidder, currentbidderId, ownerId) ");
-            strSql.append("VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
+            strSql.append("auctionned, currentbid, currentbidder, currentbidderId, ownerId, lastplotclear) ");
+            strSql.append("VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
 
             ps = conn.prepareStatement(strSql.toString());
             ps.setInt(1, idX);
@@ -558,6 +584,7 @@ public class SqlManager {
             } else {
                 ps.setBytes(20, null);
             }
+            ps.setTimestamp(21, plot.getLastPlotClear());
 
             ps.executeUpdate();
             conn.commit();
@@ -894,6 +921,8 @@ public class SqlManager {
                 String currentbidder = setPlots.getString("currentbidder");
                 double currentbid = setPlots.getDouble("currentbid");
                 boolean auctionned = setPlots.getBoolean("auctionned");
+                
+                Timestamp lastPlotClear = setPlots.getTimestamp("lastplotclear");
 
                 byte[] byOwner = setPlots.getBytes("ownerId");
                 byte[] byBidder = setPlots.getBytes("currentbidderid");
@@ -945,7 +974,7 @@ public class SqlManager {
 
                 plot = new Plot(plugin, owner, ownerId, world, biome, expireddate, finished, allowed,
                                        idX + ";" + idZ, customprice, forsale, finisheddate, protect,
-                                       currentbidder, currentbidderid, currentbid, auctionned, denied);
+                                       currentbidder, currentbidderid, currentbid, auctionned, denied, lastPlotClear);
             }
         } catch (SQLException ex) {
             plugin.getLogger().severe("Plot load Exception :");
@@ -1038,6 +1067,8 @@ public class SqlManager {
                 String currentbidder = setPlots.getString("currentbidder");
                 double currentbid = setPlots.getDouble("currentbid");
                 boolean auctionned = setPlots.getBoolean("auctionned");
+                
+                Timestamp lastPlotClear = setPlots.getTimestamp("lastplotclear");
 
                 byte[] byOwner = setPlots.getBytes("ownerId");
                 byte[] byBidder = setPlots.getBytes("currentbidderid");
@@ -1081,7 +1112,7 @@ public class SqlManager {
                 setDenied.close();
 
                 Plot plot = new Plot(plugin, owner, ownerId, world, biome, expireddate, finished, allowed, idX + ";" + idZ,
-                                            customprice, forsale, finisheddate, protect, currentbidder, currentbidderid, currentbid, auctionned, denied);
+                                            customprice, forsale, finisheddate, protect, currentbidder, currentbidderid, currentbid, auctionned, denied, lastPlotClear);
                 ret.put(idX + ";" + idZ, plot);
             }
         } catch (SQLException ex) {
@@ -1541,7 +1572,9 @@ public class SqlManager {
                 boolean auctionned = setPlots.getBoolean("auctionned");
                 String world = setPlots.getString("world");
                 String owner = setPlots.getString("owner");
-
+                
+                Timestamp lastPlotClear = setPlots.getTimestamp("lastplotclear");
+                
                 byte[] byBidder = setPlots.getBytes("currentbidderid");
                 byte[] byOwner = setPlots.getBytes("ownerid");
 
@@ -1594,7 +1627,7 @@ public class SqlManager {
 
                 Plot plot = new Plot(plugin, owner, ownerId, world, biome, expireddate, finished, allowed,
                                             idX + ";" + idZ, customprice, forsale, finisheddate, protect,
-                                            currentbidder, currentbidderid, currentbid, auctionned, denied);
+                                            currentbidder, currentbidderid, currentbid, auctionned, denied, lastPlotClear);
 
                 ret.add(plot);
             }
@@ -1657,6 +1690,8 @@ public class SqlManager {
                 double currentbid = setPlots.getDouble("currentbid");
                 boolean auctionned = setPlots.getBoolean("auctionned");
                 String world = setPlots.getString("world");
+                
+                Timestamp lastPlotClear = setPlots.getTimestamp("lastplotclear");
 
                 byte[] byBidder = setPlots.getBytes("currentbidderid");
                 byte[] byOwner = setPlots.getBytes("ownerid");
@@ -1709,7 +1744,7 @@ public class SqlManager {
 
                 Plot plot = new Plot(plugin, owner, ownerId, world, biome, expireddate, finished, allowed,
                                             idX + ";" + idZ, customprice, forsale, finisheddate, protect,
-                                            currentbidder, currentbidderid, currentbid, auctionned, denied);
+                                            currentbidder, currentbidderid, currentbid, auctionned, denied, lastPlotClear);
 
                 ret.add(plot);
             }
