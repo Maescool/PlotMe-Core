@@ -9,6 +9,7 @@ import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import net.milkbowl.vault.economy.EconomyResponse;
+import org.bukkit.ChatColor;
 
 public class CmdClear extends PlotCommand {
 
@@ -81,7 +82,7 @@ public class CmdClear extends PlotCommand {
                             } else {
                                 Date timeLeft = new Date(plot.getLastPlotClear().getTime() + plugin.getServerBridge().getConfig().getInt("PlotClearTime") - now.getTime());
                                 DateFormat formatter = new SimpleDateFormat("HH:mm:ss");
-                                player.sendMessage("§c" + C("MsgThisPlot") + "(" + id + ") " + C("MsgNotAllowedClearYet") + formatter.format(timeLeft));
+                                player.sendMessage(ChatColor.translateAlternateColorCodes('&',"&c" + C("MsgThisPlot") + "(" + id + ") &a" + C("MsgNotAllowedClearYet") + " &6" + formatter.format(timeLeft)));
                             }
                         } else {
                             player.sendMessage("§c" + C("MsgThisPlot") + "(" + id + ") " + C("MsgNotYoursNotAllowedClear"));
