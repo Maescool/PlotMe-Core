@@ -2143,7 +2143,7 @@ public class SqlManager {
         Timestamp time = null;
         try (Connection conn = getConnection();
                 Statement statement = conn.createStatement()) {
-            ResultSet set = statement.executeQuery("SELECT date('now') AS time;");
+            ResultSet set = statement.executeQuery("SELECT datetime('now') AS time;");
             time = set.getTimestamp("time");
             set.close();
         } catch (SQLException ex) {
