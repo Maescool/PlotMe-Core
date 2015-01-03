@@ -74,7 +74,9 @@ public class SqlManager {
             String schema = getSchema();
 
             if (usemySQL) {
-                /*** START Version 0.13d changes ***/
+                /**
+                 * * START Version 0.13d changes **
+                 */
 
                 // OwnerId
                 set = statement.executeQuery("SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = '" + schema + "' AND " + "TABLE_NAME='plotmePlots' AND column_name='ownerid'");
@@ -100,7 +102,6 @@ public class SqlManager {
                 }
                 set.close();
 
-
                 // CurrentBidderId
                 set = statement.executeQuery("SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = '" + schema + "' AND " + "TABLE_NAME='plotmePlots' AND column_name='currentbidderId'");
                 if (!set.next()) {
@@ -109,8 +110,9 @@ public class SqlManager {
                 }
                 set.close();
 
-                /*** END Version 0.13d changes ***/
-                
+                /**
+                 * * END Version 0.13d changes **
+                 */
                 // LastPlotClear
                 set = statement.executeQuery("SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = '" + schema + "' AND " + "TABLE_NAME='plotmePlots' AND column_name='lastplotclear'");
                 if (!set.next()) {
@@ -121,8 +123,9 @@ public class SqlManager {
 
             } else {
 
-                /*** START Version 0.13d changes ***/
-
+                /**
+                 * * START Version 0.13d changes **
+                 */
                 // OwnerId
                 set = statement.executeQuery("PRAGMA table_info(`plotmePlots`)");
 
@@ -130,8 +133,9 @@ public class SqlManager {
                 boolean found = false;
                 while (set.next() && !found) {
                     column = set.getString(2);
-                    if ("ownerid".equalsIgnoreCase(column))
+                    if ("ownerid".equalsIgnoreCase(column)) {
                         found = true;
+                    }
                 }
 
                 if (!found) {
@@ -146,8 +150,9 @@ public class SqlManager {
 
                 while (set.next() && !found) {
                     column = set.getString(2);
-                    if ("playerid".equalsIgnoreCase(column))
+                    if ("playerid".equalsIgnoreCase(column)) {
                         found = true;
+                    }
                 }
 
                 if (!found) {
@@ -162,8 +167,9 @@ public class SqlManager {
 
                 while (set.next() && !found) {
                     column = set.getString(2);
-                    if ("playerid".equalsIgnoreCase(column))
+                    if ("playerid".equalsIgnoreCase(column)) {
                         found = true;
+                    }
                 }
 
                 if (!found) {
@@ -178,8 +184,9 @@ public class SqlManager {
 
                 while (set.next() && !found) {
                     column = set.getString(2);
-                    if ("currentbidderId".equalsIgnoreCase(column))
+                    if ("currentbidderId".equalsIgnoreCase(column)) {
                         found = true;
+                    }
                 }
 
                 if (!found) {
@@ -188,15 +195,17 @@ public class SqlManager {
                 }
                 set.close();
 
-                /*** END Version 0.13d changes ***/
-                
+                /**
+                 * * END Version 0.13d changes **
+                 */
                 // LastPlotClear
                 set = statement.executeQuery("PRAGMA table_info(`plotmePlots`)");
 
                 while (set.next() && !found) {
                     column = set.getString(2);
-                    if ("lastplotclear".equalsIgnoreCase(column))
+                    if ("lastplotclear".equalsIgnoreCase(column)) {
                         found = true;
+                    }
                 }
 
                 if (!found) {
@@ -293,66 +302,66 @@ public class SqlManager {
 
             if (!tableExists("plotmePlots")) {
                 String PLOT_TABLE = "CREATE TABLE `plotmePlots` ("
-                                            + "`idX` INTEGER," //1
-                                            + "`idZ` INTEGER," //2
-                                            + "`owner` VARCHAR(32) NOT NULL," //3
-                                            + "`world` VARCHAR(32) NOT NULL DEFAULT '0'," //4
-                                            + "`topX` INTEGER NOT NULL DEFAULT '0'," //5
-                                            + "`bottomX` INTEGER NOT NULL DEFAULT '0'," //6
-                                            + "`topZ` INTEGER NOT NULL DEFAULT '0'," //7
-                                            + "`bottomZ` INTEGER NOT NULL DEFAULT '0'," //8
-                                            + "`biome` VARCHAR(32) NOT NULL DEFAULT '0'," //9
-                                            + "`expireddate` DATE,"  //10
-                                            + "`finished` BOOLEAN NOT NULL DEFAULT '0'," //11
-                                            + "`customprice` DOUBLE NOT NULL DEFAULT '0'," //12
-                                            + "`forsale` BOOLEAN NOT NULL DEFAULT '0'," //13
-                                            + "`finisheddate` VARCHAR(16)," //14
-                                            + "`protected` BOOLEAN NOT NULL DEFAULT '0'," //15
-                                            + "`auctionned` BOOLEAN NOT NULL DEFAULT '0'," //16
-                                            + "`currentbid` DOUBLE NOT NULL DEFAULT '0'," //17
-                                            + "`currentbidder` VARCHAR(32)," //18
-                                            + "`currentbidderId` BLOB(16)," //19
-                                            + "`ownerId` BLOB(16)," //20
-                                            + "`lastplotclear` DATETIME" //21
-                                            + "PRIMARY KEY (idX, idZ, world) "
-                                            + ");";
+                        + "`idX` INTEGER," //1
+                        + "`idZ` INTEGER," //2
+                        + "`owner` VARCHAR(32) NOT NULL," //3
+                        + "`world` VARCHAR(32) NOT NULL DEFAULT '0'," //4
+                        + "`topX` INTEGER NOT NULL DEFAULT '0'," //5
+                        + "`bottomX` INTEGER NOT NULL DEFAULT '0'," //6
+                        + "`topZ` INTEGER NOT NULL DEFAULT '0'," //7
+                        + "`bottomZ` INTEGER NOT NULL DEFAULT '0'," //8
+                        + "`biome` VARCHAR(32) NOT NULL DEFAULT '0'," //9
+                        + "`expireddate` DATE," //10
+                        + "`finished` BOOLEAN NOT NULL DEFAULT '0'," //11
+                        + "`customprice` DOUBLE NOT NULL DEFAULT '0'," //12
+                        + "`forsale` BOOLEAN NOT NULL DEFAULT '0'," //13
+                        + "`finisheddate` VARCHAR(16)," //14
+                        + "`protected` BOOLEAN NOT NULL DEFAULT '0'," //15
+                        + "`auctionned` BOOLEAN NOT NULL DEFAULT '0'," //16
+                        + "`currentbid` DOUBLE NOT NULL DEFAULT '0'," //17
+                        + "`currentbidder` VARCHAR(32)," //18
+                        + "`currentbidderId` BLOB(16)," //19
+                        + "`ownerId` BLOB(16)," //20
+                        + "`lastplotclear` DATETIME" //21
+                        + "PRIMARY KEY (idX, idZ, world) "
+                        + ");";
                 st.executeUpdate(PLOT_TABLE);
                 conn.commit();
             }
 
             if (!tableExists("plotmeAllowed")) {
                 String ALLOWED_TABLE = "CREATE TABLE `plotmeAllowed` ("
-                                               + "`idX` INTEGER,"
-                                               + "`idZ` INTEGER,"
-                                               + "`world` varchar(32) NOT NULL,"
-                                               + "`player` varchar(32) NOT NULL,"
-                                               + "`playerid` blob(16),"
-                                               + "PRIMARY KEY (idX, idZ, world, player) "
-                                               + ");";
+                        + "`idX` INTEGER,"
+                        + "`idZ` INTEGER,"
+                        + "`world` varchar(32) NOT NULL,"
+                        + "`player` varchar(32) NOT NULL,"
+                        + "`playerid` blob(16),"
+                        + "PRIMARY KEY (idX, idZ, world, player) "
+                        + ");";
                 st.executeUpdate(ALLOWED_TABLE);
                 conn.commit();
             }
 
             if (!tableExists("plotmeDenied")) {
                 String DENIED_TABLE = "CREATE TABLE `plotmeDenied` ("
-                                              + "`idX` INTEGER,"
-                                              + "`idZ` INTEGER,"
-                                              + "`world` varchar(32) NOT NULL,"
-                                              + "`player` varchar(32) NOT NULL,"
-                                              + "`playerid` blob(16),"
-                                              + "PRIMARY KEY (idX, idZ, world, player) "
-                                              + ");";
+                        + "`idX` INTEGER,"
+                        + "`idZ` INTEGER,"
+                        + "`world` varchar(32) NOT NULL,"
+                        + "`player` varchar(32) NOT NULL,"
+                        + "`playerid` blob(16),"
+                        + "PRIMARY KEY (idX, idZ, world, player) "
+                        + ");";
                 st.executeUpdate(DENIED_TABLE);
                 conn.commit();
             }
 
             if (!tableExists("plotmeFreed")) {
                 String FREED_TABLE = "CREATE TABLE `plotmeFreed` ("
-                                             + "`idX` INTEGER,"
-                                             + "`idZ` INTEGER,"
-                                             + "`world` varchar(32) NOT NULL,"
-                                             + "PRIMARY KEY (idX, idZ, world) "
-                                             + ");";
+                        + "`idX` INTEGER,"
+                        + "`idZ` INTEGER,"
+                        + "`world` varchar(32) NOT NULL,"
+                        + "PRIMARY KEY (idX, idZ, world) "
+                        + ");";
                 st.executeUpdate(FREED_TABLE);
                 conn.commit();
             }
@@ -404,7 +413,7 @@ public class SqlManager {
                         boolean auctionned = setPlots.getBoolean("auctionned");
                         String currentbidder = setPlots.getString("currentbidder");
                         double currentbid = setPlots.getDouble("currentbid");
-                        
+
                         Timestamp lastPlotClear = setPlots.getTimestamp("lastplotclear");
 
                         byte[] byOwner = setPlots.getBytes("ownerId");
@@ -445,9 +454,9 @@ public class SqlManager {
                         setDenied.close();
 
                         Plot plot = new Plot(plugin, owner, ownerId, world, biome,
-                                                    expireddate, finished, allowed, idX + ";" + idZ, customprice,
-                                                    forsale, finisheddate, protect, currentbidder, currentbidderid, currentbid,
-                                                    auctionned, denied, lastPlotClear);
+                                expireddate, finished, allowed, idX + ";" + idZ, customprice,
+                                forsale, finisheddate, protect, currentbidder, currentbidderid, currentbid,
+                                auctionned, denied, lastPlotClear);
                         addPlot(plot, idX, idZ, topX, bottomX, topZ, bottomZ);
 
                         size++;
@@ -537,10 +546,10 @@ public class SqlManager {
 
     public void addPlot(Plot plot, int idX, int idZ, IWorld world) {
         addPlot(plot, idX, idZ,
-                       PlotMeCoreManager.topX(plot.getId(), world),
-                       PlotMeCoreManager.bottomX(plot.getId(), world),
-                       PlotMeCoreManager.topZ(plot.getId(), world),
-                       PlotMeCoreManager.bottomZ(plot.getId(), world));
+                PlotMeCoreManager.topX(plot.getId(), world),
+                PlotMeCoreManager.bottomX(plot.getId(), world),
+                PlotMeCoreManager.topZ(plot.getId(), world),
+                PlotMeCoreManager.bottomZ(plot.getId(), world));
     }
 
     public void addPlot(Plot plot, int idX, int idZ, int topX, int bottomX, int topZ, int bottomZ) {
@@ -568,7 +577,7 @@ public class SqlManager {
             ps.setInt(7, topZ);
             //noinspection SuspiciousNameCombination
             ps.setInt(8, bottomZ);
-            ps.setString(9, ((BukkitBiome)plot.getBiome()).getBiome().name());
+            ps.setString(9, ((BukkitBiome) plot.getBiome()).getBiome().name());
             ps.setDate(10, plot.getExpiredDate());
             ps.setBoolean(11, plot.isFinished());
             ps.setDouble(12, plot.getCustomPrice());
@@ -925,7 +934,7 @@ public class SqlManager {
                 String currentbidder = setPlots.getString("currentbidder");
                 double currentbid = setPlots.getDouble("currentbid");
                 boolean auctionned = setPlots.getBoolean("auctionned");
-                
+
                 Timestamp lastPlotClear = setPlots.getTimestamp("lastplotclear");
 
                 byte[] byOwner = setPlots.getBytes("ownerId");
@@ -977,8 +986,8 @@ public class SqlManager {
                 setDenied.close();
 
                 plot = new Plot(plugin, owner, ownerId, world, biome, expireddate, finished, allowed,
-                                       idX + ";" + idZ, customprice, forsale, finisheddate, protect,
-                                       currentbidder, currentbidderid, currentbid, auctionned, denied, lastPlotClear);
+                        idX + ";" + idZ, customprice, forsale, finisheddate, protect,
+                        currentbidder, currentbidderid, currentbid, auctionned, denied, lastPlotClear);
             }
         } catch (SQLException ex) {
             plugin.getLogger().severe("Plot load Exception :");
@@ -1071,7 +1080,7 @@ public class SqlManager {
                 String currentbidder = setPlots.getString("currentbidder");
                 double currentbid = setPlots.getDouble("currentbid");
                 boolean auctionned = setPlots.getBoolean("auctionned");
-                
+
                 Timestamp lastPlotClear = setPlots.getTimestamp("lastplotclear");
 
                 byte[] byOwner = setPlots.getBytes("ownerId");
@@ -1116,7 +1125,7 @@ public class SqlManager {
                 setDenied.close();
 
                 Plot plot = new Plot(plugin, owner, ownerId, world, biome, expireddate, finished, allowed, idX + ";" + idZ,
-                                            customprice, forsale, finisheddate, protect, currentbidder, currentbidderid, currentbid, auctionned, denied, lastPlotClear);
+                        customprice, forsale, finisheddate, protect, currentbidder, currentbidderid, currentbid, auctionned, denied, lastPlotClear);
                 ret.put(idX + ";" + idZ, plot);
             }
         } catch (SQLException ex) {
@@ -1451,7 +1460,6 @@ public class SqlManager {
         return ret;
     }
 
-
     public Plot getExpiredPlot(String world) {
         PreparedStatement statementPlot = null;
         ResultSet setPlots = null;
@@ -1543,12 +1551,12 @@ public class SqlManager {
 
             if (playerId == null) {
                 statementPlot = conn.prepareStatement("SELECT DISTINCT A.* FROM plotmePlots A LEFT JOIN plotmeAllowed B ON A.idX = B.idX AND A.idZ = B.idZ AND A.world = B.world "
-                                                              + " WHERE owner = ? OR B.player = ? ORDER BY A.world");
+                        + " WHERE owner = ? OR B.player = ? ORDER BY A.world");
                 statementPlot.setString(1, playername);
                 statementPlot.setString(2, playername);
             } else {
                 statementPlot = conn.prepareStatement("SELECT DISTINCT A.* FROM plotmePlots A LEFT JOIN plotmeAllowed B ON A.idX = B.idX AND A.idZ = B.idZ AND A.world = B.world "
-                                                              + " WHERE ownerId = ? OR B.playerId = ? ORDER BY A.world");
+                        + " WHERE ownerId = ? OR B.playerId = ? ORDER BY A.world");
                 statementPlot.setBytes(1, UUIDFetcher.toBytes(playerId));
                 statementPlot.setBytes(2, UUIDFetcher.toBytes(playerId));
             }
@@ -1576,9 +1584,9 @@ public class SqlManager {
                 boolean auctionned = setPlots.getBoolean("auctionned");
                 String world = setPlots.getString("world");
                 String owner = setPlots.getString("owner");
-                
+
                 Timestamp lastPlotClear = setPlots.getTimestamp("lastplotclear");
-                
+
                 byte[] byBidder = setPlots.getBytes("currentbidderid");
                 byte[] byOwner = setPlots.getBytes("ownerid");
 
@@ -1630,8 +1638,8 @@ public class SqlManager {
                 setDenied.close();
 
                 Plot plot = new Plot(plugin, owner, ownerId, world, biome, expireddate, finished, allowed,
-                                            idX + ";" + idZ, customprice, forsale, finisheddate, protect,
-                                            currentbidder, currentbidderid, currentbid, auctionned, denied, lastPlotClear);
+                        idX + ";" + idZ, customprice, forsale, finisheddate, protect,
+                        currentbidder, currentbidderid, currentbid, auctionned, denied, lastPlotClear);
 
                 ret.add(plot);
             }
@@ -1694,7 +1702,7 @@ public class SqlManager {
                 double currentbid = setPlots.getDouble("currentbid");
                 boolean auctionned = setPlots.getBoolean("auctionned");
                 String world = setPlots.getString("world");
-                
+
                 Timestamp lastPlotClear = setPlots.getTimestamp("lastplotclear");
 
                 byte[] byBidder = setPlots.getBytes("currentbidderid");
@@ -1747,8 +1755,8 @@ public class SqlManager {
                 setDenied.close();
 
                 Plot plot = new Plot(plugin, owner, ownerId, world, biome, expireddate, finished, allowed,
-                                            idX + ";" + idZ, customprice, forsale, finisheddate, protect,
-                                            currentbidder, currentbidderid, currentbid, auctionned, denied, lastPlotClear);
+                        idX + ";" + idZ, customprice, forsale, finisheddate, protect,
+                        currentbidder, currentbidderid, currentbid, auctionned, denied, lastPlotClear);
 
                 ret.add(plot);
             }
@@ -2129,5 +2137,19 @@ public class SqlManager {
                 }
             }
         });
+    }
+
+    public Timestamp currentDatabaseTime() {
+        Timestamp time = null;
+        try (Connection conn = getConnection();
+                Statement statement = conn.createStatement()) {
+            ResultSet set = statement.executeQuery("SELECT date('now') AS time;");
+            time = set.getTimestamp("time");
+            set.close();
+        } catch (SQLException ex) {
+            plugin.getLogger().severe("Exception getting database time: ");
+            plugin.getLogger().severe(ex.getMessage());
+        }
+        return time;
     }
 }

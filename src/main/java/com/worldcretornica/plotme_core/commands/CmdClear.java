@@ -4,6 +4,7 @@ import com.worldcretornica.plotme_core.*;
 import com.worldcretornica.plotme_core.api.IPlayer;
 import com.worldcretornica.plotme_core.api.IWorld;
 import com.worldcretornica.plotme_core.api.event.InternalPlotClearEvent;
+import java.sql.Timestamp;
 import net.milkbowl.vault.economy.EconomyResponse;
 
 public class CmdClear extends PlotCommand {
@@ -29,47 +30,51 @@ public class CmdClear extends PlotCommand {
                         String playerName = player.getName();
 
                         if (plot.getOwner().equalsIgnoreCase(playerName) || player.hasPermission(PermissionNames.ADMIN_CLEAR)) {
+                            Timestamp now = plugin.getSqlManager().currentDatabaseTime();
+                            if ((new Timestamp(plot.getLastPlotClear().getTime() + plugin.getServerBridge().getConfig().getInt("PlotClearTime"))).before(now) || player.hasPermission(PermissionNames.ADMIN_CLEARTIME)) {
 
+                                double price = 0.0;
 
-                            double price = 0.0;
+                                InternalPlotClearEvent event;
 
-                            InternalPlotClearEvent event;
+                                if (plugin.getPlotMeCoreManager().isEconomyEnabled(pmi)) {
+                                    price = pmi.getClearPrice();
+                                    double balance = serverBridge.getBalance(player);
 
-                            if (plugin.getPlotMeCoreManager().isEconomyEnabled(pmi)) {
-                                price = pmi.getClearPrice();
-                                double balance = serverBridge.getBalance(player);
+                                    if (balance >= price) {
+                                        event = serverBridge.getEventFactory().callPlotClearEvent(plugin, world, plot, player);
 
-                                if (balance >= price) {
-                                    event = serverBridge.getEventFactory().callPlotClearEvent(plugin, world, plot, player);
-
-                                    if (event.isCancelled()) {
-                                        return true;
-                                    } else {
-                                        EconomyResponse er = serverBridge.withdrawPlayer(player, price);
-
-                                        if (!er.transactionSuccess()) {
-                                            player.sendMessage("§c" + er.errorMessage);
-                                            warn(er.errorMessage);
+                                        if (event.isCancelled()) {
                                             return true;
+                                        } else {
+                                            EconomyResponse er = serverBridge.withdrawPlayer(player, price);
+
+                                            if (!er.transactionSuccess()) {
+                                                player.sendMessage("§c" + er.errorMessage);
+                                                warn(er.errorMessage);
+                                                return true;
+                                            }
                                         }
+                                    } else {
+                                        player.sendMessage("§c" + C("MsgNotEnoughClear") + " " + C("WordMissing") + " §r" + (price - balance) + "§c " + serverBridge.getEconomy().currencyNamePlural());
+                                        return true;
                                     }
                                 } else {
-                                    player.sendMessage("§c" + C("MsgNotEnoughClear") + " " + C("WordMissing") + " §r" + (price - balance) + "§c " + serverBridge.getEconomy().currencyNamePlural());
-                                    return true;
+                                    event = serverBridge.getEventFactory().callPlotClearEvent(plugin, world, plot, player);
                                 }
-                            } else {
-                                event = serverBridge.getEventFactory().callPlotClearEvent(plugin, world, plot, player);
-                            }
 
-                            if (!event.isCancelled()) {
-                                plugin.getPlotMeCoreManager().clear(world, plot, player, ClearReason.Clear);
+                                if (!event.isCancelled()) {
+                                    plugin.getPlotMeCoreManager().clear(world, plot, player, ClearReason.Clear);
 
-                                if (isAdvancedLogging()) {
-                                    if (price == 0)
-                                        serverBridge.getLogger().info(playerName + " " + C("MsgClearedPlot") + " " + id);
-                                    else
-                                        serverBridge.getLogger().info(playerName + " " + C("MsgClearedPlot") + " " + id + (" " + C("WordFor") + " " + price));
+                                    if (isAdvancedLogging()) {
+                                        if (price == 0) {
+                                            serverBridge.getLogger().info(playerName + " " + C("MsgClearedPlot") + " " + id);
+                                        } else {
+                                            serverBridge.getLogger().info(playerName + " " + C("MsgClearedPlot") + " " + id + (" " + C("WordFor") + " " + price));
+                                        }
+                                    }
                                 }
+                                plot.setLastPlotClear(now);
                             }
                         } else {
                             player.sendMessage("§c" + C("MsgThisPlot") + "(" + id + ") " + C("MsgNotYoursNotAllowedClear"));

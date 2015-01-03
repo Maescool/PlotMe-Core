@@ -45,4 +45,5 @@ public enum PermissionNames {
     public static final String ADMIN_PROTECT = "PlotMe.admin.protect";
     public static final String ADMIN_DENY = "PlotMe.admin.deny";
     public static final String ADMIN_REMOVE = "PlotMe.admin.remove";
+    public static final String ADMIN_CLEARTIME = "PlotMe.admin.cleartime";
 }
