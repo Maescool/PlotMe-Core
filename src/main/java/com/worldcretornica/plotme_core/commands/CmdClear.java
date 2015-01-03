@@ -4,7 +4,10 @@ import com.worldcretornica.plotme_core.*;
 import com.worldcretornica.plotme_core.api.IPlayer;
 import com.worldcretornica.plotme_core.api.IWorld;
 import com.worldcretornica.plotme_core.api.event.InternalPlotClearEvent;
+import java.sql.Date;
 import java.sql.Timestamp;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import net.milkbowl.vault.economy.EconomyResponse;
 
 public class CmdClear extends PlotCommand {
@@ -76,7 +79,9 @@ public class CmdClear extends PlotCommand {
                                 }
                                 plot.setLastPlotClear(now);
                             } else {
-                                player.sendMessage("§c" + C("MsgThisPlot") + "(" + id + ") " + C("MsgNotAllowedClearYet"));
+                                Date timeLeft = new Date(plot.getLastPlotClear().getTime() + plugin.getServerBridge().getConfig().getInt("PlotClearTime") - now.getTime());
+                                DateFormat formatter = new SimpleDateFormat("HH:mm:ss");
+                                player.sendMessage("§c" + C("MsgThisPlot") + "(" + id + ") " + C("MsgNotAllowedClearYet") + formatter.format(timeLeft));
                             }
                         } else {
                             player.sendMessage("§c" + C("MsgThisPlot") + "(" + id + ") " + C("MsgNotYoursNotAllowedClear"));
