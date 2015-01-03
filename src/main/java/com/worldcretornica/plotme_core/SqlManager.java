@@ -2144,7 +2144,9 @@ public class SqlManager {
         try (Connection conn = getConnection();
                 Statement statement = conn.createStatement()) {
             ResultSet set = statement.executeQuery("SELECT CURRENT_TIMESTAMP AS time;");
-            time = set.getTimestamp("time");
+            if(set.next()){
+                time = set.getTimestamp("time");
+            }
             set.close();
         } catch (SQLException ex) {
             plugin.getLogger().severe("Exception getting database time: ");
