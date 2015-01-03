@@ -31,7 +31,7 @@ public class CmdClear extends PlotCommand {
 
                         if (plot.getOwner().equalsIgnoreCase(playerName) || player.hasPermission(PermissionNames.ADMIN_CLEAR)) {
                             Timestamp now = plugin.getSqlManager().currentDatabaseTime();
-                            if ((new Timestamp(plot.getLastPlotClear().getTime() + plugin.getServerBridge().getConfig().getInt("PlotClearTime"))).before(now) || player.hasPermission(PermissionNames.ADMIN_CLEARTIME)) {
+                            if (plot.getLastPlotClear() == null || (new Timestamp(plot.getLastPlotClear().getTime() + plugin.getServerBridge().getConfig().getInt("PlotClearTime"))).before(now) || player.hasPermission(PermissionNames.ADMIN_CLEARTIME)) {
 
                                 double price = 0.0;
 
