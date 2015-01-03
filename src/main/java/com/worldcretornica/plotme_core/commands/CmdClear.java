@@ -75,6 +75,8 @@ public class CmdClear extends PlotCommand {
                                     }
                                 }
                                 plot.setLastPlotClear(now);
+                            } else {
+                                player.sendMessage("§c" + C("MsgThisPlot") + "(" + id + ") " + C("MsgNotAllowedClearYet"));
                             }
                         } else {
                             player.sendMessage("§c" + C("MsgThisPlot") + "(" + id + ") " + C("MsgNotYoursNotAllowedClear"));
