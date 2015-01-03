@@ -82,7 +82,7 @@ public class CmdClear extends PlotCommand {
                             } else {
                                 Date timeLeft = new Date(plot.getLastPlotClear().getTime() + plugin.getServerBridge().getConfig().getInt("PlotClearTime") - now.getTime());
                                 DateFormat formatter = new SimpleDateFormat("HH:mm:ss");
-                                player.sendMessage(ChatColor.translateAlternateColorCodes('&',"&c" + C("MsgThisPlot") + "(" + id + ") &a" + C("MsgNotAllowedClearYet") + " &6" + formatter.format(timeLeft)));
+                                player.sendMessage(ChatColor.translateAlternateColorCodes('&',"&c" + C("MsgThisPlot") + "(" + id + ") &a" + C("MsgNotAllowedClearYet") + " &6" + formatter.format(timeLeft)) + " &ayou can clear it again!");
                             }
                         } else {
                             player.sendMessage("§c" + C("MsgThisPlot") + "(" + id + ") " + C("MsgNotYoursNotAllowedClear"));
