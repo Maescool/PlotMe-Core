@@ -42,5 +42,6 @@ public class PermissionNames {
     public static final String ADMIN_REMOVE = "PlotMe.admin.remove";
     public static final String ADMIN_CLEARTIME = "PlotMe.admin.cleartime";
     public static final String USER_PROTECT = "PlotMe.use.protect";
-
+    public static final String ADMIN_REDSTONE = "PlotMe.admin.redstone";
+    public static final String USER_REDSTONE = "PlotMe.user.redstone";
 }

@@ -35,6 +35,7 @@ public class Plot implements Comparable<Plot> {
     private UUID currentbidderId;
     private String plotName;
     private Timestamp lastPlotClear;
+    private boolean redstoneProtect;
 
     public Plot(PlotMe_Core plugin) {
         this.plugin = plugin;
@@ -59,6 +60,7 @@ public class Plot implements Comparable<Plot> {
         setCurrentBidderId(null);
         setCurrentBid(0.0);
         setLastPlotClear(null);
+        setRedstoneProtect(false);
     }
 
     public Plot(PlotMe_Core plugin, String owner, UUID uuid, World world, String plotid, int days) {
@@ -89,11 +91,12 @@ public class Plot implements Comparable<Plot> {
         setCurrentBidderId(null);
         setCurrentBid(0.0);
         setLastPlotClear(null);
+        setRedstoneProtect(false);
     }
 
     public Plot(PlotMe_Core plugin, String owner, UUID ownerId, String world, String biome, Date expiredDate, boolean finished,
                 PlayerList allowed, String id, double customPrice, boolean sale, String finishedDate,
-                boolean protect, String bidder, UUID bidderId, double bid, boolean isAuctioned, PlayerList denied, Timestamp lastPlotClear) {
+                boolean protect, String bidder, UUID bidderId, double bid, boolean isAuctioned, PlayerList denied, Timestamp lastPlotClear, boolean redstoneProtect) {
         this.plugin = plugin;
         setOwner(owner);
         setOwnerId(ownerId);
@@ -113,6 +116,7 @@ public class Plot implements Comparable<Plot> {
         setCurrentBid(bid);
         this.denied = denied;
         setLastPlotClear(lastPlotClear);
+        setRedstoneProtect(redstoneProtect);
     }
 
     public void resetExpire(int days) {
@@ -536,5 +540,13 @@ public class Plot implements Comparable<Plot> {
 
     public void setLastPlotClear(Timestamp lastPlotClear) {
         this.lastPlotClear = lastPlotClear;
+    }
+
+    public boolean isRedstoneProtect() {
+        return redstoneProtect;
+    }
+
+    public void setRedstoneProtect(boolean redstoneProtect) {
+        this.redstoneProtect = redstoneProtect;
     }
 }

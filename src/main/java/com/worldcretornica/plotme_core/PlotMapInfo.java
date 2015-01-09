@@ -88,6 +88,14 @@ public class PlotMapInfo {
     public boolean isPreventedItem(String itemId) {
         return getPreventedItems().contains(itemId);
     }
+    
+    public List<Integer> getRedstoneBlocks() {
+        return config.getIntegerList("RedstoneBlocks");
+    }
+    
+    public boolean isRedstoneBlock(int blockId) {
+        return getRedstoneBlocks().contains(blockId);
+    }
 
     public String getNextFreed() {
         if (freedplots.isEmpty()) {
