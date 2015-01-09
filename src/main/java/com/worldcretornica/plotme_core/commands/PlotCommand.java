@@ -7,7 +7,6 @@ import com.worldcretornica.plotme_core.utils.Util;
 
 public abstract class PlotCommand {
 
-    public static final String MSG_NO_PLOT_FOUND = "MsgNoPlotFound";
     protected final PlotMe_Core plugin;
 
     protected final IServerBridge serverBridge;
@@ -19,10 +18,6 @@ public abstract class PlotCommand {
 
     Util Util() {
         return plugin.getUtil();
-    }
-
-    void warn(String msg) {
-        serverBridge.getLogger().warning(msg);
     }
 
     short getPlotLimit(IPlayer player) {
@@ -54,7 +49,7 @@ public abstract class PlotCommand {
     protected String C(String caption) {
         return Util().C(caption);
     }
-    
+
     protected boolean isAdvancedLogging() {
         return serverBridge.getConfig().getBoolean("AdvancedLogging");
     }

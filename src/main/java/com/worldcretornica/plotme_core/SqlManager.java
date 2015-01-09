@@ -1,7 +1,7 @@
 package com.worldcretornica.plotme_core;
 
 import com.worldcretornica.plotme_core.api.IPlayer;
-import com.worldcretornica.plotme_core.api.IWorld;
+import com.worldcretornica.plotme_core.api.World;
 import com.worldcretornica.plotme_core.bukkit.api.BukkitBiome;
 import com.worldcretornica.plotme_core.utils.UUIDFetcher;
 
@@ -544,7 +544,7 @@ public class SqlManager {
         }
     }
 
-    public void addPlot(Plot plot, int idX, int idZ, IWorld world) {
+    public void addPlot(Plot plot, int idX, int idZ, World world) {
         addPlot(plot, idX, idZ,
                 PlotMeCoreManager.topX(plot.getId(), world),
                 PlotMeCoreManager.bottomX(plot.getId(), world),
@@ -1534,7 +1534,7 @@ public class SqlManager {
     }
 
     /**
-     * Get plots for the given player UUID or name.
+     * Get plots where the player is allowed or owns.
      *
      * @param playername
      * @param playerId
@@ -1662,7 +1662,15 @@ public class SqlManager {
         return ret;
     }
 
-    public List<Plot> getOwnedPlots(String w, UUID ownerId, String owner) {
+    /**
+     * Get plots that the player owns.
+     *
+     * @param world
+     * @param ownerId
+     * @param owner
+     * @return
+     */
+    public List<Plot> getOwnedPlots(String world, UUID ownerId, String owner) {
         List<Plot> ret = new ArrayList<>();
         PreparedStatement statementPlot = null;
         ResultSet setPlots = null;
@@ -1672,11 +1680,11 @@ public class SqlManager {
 
             if (ownerId == null) {
                 statementPlot = conn.prepareStatement("SELECT * FROM plotmePlots WHERE world LIKE ? AND owner LIKE ? ORDER BY world");
-                statementPlot.setString(1, w);
+                statementPlot.setString(1, world);
                 statementPlot.setString(2, owner);
             } else {
                 statementPlot = conn.prepareStatement("SELECT * FROM plotmePlots WHERE world LIKE ? AND ownerId = ? ORDER BY world");
-                statementPlot.setString(1, w);
+                statementPlot.setString(1, world);
                 statementPlot.setBytes(2, UUIDFetcher.toBytes(ownerId));
             }
 
@@ -1701,7 +1709,7 @@ public class SqlManager {
                 String currentbidder = setPlots.getString("currentbidder");
                 double currentbid = setPlots.getDouble("currentbid");
                 boolean auctionned = setPlots.getBoolean("auctionned");
-                String world = setPlots.getString("world");
+                String world1 = setPlots.getString("world");
 
                 Timestamp lastPlotClear = setPlots.getTimestamp("lastplotclear");
 
@@ -1719,7 +1727,7 @@ public class SqlManager {
                 }
 
                 PreparedStatement statementAllowed = conn.prepareStatement("SELECT * FROM plotmeAllowed WHERE LOWER(world) = ? AND idX = ? AND idZ = ?");
-                statementAllowed.setString(1, world);
+                statementAllowed.setString(1, world1);
                 statementAllowed.setInt(2, idX);
                 statementAllowed.setInt(3, idZ);
 
@@ -1737,7 +1745,7 @@ public class SqlManager {
                 setAllowed.close();
 
                 PreparedStatement statementDenied = conn.prepareStatement("SELECT * FROM plotmeDenied WHERE LOWER(world) = ? AND idX = ? AND idZ = ?");
-                statementDenied.setString(1, world);
+                statementDenied.setString(1, world1);
                 statementDenied.setInt(2, idX);
                 statementDenied.setInt(3, idZ);
 
@@ -1753,7 +1761,6 @@ public class SqlManager {
                 }
 
                 setDenied.close();
-
                 Plot plot = new Plot(plugin, owner, ownerId, world, biome, expireddate, finished, allowed,
                         idX + ";" + idZ, customprice, forsale, finisheddate, protect,
                         currentbidder, currentbidderid, currentbid, auctionned, denied, lastPlotClear);
@@ -2047,7 +2054,7 @@ public class SqlManager {
                     ps.close();
 
                     if (uuid != null) {
-                        Plot plot = plugin.getPlotMeCoreManager().getPlotById(world, idX + ";" + idZ);
+                        Plot plot = plugin.getPlotMeCoreManager().getPlotById(idX + ";" + idZ, world);
 
                         if (plot != null) {
                             switch (property) {

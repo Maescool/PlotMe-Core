@@ -2,7 +2,7 @@ package com.worldcretornica.plotme_core;
 
 import com.worldcretornica.plotme_core.api.IBiome;
 import com.worldcretornica.plotme_core.api.IPlayer;
-import com.worldcretornica.plotme_core.api.IWorld;
+import com.worldcretornica.plotme_core.api.World;
 
 import java.sql.Date;
 import java.sql.Timestamp;
@@ -46,9 +46,8 @@ public class Plot implements Comparable<Plot> {
         denied = new PlayerList();
         setBiome(this.plugin.getServerBridge().getBiome("PLAINS"));
 
-        Calendar cal = Calendar.getInstance();
-        cal.add(Calendar.DAY_OF_YEAR, 7);
-        java.util.Date utlDate = cal.getTime();
+        Calendar.getInstance().add(Calendar.DAY_OF_YEAR, 7);
+        java.util.Date utlDate = Calendar.getInstance().getTime();
         setExpiredDate(new Date(utlDate.getTime()));
 
         setCustomPrice(0.0);
@@ -62,7 +61,7 @@ public class Plot implements Comparable<Plot> {
         setLastPlotClear(null);
     }
 
-    public Plot(PlotMe_Core plugin, String owner, UUID uuid, IWorld world, String plotid, int days) {
+    public Plot(PlotMe_Core plugin, String owner, UUID uuid, World world, String plotid, int days) {
         this.plugin = plugin;
         setOwner(owner);
         setOwnerId(uuid);
@@ -415,7 +414,7 @@ public class Plot implements Comparable<Plot> {
 
     @Override
     public int compareTo(Plot plot) {
-        if (getExpiredDate().compareTo(plot.getExpiredDate()) == 0) {
+        if (getExpiredDate().equals(plot.getExpiredDate())) {
             return getOwner().compareTo(plot.getOwner());
         } else {
             return getExpiredDate().compareTo(plot.getExpiredDate());

@@ -3,15 +3,15 @@ package com.worldcretornica.plotme_core.api.event;
 import com.worldcretornica.plotme_core.Plot;
 import com.worldcretornica.plotme_core.PlotMe_Core;
 import com.worldcretornica.plotme_core.api.IPlayer;
-import com.worldcretornica.plotme_core.api.IWorld;
+import com.worldcretornica.plotme_core.api.World;
 
 public class InternalPlotBidEvent extends InternalPlotEvent implements ICancellable {
 
-    private boolean canceled;
     private final IPlayer player;
     private final double bid;
+    private boolean canceled;
 
-    public InternalPlotBidEvent(PlotMe_Core instance, IWorld world, Plot plot, IPlayer bidder, double bid) {
+    public InternalPlotBidEvent(PlotMe_Core instance, World world, Plot plot, IPlayer bidder, double bid) {
         super(instance, plot, world);
         player = bidder;
         this.bid = bid;

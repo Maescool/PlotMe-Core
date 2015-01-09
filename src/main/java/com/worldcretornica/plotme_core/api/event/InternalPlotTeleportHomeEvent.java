@@ -4,15 +4,15 @@ import com.worldcretornica.plotme_core.Plot;
 import com.worldcretornica.plotme_core.PlotMe_Core;
 import com.worldcretornica.plotme_core.api.ILocation;
 import com.worldcretornica.plotme_core.api.IPlayer;
-import com.worldcretornica.plotme_core.api.IWorld;
+import com.worldcretornica.plotme_core.api.World;
 
 public class InternalPlotTeleportHomeEvent extends InternalPlotEvent implements ICancellable {
 
-    private boolean canceled;
     private final IPlayer player;
+    private boolean canceled;
     private ILocation location;
 
-    public InternalPlotTeleportHomeEvent(PlotMe_Core instance, IWorld world, Plot plot, IPlayer player) {
+    public InternalPlotTeleportHomeEvent(PlotMe_Core instance, World world, Plot plot, IPlayer player) {
         super(instance, plot, world);
         this.player = player;
         location = null;
@@ -32,10 +32,6 @@ public class InternalPlotTeleportHomeEvent extends InternalPlotEvent implements 
         return player;
     }
 
-    public void setHomeLocation(ILocation homelocation) {
-        location = homelocation;
-    }
-
     @Override
     public ILocation getHomeLocation() {
         if (location == null) {
@@ -43,5 +39,9 @@ public class InternalPlotTeleportHomeEvent extends InternalPlotEvent implements 
         } else {
             return location;
         }
+    }
+
+    public void setHomeLocation(ILocation homelocation) {
+        location = homelocation;
     }
 }

@@ -37,10 +37,10 @@ public class BukkitPlotListener implements Listener {
 
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     public void onBlockBreak(BlockBreakEvent event) {
-        BukkitPlayer player = new BukkitPlayer(event.getPlayer());
         BukkitBlock block = new BukkitBlock(event.getBlock());
 
-        if (api.getPlotMeCoreManager().isPlotWorld(block.getLocation())) {
+        if (api.getPlotMeCoreManager().isPlotWorld(block.getWorld())) {
+            Player player = event.getPlayer();
             boolean cannotBuild = !player.hasPermission(PermissionNames.ADMIN_BUILDANYWHERE);
             String id = PlotMeCoreManager.getPlotId(block.getLocation());
 
@@ -54,15 +54,15 @@ public class BukkitPlotListener implements Listener {
 
                 if (ptc != null) {
                     switch (ptc.getReason()) {
-                    case Clear:
-                        player.sendMessage(api.getUtil().C("MsgPlotLockedClear"));
-                        break;
-                    case Reset:
-                        player.sendMessage(api.getUtil().C("MsgPlotLockedReset"));
-                        break;
-                    case Expired:
-                        player.sendMessage(api.getUtil().C("MsgPlotLockedExpired"));
-                        break;
+                        case Clear:
+                            player.sendMessage(api.getUtil().C("MsgPlotLockedClear"));
+                            break;
+                        case Reset:
+                            player.sendMessage(api.getUtil().C("MsgPlotLockedReset"));
+                            break;
+                        case Expired:
+                            player.sendMessage(api.getUtil().C("MsgPlotLockedExpired"));
+                            break;
                     }
                     event.setCancelled(true);
                 } else {
@@ -83,10 +83,10 @@ public class BukkitPlotListener implements Listener {
 
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     public void onBlockPlace(BlockPlaceEvent event) {
-        BukkitPlayer player = new BukkitPlayer(event.getPlayer());
-        BukkitBlock block = new BukkitBlock(event.getBlock());
+        Player player = event.getPlayer();
+        BukkitBlock block = new BukkitBlock(event.getBlockPlaced());
 
-        if (api.getPlotMeCoreManager().isPlotWorld(block.getLocation())) {
+        if (api.getPlotMeCoreManager().isPlotWorld(block.getWorld())) {
             boolean canbuild = !player.hasPermission(PermissionNames.ADMIN_BUILDANYWHERE);
             String id = PlotMeCoreManager.getPlotId(block.getLocation());
 
@@ -100,15 +100,15 @@ public class BukkitPlotListener implements Listener {
 
                 if (ptc != null) {
                     switch (ptc.getReason()) {
-                    case Clear:
-                        player.sendMessage(api.getUtil().C("MsgPlotLockedClear"));
-                        break;
-                    case Reset:
-                        player.sendMessage(api.getUtil().C("MsgPlotLockedReset"));
-                        break;
-                    case Expired:
-                        player.sendMessage(api.getUtil().C("MsgPlotLockedExpired"));
-                        break;
+                        case Clear:
+                            player.sendMessage(api.getUtil().C("MsgPlotLockedClear"));
+                            break;
+                        case Reset:
+                            player.sendMessage(api.getUtil().C("MsgPlotLockedReset"));
+                            break;
+                        case Expired:
+                            player.sendMessage(api.getUtil().C("MsgPlotLockedExpired"));
+                            break;
                     }
                     event.setCancelled(true);
                 } else {
@@ -129,30 +129,30 @@ public class BukkitPlotListener implements Listener {
 
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     public void onPlayerBucketEmpty(PlayerBucketEmptyEvent event) {
-        BukkitPlayer player = new BukkitPlayer(event.getPlayer());
+        Player player = event.getPlayer();
         BukkitBlock block = new BukkitBlock(event.getBlockClicked());
 
         if (!player.hasPermission(PermissionNames.ADMIN_BUILDANYWHERE)) {
-            if (api.getPlotMeCoreManager().isPlotWorld(block.getLocation())) {
+            if (api.getPlotMeCoreManager().isPlotWorld(block.getWorld())) {
                 String id = PlotMeCoreManager.getPlotId(block.getLocation());
 
                 if (id.isEmpty()) {
                     player.sendMessage(api.getUtil().C("ErrCannotBuild"));
                     event.setCancelled(true);
                 } else {
-                    PlotToClear ptc = api.getPlotLocked(block.getWorld().getName(), id);
+                    PlotToClear ptc = api.getPlotLocked(player.getWorld().getName(), id);
 
                     if (ptc != null) {
                         switch (ptc.getReason()) {
-                        case Clear:
-                            player.sendMessage(api.getUtil().C("MsgPlotLockedClear"));
-                            break;
-                        case Reset:
-                            player.sendMessage(api.getUtil().C("MsgPlotLockedReset"));
-                            break;
-                        case Expired:
-                            player.sendMessage(api.getUtil().C("MsgPlotLockedExpired"));
-                            break;
+                            case Clear:
+                                player.sendMessage(api.getUtil().C("MsgPlotLockedClear"));
+                                break;
+                            case Reset:
+                                player.sendMessage(api.getUtil().C("MsgPlotLockedReset"));
+                                break;
+                            case Expired:
+                                player.sendMessage(api.getUtil().C("MsgPlotLockedExpired"));
+                                break;
                         }
                         event.setCancelled(true);
                     } else {
@@ -170,11 +170,10 @@ public class BukkitPlotListener implements Listener {
 
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     public void onPlayerBucketFill(PlayerBucketFillEvent event) {
-        BukkitPlayer player = new BukkitPlayer(event.getPlayer());
+        Player player = event.getPlayer();
         BukkitBlock block = new BukkitBlock(event.getBlockClicked());
-
         if (!player.hasPermission(PermissionNames.ADMIN_BUILDANYWHERE)) {
-            if (api.getPlotMeCoreManager().isPlotWorld(block.getLocation())) {
+            if (api.getPlotMeCoreManager().isPlotWorld(block.getWorld())) {
                 String id = PlotMeCoreManager.getPlotId(block.getLocation());
 
                 if (id.isEmpty()) {
@@ -185,15 +184,15 @@ public class BukkitPlotListener implements Listener {
 
                     if (ptc != null) {
                         switch (ptc.getReason()) {
-                        case Clear:
-                            player.sendMessage(api.getUtil().C("MsgPlotLockedClear"));
-                            break;
-                        case Reset:
-                            player.sendMessage(api.getUtil().C("MsgPlotLockedReset"));
-                            break;
-                        case Expired:
-                            player.sendMessage(api.getUtil().C("MsgPlotLockedExpired"));
-                            break;
+                            case Clear:
+                                player.sendMessage(api.getUtil().C("MsgPlotLockedClear"));
+                                break;
+                            case Reset:
+                                player.sendMessage(api.getUtil().C("MsgPlotLockedReset"));
+                                break;
+                            case Expired:
+                                player.sendMessage(api.getUtil().C("MsgPlotLockedExpired"));
+                                break;
                         }
                         event.setCancelled(true);
                     } else {
@@ -212,10 +211,10 @@ public class BukkitPlotListener implements Listener {
     @SuppressWarnings("deprecation")
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     public void onPlayerInteract(PlayerInteractEvent event) {
-        BukkitPlayer player = new BukkitPlayer(event.getPlayer());
-        BukkitBlock block = new BukkitBlock(event.getClickedBlock());
 
+        BukkitBlock block = new BukkitBlock(event.getClickedBlock());
         if (api.getPlotMeCoreManager().isPlotWorld(block.getLocation())) {
+            Player player = event.getPlayer();
 
             String id = PlotMeCoreManager.getPlotId(block.getLocation());
 
@@ -471,7 +470,7 @@ public class BukkitPlotListener implements Listener {
         List<BlockState> blocks = event.getBlocks();
 
         if (!api.getPlotMeCoreManager().isPlotWorld(location)) {
-          return;
+            return;
         }
 
         for (int i = 0; i < blocks.size(); i++) {
@@ -566,7 +565,7 @@ public class BukkitPlotListener implements Listener {
 
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     public void onHangingPlace(HangingPlaceEvent event) {
-        BukkitPlayer player = new BukkitPlayer(event.getPlayer());
+        Player player = event.getPlayer();
         BukkitBlock block = new BukkitBlock(event.getBlock());
 
         if (api.getPlotMeCoreManager().isPlotWorld(block.getLocation())) {
@@ -583,15 +582,15 @@ public class BukkitPlotListener implements Listener {
 
                 if (ptc != null) {
                     switch (ptc.getReason()) {
-                    case Clear:
-                        player.sendMessage(api.getUtil().C("MsgPlotLockedClear"));
-                        break;
-                    case Reset:
-                        player.sendMessage(api.getUtil().C("MsgPlotLockedReset"));
-                        break;
-                    case Expired:
-                        player.sendMessage(api.getUtil().C("MsgPlotLockedExpired"));
-                        break;
+                        case Clear:
+                            player.sendMessage(api.getUtil().C("MsgPlotLockedClear"));
+                            break;
+                        case Reset:
+                            player.sendMessage(api.getUtil().C("MsgPlotLockedReset"));
+                            break;
+                        case Expired:
+                            player.sendMessage(api.getUtil().C("MsgPlotLockedExpired"));
+                            break;
                     }
                     event.setCancelled(true);
                 } else {
@@ -666,7 +665,7 @@ public class BukkitPlotListener implements Listener {
 
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     public void onPlayerInteractEntity(PlayerInteractEntityEvent event) {
-        BukkitPlayer player = new BukkitPlayer(event.getPlayer());
+        Player player = event.getPlayer();
         BukkitLocation location = new BukkitLocation(event.getRightClicked().getLocation());
 
         if (api.getPlotMeCoreManager().isPlotWorld(location)) {
@@ -683,15 +682,15 @@ public class BukkitPlotListener implements Listener {
 
                 if (ptc != null) {
                     switch (ptc.getReason()) {
-                    case Clear:
-                        player.sendMessage(api.getUtil().C("MsgPlotLockedClear"));
-                        break;
-                    case Reset:
-                        player.sendMessage(api.getUtil().C("MsgPlotLockedReset"));
-                        break;
-                    case Expired:
-                        player.sendMessage(api.getUtil().C("MsgPlotLockedExpired"));
-                        break;
+                        case Clear:
+                            player.sendMessage(api.getUtil().C("MsgPlotLockedClear"));
+                            break;
+                        case Reset:
+                            player.sendMessage(api.getUtil().C("MsgPlotLockedReset"));
+                            break;
+                        case Expired:
+                            player.sendMessage(api.getUtil().C("MsgPlotLockedExpired"));
+                            break;
                     }
                     event.setCancelled(true);
                 } else {
@@ -712,7 +711,7 @@ public class BukkitPlotListener implements Listener {
 
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     public void onPlayerEggThrow(PlayerEggThrowEvent event) {
-        BukkitPlayer player = new BukkitPlayer(event.getPlayer());
+        Player player = event.getPlayer();
         BukkitLocation location = new BukkitLocation(event.getEgg().getLocation());
 
         if (api.getPlotMeCoreManager().isPlotWorld(location)) {
@@ -790,6 +789,7 @@ public class BukkitPlotListener implements Listener {
             }
         }
     }
+
     @EventHandler
     public void onPlotWorldLoad(PlotWorldLoadEvent event) {
         api.getLogger().info("Done loading " + event.getNbPlots() + " plots for world " + event.getWorldName());

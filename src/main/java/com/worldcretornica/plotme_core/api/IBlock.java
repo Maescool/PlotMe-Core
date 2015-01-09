@@ -4,7 +4,7 @@ public interface IBlock {
 
     ILocation getLocation();
 
-    IWorld getWorld();
+    World getWorld();
 
     int getX();
 
@@ -14,15 +14,15 @@ public interface IBlock {
 
     int getTypeId();
 
-    void setBiome(IBiome biome);
-
     IBiome getBiome();
+
+    void setBiome(IBiome biome);
 
     boolean setTypeIdAndData(short id, byte data, boolean applyPhysics);
 
     byte getData();
 
-    void setTypeId(int i, boolean b);
+    void setTypeId(int id, boolean applyPhysics);
 
 
 }

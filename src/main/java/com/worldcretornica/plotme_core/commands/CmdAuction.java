@@ -3,7 +3,7 @@ package com.worldcretornica.plotme_core.commands;
 import com.worldcretornica.plotme_core.*;
 import com.worldcretornica.plotme_core.api.IOfflinePlayer;
 import com.worldcretornica.plotme_core.api.IPlayer;
-import com.worldcretornica.plotme_core.api.IWorld;
+import com.worldcretornica.plotme_core.api.World;
 import com.worldcretornica.plotme_core.api.event.InternalPlotAuctionEvent;
 import net.milkbowl.vault.economy.EconomyResponse;
 
@@ -14,7 +14,7 @@ public class CmdAuction extends PlotCommand {
     }
 
     public boolean exec(IPlayer player, String[] args) {
-        IWorld world = player.getWorld();
+        World world = player.getWorld();
         PlotMapInfo pmi = plugin.getPlotMeCoreManager().getMap(world);
         if (plugin.getPlotMeCoreManager().isPlotWorld(world)) {
             if (plugin.getPlotMeCoreManager().isEconomyEnabled(pmi)) {
@@ -23,7 +23,7 @@ public class CmdAuction extends PlotCommand {
                         String id = PlotMeCoreManager.getPlotId(player);
 
                         if (id.isEmpty()) {
-                            player.sendMessage("§c" + C(MSG_NO_PLOT_FOUND));
+                            player.sendMessage("§c" + C("MsgNoPlotFound"));
                         } else if (!PlotMeCoreManager.isPlotAvailable(id, pmi)) {
                             Plot plot = PlotMeCoreManager.getPlotById(id, pmi);
 
@@ -41,13 +41,13 @@ public class CmdAuction extends PlotCommand {
                                                 for (IPlayer onlinePlayers : serverBridge.getOnlinePlayers()) {
                                                     if (onlinePlayers.getName().equalsIgnoreCase(plot.getCurrentBidder())) {
                                                         onlinePlayers.sendMessage(C("MsgAuctionCancelledOnPlot")
-                                                                                          + " " + id + " " + C("MsgOwnedBy") + " " + plot.getOwner() + ". " + Util().moneyFormat(plot.getCurrentBid(), true));
+                                                                + " " + id + " " + C("MsgOwnedBy") + " " + plot.getOwner() + ". " + Util().moneyFormat(plot.getCurrentBid(), true));
                                                         break;
                                                     }
                                                 }
                                             } else {
                                                 player.sendMessage("§c" + er.errorMessage);
-                                                warn(er.errorMessage);
+                                                serverBridge.getLogger().warning(er.errorMessage);
                                             }
 
                                             plot.setAuctioned(false);

@@ -5,7 +5,7 @@ import com.worldcretornica.plotme_core.Plot;
 import com.worldcretornica.plotme_core.PlotMapInfo;
 import com.worldcretornica.plotme_core.PlotMe_Core;
 import com.worldcretornica.plotme_core.api.IPlayer;
-import com.worldcretornica.plotme_core.api.IWorld;
+import com.worldcretornica.plotme_core.api.World;
 import com.worldcretornica.plotme_core.api.event.InternalPlotTeleportHomeEvent;
 import net.milkbowl.vault.economy.EconomyResponse;
 
@@ -22,7 +22,7 @@ public class CmdHome extends PlotCommand {
             if (plugin.getPlotMeCoreManager().isPlotWorld(player) || serverBridge.getConfig().getBoolean("allowWorldTeleport")) {
                 String playerName = player.getName();
                 UUID uuid = player.getUniqueId();
-                IWorld world;
+                World world;
 
                 if (plugin.getPlotMeCoreManager().isPlotWorld(player)) {
                     world = player.getWorld();
@@ -42,10 +42,10 @@ public class CmdHome extends PlotCommand {
                         return true;
                     } else {
                         try {
-                          nb = Integer.parseInt(args[0].split(":")[1]);
+                            nb = Integer.parseInt(args[0].split(":")[1]);
                         } catch (NumberFormatException e) {
-                          player.sendMessage(C("WordUsage") + ": §c/plotme home:# §r" + C("WordExample") + ": §c/plotme home:1");
-                          return true;
+                            player.sendMessage(C("WordUsage") + ": §c/plotme home:# §r" + C("WordExample") + ": §c/plotme home:1");
+                            return true;
                         }
                     }
                 }
@@ -124,7 +124,7 @@ public class CmdHome extends PlotCommand {
                                     i--;
                                 }
                             }
-                        } else if (plot.getOwnerId() != null && plot.getOwnerId().equals(uuid)) {
+                        } else if (plot.getOwnerId().equals(uuid)) {
                             if (i == 0) {
 
                                 double price = 0.0;

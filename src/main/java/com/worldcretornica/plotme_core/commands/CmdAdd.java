@@ -2,7 +2,7 @@ package com.worldcretornica.plotme_core.commands;
 
 import com.worldcretornica.plotme_core.*;
 import com.worldcretornica.plotme_core.api.IPlayer;
-import com.worldcretornica.plotme_core.api.IWorld;
+import com.worldcretornica.plotme_core.api.World;
 import com.worldcretornica.plotme_core.api.event.InternalPlotAddAllowedEvent;
 import net.milkbowl.vault.economy.EconomyResponse;
 
@@ -14,12 +14,12 @@ public class CmdAdd extends PlotCommand {
 
     public boolean exec(IPlayer player, String[] args) {
         if (player.hasPermission(PermissionNames.ADMIN_ADD) || player.hasPermission(PermissionNames.USER_ADD)) {
-            IWorld world = player.getWorld();
+            World world = player.getWorld();
             PlotMapInfo pmi = plugin.getPlotMeCoreManager().getMap(world);
             if (plugin.getPlotMeCoreManager().isPlotWorld(world)) {
                 String id = PlotMeCoreManager.getPlotId(player);
                 if (id.isEmpty()) {
-                    player.sendMessage("§c" + C(MSG_NO_PLOT_FOUND));
+                    player.sendMessage("§c" + C("MsgNoPlotFound"));
                 } else if (!PlotMeCoreManager.isPlotAvailable(id, pmi)) {
                     if (args.length < 2) {
                         player.sendMessage(C("WordUsage") + " §c/plotme add <" + C("WordPlayer") + ">");
@@ -51,7 +51,7 @@ public class CmdAdd extends PlotCommand {
 
                                             if (!er.transactionSuccess()) {
                                                 player.sendMessage("§c" + er.errorMessage);
-                                                warn(er.errorMessage);
+                                                serverBridge.getLogger().warning(er.errorMessage);
                                                 return true;
                                             }
                                         }
@@ -67,7 +67,7 @@ public class CmdAdd extends PlotCommand {
                                     IPlayer allowed2 = plugin.getServerBridge().getPlayerExact(allowed);
                                     if (allowed2 != null) {
                                         plot.addAllowed(allowed, allowed2.getUniqueId());
-                                        plot.removeDenied(allowed);
+                                        plot.removeDenied(allowed2.getUniqueId());
                                     } else {
                                         plot.addAllowed(allowed);
                                         plot.removeDenied(allowed);
@@ -75,11 +75,12 @@ public class CmdAdd extends PlotCommand {
                                     player.sendMessage(C("WordPlayer") + " §c" + allowed + "§r " + C("MsgNowAllowed"));
 
                                     if (isAdvancedLogging()) {
-                                        if (advancedPrice == 0)
+                                        if (advancedPrice == 0) {
                                             serverBridge.getLogger().info(player.getName() + " " + C("MsgAddedPlayer") + " " + allowed + " " + C("MsgToPlot") + " " + id);
-                                        else
+                                        } else {
                                             serverBridge.getLogger().info(player.getName() + " " + C("MsgAddedPlayer") + " " + allowed + " " + C("MsgToPlot") + " "
-                                                                                  + id + (" " + C("WordFor") + " " + advancedPrice));
+                                                    + id + (" " + C("WordFor") + " " + advancedPrice));
+                                        }
                                     }
                                 }
                             }

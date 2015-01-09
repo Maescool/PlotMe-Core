@@ -4,7 +4,7 @@ import com.worldcretornica.plotme_core.PermissionNames;
 import com.worldcretornica.plotme_core.PlotMapInfo;
 import com.worldcretornica.plotme_core.PlotMe_Core;
 import com.worldcretornica.plotme_core.api.IPlayer;
-import com.worldcretornica.plotme_core.api.IWorld;
+import com.worldcretornica.plotme_core.api.World;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -131,9 +131,9 @@ public class CmdShowHelp extends PlotCommand {
                 int maxplots = getPlotLimit(player);
                 if (plugin.getPlotMeCoreManager().isPlotWorld(player)) {
 
-                    IWorld world = player.getWorld();
+                    World world = player.getWorld();
 
-                    int ownedplots = plugin.getPlotMeCoreManager().getNbOwnedPlot(player.getUniqueId(), player.getName(), world.getName());
+                    int ownedplots = plugin.getSqlManager().getPlotCount(world.getName().toLowerCase(), player.getUniqueId(), player.getName());
 
                     if (maxplots == -1) {
                         player.sendMessage("§a" + C("HelpYourPlotLimitWorld") + " : §b" + ownedplots + "§a " + C("HelpUsedOf") + " §b" + C("WordInfinite"));
@@ -142,9 +142,9 @@ public class CmdShowHelp extends PlotCommand {
                     }
                 } else if (serverBridge.getConfig().getBoolean("allowWorldTeleport")) {
 
-                    IWorld world = plugin.getPlotMeCoreManager().getFirstWorld();
+                    World world = plugin.getPlotMeCoreManager().getFirstWorld();
 
-                    int ownedplots = plugin.getPlotMeCoreManager().getNbOwnedPlot(player.getUniqueId(), player.getName(), world.getName());
+                    int ownedplots = plugin.getSqlManager().getPlotCount(world.getName().toLowerCase(), player.getUniqueId(), player.getName());
 
                     if (maxplots == -1) {
                         player.sendMessage("§a" + C("HelpYourPlotLimitWorld") + " : §b" + ownedplots + "§a " + C("HelpUsedOf") + " §b" + C("WordInfinite"));

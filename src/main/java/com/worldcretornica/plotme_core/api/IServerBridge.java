@@ -49,7 +49,6 @@ public interface IServerBridge {
      * Gets balance of a player
      *
      * @param player of the player
-     *
      * @return Amount currently held in players account
      */
     double getBalance(IPlayer player);
@@ -66,10 +65,9 @@ public interface IServerBridge {
      * Gets the world with the given name.
      *
      * @param name the name of the world to retrieve. Converted to lowercase in Bukkit/Spigot
-     *
      * @return a world with the given name, or null if none exists
      */
-    IWorld getWorld(String name);
+    World getWorld(String name);
 
     void setupCommands();
 
@@ -99,17 +97,14 @@ public interface IServerBridge {
 
     List<String> getBiomes();
 
-    List<IWorld> getWorlds();
+    List<World> getWorlds();
 
     boolean createPlotWorld(String worldname, String generator, Map<String, String> args);
 
     IMaterial getMaterial(String string);
 
-    ILocation createLocation(IWorld world, int x, int y, int z);
-
     IEntityType getEntityType(String string);
 
     IConfigSection loadDefaultConfig(String string);
 
-    void disablePlotMe();
 }

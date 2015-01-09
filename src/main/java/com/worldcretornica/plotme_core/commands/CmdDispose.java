@@ -3,7 +3,7 @@ package com.worldcretornica.plotme_core.commands;
 import com.worldcretornica.plotme_core.*;
 import com.worldcretornica.plotme_core.api.IOfflinePlayer;
 import com.worldcretornica.plotme_core.api.IPlayer;
-import com.worldcretornica.plotme_core.api.IWorld;
+import com.worldcretornica.plotme_core.api.World;
 import com.worldcretornica.plotme_core.api.event.InternalPlotDisposeEvent;
 import net.milkbowl.vault.economy.EconomyResponse;
 
@@ -15,12 +15,12 @@ public class CmdDispose extends PlotCommand {
 
     public boolean exec(IPlayer player) {
         if (player.hasPermission(PermissionNames.ADMIN_DISPOSE) || player.hasPermission(PermissionNames.USER_DISPOSE)) {
-            IWorld world = player.getWorld();
+            World world = player.getWorld();
             PlotMapInfo pmi = plugin.getPlotMeCoreManager().getMap(world);
             if (plugin.getPlotMeCoreManager().isPlotWorld(world)) {
                 String id = PlotMeCoreManager.getPlotId(player);
                 if (id.isEmpty()) {
-                    player.sendMessage("§c" + C(MSG_NO_PLOT_FOUND));
+                    player.sendMessage("§c" + C("MsgNoPlotFound"));
                 } else if (!PlotMeCoreManager.isPlotAvailable(id, pmi)) {
                     Plot plot = PlotMeCoreManager.getPlotById(id, pmi);
 
@@ -50,7 +50,7 @@ public class CmdDispose extends PlotCommand {
 
                                     if (!economyResponse.transactionSuccess()) {
                                         player.sendMessage("§c" + economyResponse.errorMessage);
-                                        warn(economyResponse.errorMessage);
+                                        serverBridge.getLogger().warning(economyResponse.errorMessage);
                                         return true;
                                     }
 
@@ -68,7 +68,7 @@ public class CmdDispose extends PlotCommand {
                                                 }
                                             } else {
                                                 player.sendMessage("§c" + er2.errorMessage);
-                                                warn(er2.errorMessage);
+                                                serverBridge.getLogger().warning(er2.errorMessage);
                                             }
                                         }
                                     }

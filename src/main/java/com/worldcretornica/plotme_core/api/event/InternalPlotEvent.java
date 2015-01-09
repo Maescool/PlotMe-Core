@@ -4,7 +4,7 @@ import com.worldcretornica.plotme_core.Plot;
 import com.worldcretornica.plotme_core.PlotMeCoreManager;
 import com.worldcretornica.plotme_core.PlotMe_Core;
 import com.worldcretornica.plotme_core.api.ILocation;
-import com.worldcretornica.plotme_core.api.IWorld;
+import com.worldcretornica.plotme_core.api.World;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -13,11 +13,11 @@ import java.util.UUID;
 
 public class InternalPlotEvent {
 
+    protected final World world;
     final PlotMe_Core plugin;
     private final Plot plot;
-    protected final IWorld world;
 
-    public InternalPlotEvent(PlotMe_Core instance, Plot plot, IWorld world) {
+    public InternalPlotEvent(PlotMe_Core instance, Plot plot, World world) {
         plugin = instance;
         this.plot = plot;
         this.world = world;
@@ -27,7 +27,6 @@ public class InternalPlotEvent {
      * Returns the plot used in the event
      *
      * @return plot used in the event
-     *
      */
     public Plot getPlot() {
         return plot;
@@ -37,9 +36,8 @@ public class InternalPlotEvent {
      * Returns the world used in the event
      *
      * @return world
-     *
      */
-    public IWorld getWorld() {
+    public World getWorld() {
         return world;
     }
 
@@ -47,7 +45,6 @@ public class InternalPlotEvent {
      * Returns the owner of the plot used in the event
      *
      * @return owner of the plot
-     *
      */
     public String getOwner() {
         if (getPlot() != null) {
@@ -61,7 +58,6 @@ public class InternalPlotEvent {
      * Returns the location of the upper corner of the plot used in the event
      *
      * @return location of the upper corner
-     *
      */
     public ILocation getUpperBound() {
         if (getPlot() != null) {
@@ -75,7 +71,6 @@ public class InternalPlotEvent {
      * Returns the location of the lower corner of the plot used in the event
      *
      * @return location of the lower corner
-     *
      */
     public ILocation getLowerBound() {
         if (getPlot() != null) {
@@ -90,7 +85,6 @@ public class InternalPlotEvent {
      * returns an empty Set if the plot is null.
      *
      * @return list of people allowed
-     *
      */
     public Set<String> getAllAllowed() {
         if (getPlot() != null) {
@@ -105,7 +99,6 @@ public class InternalPlotEvent {
      * returns an empty Collection if the plot is null.
      *
      * @return list of people allowed
-     *
      */
     public Collection<UUID> getAllAllowedUUID() {
         if (getPlot() != null) {
@@ -120,7 +113,6 @@ public class InternalPlotEvent {
      * function returns an empty Set if the plot is null.
      *
      * @return list of people denied
-     *
      */
     public Set<String> getAllDenied() {
         if (getPlot() != null) {
@@ -135,7 +127,6 @@ public class InternalPlotEvent {
      * function returns an empty Set if the plot is null.
      *
      * @return list of people denied
-     *
      */
     public Collection<UUID> getAllDeniedUUID() {
         if (getPlot() != null) {
@@ -150,7 +141,6 @@ public class InternalPlotEvent {
      * if the plot or world is null.
      *
      * @return home location
-     *
      */
     public ILocation getHomeLocation() {
         if (getPlot() != null) {

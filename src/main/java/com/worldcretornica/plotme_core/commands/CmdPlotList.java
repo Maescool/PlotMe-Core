@@ -4,7 +4,7 @@ import com.worldcretornica.plotme_core.PermissionNames;
 import com.worldcretornica.plotme_core.Plot;
 import com.worldcretornica.plotme_core.PlotMe_Core;
 import com.worldcretornica.plotme_core.api.IPlayer;
-import com.worldcretornica.plotme_core.api.IWorld;
+import com.worldcretornica.plotme_core.api.World;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -24,7 +24,7 @@ public class CmdPlotList extends PlotCommand {
 
                 if (player.hasPermission(PermissionNames.ADMIN_LIST) && args.length == 2) {
                     name = args[1];
-                    uuid = player.getUniqueId();
+                    uuid = null;
                     player.sendMessage(C("MsgListOfPlotsWhere") + " §b" + name + "§r " + C("MsgCanBuild"));
                 } else {
                     name = player.getName();
@@ -36,11 +36,9 @@ public class CmdPlotList extends PlotCommand {
 
                 // Get plots of that player
                 for (Plot plot : plugin.getSqlManager().getPlayerPlots(name, uuid)) {
-                    if (!plot.getWorld().isEmpty()) {
-                        IWorld world = serverBridge.getWorld(plot.getWorld());
-                        if (world != null) {
-                            plugin.getPlotMeCoreManager().getMap(world).addPlot(plot.getId(), plot);
-                        }
+                    World world = serverBridge.getWorld(plot.getWorld());
+                    if (world != null) {
+                        plugin.getPlotMeCoreManager().getMap(world).addPlot(plot.getId(), plot);
                     }
 
                     StringBuilder addition = new StringBuilder();
@@ -55,7 +53,7 @@ public class CmdPlotList extends PlotCommand {
                     if (plot.getExpiredDate() != null) {
                         Date tempdate = plot.getExpiredDate();
 
-                        if (tempdate.compareTo(Calendar.getInstance().getTime()) < 0) {
+                        if (tempdate.before(Calendar.getInstance().getTime())) {
                             addition.append("§c @" + plot.getExpiredDate() + "§r");
                         } else {
                             addition.append(" @" + plot.getExpiredDate());

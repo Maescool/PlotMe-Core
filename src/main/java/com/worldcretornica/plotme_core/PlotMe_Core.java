@@ -3,7 +3,7 @@ package com.worldcretornica.plotme_core;
 import com.worldcretornica.plotme_core.api.IConfigSection;
 import com.worldcretornica.plotme_core.api.IPlotMe_GeneratorManager;
 import com.worldcretornica.plotme_core.api.IServerBridge;
-import com.worldcretornica.plotme_core.api.IWorld;
+import com.worldcretornica.plotme_core.api.World;
 import com.worldcretornica.plotme_core.utils.Util;
 
 import java.io.File;
@@ -18,8 +18,8 @@ public class PlotMe_Core {
     private static final String DEFAULT_GENERATOR_URL = "";
     //Bridge
     private final IServerBridge serverBridge;
-    private IWorld worldcurrentlyprocessingexpired;
-    private int counterexpired;
+    private World worldcurrentlyprocessingexpired;
+    private short counterexpired;
     //Spool stuff
     private ConcurrentLinkedQueue<PlotToClear> plotsToClear;
     //Global variables
@@ -166,7 +166,7 @@ public class PlotMe_Core {
     }
 
     public IPlotMe_GeneratorManager getGenManager(String name) {
-        IWorld world = serverBridge.getWorld(name.toLowerCase());
+        World world = serverBridge.getWorld(name.toLowerCase());
         if (world == null) {
             return null;
         } else {
@@ -183,19 +183,19 @@ public class PlotMe_Core {
         }
     }
 
-    public IWorld getWorldCurrentlyProcessingExpired() {
+    public World getWorldCurrentlyProcessingExpired() {
         return worldcurrentlyprocessingexpired;
     }
 
-    public void setWorldCurrentlyProcessingExpired(IWorld worldcurrentlyprocessingexpired) {
+    public void setWorldCurrentlyProcessingExpired(World worldcurrentlyprocessingexpired) {
         this.worldcurrentlyprocessingexpired = worldcurrentlyprocessingexpired;
     }
 
-    public int getCounterExpired() {
+    public short getCounterExpired() {
         return counterexpired;
     }
 
-    public void setCounterExpired(int counterexpired) {
+    public void setCounterExpired(short counterexpired) {
         this.counterexpired = counterexpired;
     }
 
