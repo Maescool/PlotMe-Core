@@ -170,4 +170,11 @@ public class BukkitEventFactory implements IEventFactory {
         Bukkit.getPluginManager().callEvent(event);
         return event.getInternal();
     }
+    
+    @Override
+    public InternalPlotRedstoneChangeEvent callPlotRedstoneChangeEvent(PlotMe_Core plugin, World world, Plot plot, IPlayer player, boolean protect) {
+        PlotRedstoneChangeEvent event = new PlotRedstoneChangeEvent(plugin, world, plot, player, protect);
+        Bukkit.getPluginManager().callEvent(event);
+        return event.getInternal();
+    }
 }
