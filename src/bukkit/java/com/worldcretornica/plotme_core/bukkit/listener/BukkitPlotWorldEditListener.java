@@ -46,8 +46,15 @@ public class BukkitPlotWorldEditListener implements Listener {
                 } else {
                     if (from.getLocation().getWorld().getName() == null) {
                         plugin.getLogger().log(Level.INFO, "BukkitLocation from's location-object's world's name is null");
-                    }else{
+                    } else {
                         plugin.getLogger().log(Level.INFO, "BukkitLocation From Worldname: {0}", from.getLocation().getWorld().getName());
+                        if (from.getWorld() == null) {
+                            plugin.getLogger().log(Level.WARNING, "BukkitLocation From's getWorld returns null");
+                        } else {
+                            if (from.getWorld().getName() == null) {
+                                plugin.getLogger().log(Level.WARNING, "BukkitLocation From's getWorld's getName returns null");
+                            }
+                        }
                     }
                 }
             }
@@ -65,8 +72,15 @@ public class BukkitPlotWorldEditListener implements Listener {
                 } else {
                     if (to.getLocation().getWorld().getName() == null) {
                         plugin.getLogger().log(Level.INFO, "BukkitLocation to's location-object's world's name is null");
-                    }else{
+                    } else {
                         plugin.getLogger().log(Level.INFO, "BukkitLocation To Worldname: {0}", to.getLocation().getWorld().getName());
+                        if (to.getWorld() == null) {
+                            plugin.getLogger().log(Level.WARNING, "BukkitLocation To's getWorld returns null");
+                        } else {
+                            if (to.getWorld().getName() == null) {
+                                plugin.getLogger().log(Level.WARNING, "BukkitLocation To's getWorld's getName returns null");
+                            }
+                        }
                     }
                 }
             }
