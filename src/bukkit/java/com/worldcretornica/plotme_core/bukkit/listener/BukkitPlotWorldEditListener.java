@@ -38,7 +38,6 @@ public class BukkitPlotWorldEditListener implements Listener {
         if (event.getFrom().getWorld() == null) {
             plugin.getLogger().log(Level.WARNING, "Event from has no world");
         } else {
-
             if (from.getLocation() == null) {
                 plugin.getLogger().log(Level.INFO, "BukkitLocation from's location-object is null");
             } else {
@@ -48,7 +47,7 @@ public class BukkitPlotWorldEditListener implements Listener {
                     if (from.getLocation().getWorld().getName() == null) {
                         plugin.getLogger().log(Level.INFO, "BukkitLocation from's location-object's world's name is null");
                     }else{
-                        plugin.getLogger().log(Level.INFO, "From Worldname: {0}", from.getLocation().getWorld().getName());
+                        plugin.getLogger().log(Level.INFO, "BukkitLocation From Worldname: {0}", from.getLocation().getWorld().getName());
                     }
                 }
             }
@@ -56,9 +55,22 @@ public class BukkitPlotWorldEditListener implements Listener {
         }
 
         if (event.getTo().getWorld() == null) {
-            plugin.getLogger().log(Level.INFO, "Player went to no-man's land");
+            plugin.getLogger().log(Level.WARNING, "Event to has no world");
         } else {
-            plugin.getLogger().log(Level.INFO, "To Worldname: {0}", event.getTo().getWorld().getName());
+            if (to.getLocation() == null) {
+                plugin.getLogger().log(Level.INFO, "BukkitLocation to's location-object is null");
+            } else {
+                if (to.getLocation().getWorld() == null) {
+                    plugin.getLogger().log(Level.INFO, "BukkitLocation to's location-object's world is null");
+                } else {
+                    if (to.getLocation().getWorld().getName() == null) {
+                        plugin.getLogger().log(Level.INFO, "BukkitLocation to's location-object's world's name is null");
+                    }else{
+                        plugin.getLogger().log(Level.INFO, "BukkitLocation To Worldname: {0}", to.getLocation().getWorld().getName());
+                    }
+                }
+            }
+
         }
 
         BukkitPlayer player = plugin.wrapPlayer(event.getPlayer());
