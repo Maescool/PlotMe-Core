@@ -234,7 +234,7 @@ public class SqlManager {
                 }
 
                 if (!found) {
-                    statement.execute("ALTER TABLE plotmePlots ADD redstoneprotect boolean '0';");
+                    statement.execute("ALTER TABLE plotmePlots ADD redstoneprotect BOOLEAN NOT NULL DEFAULT FALSE;");
                     conn.commit();
                 }
                 set.close();
@@ -348,7 +348,7 @@ public class SqlManager {
                         + "`currentbidderId` BLOB(16)," //19
                         + "`ownerId` BLOB(16)," //20
                         + "`lastplotclear` DATETIME," //21
-                        + "`redstoneprotect` BOOLEAN NOT NULL DEFAULT '0'" //22
+                        + "`redstoneprotect` BOOLEAN NOT NULL DEFAULT FALSE" //22
                         + "PRIMARY KEY (idX, idZ, world) "
                         + ");";
                 st.executeUpdate(PLOT_TABLE);
