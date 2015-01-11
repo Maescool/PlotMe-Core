@@ -124,7 +124,7 @@ public class SqlManager {
                 // RedstoneProtect
                 set = statement.executeQuery("SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = '" + schema + "' AND " + "TABLE_NAME='plotmePlots' AND column_name='redstoneprotect'");
                 if (!set.next()) {
-                    statement.execute("ALTER TABLE plotmePlots ADD redstoneprotect boolean '0';");
+                    statement.execute("ALTER TABLE plotmePlots ADD redstoneprotect BOOLEAN NOT NULL DEFAULT FALSE;");
                     conn.commit();
                 }
                 set.close();
@@ -337,12 +337,12 @@ public class SqlManager {
                         + "`bottomZ` INTEGER NOT NULL DEFAULT '0'," //8
                         + "`biome` VARCHAR(32) NOT NULL DEFAULT '0'," //9
                         + "`expireddate` DATE," //10
-                        + "`finished` BOOLEAN NOT NULL DEFAULT '0'," //11
+                        + "`finished` BOOLEAN NOT NULL DEFAULT FALSE," //11
                         + "`customprice` DOUBLE NOT NULL DEFAULT '0'," //12
-                        + "`forsale` BOOLEAN NOT NULL DEFAULT '0'," //13
+                        + "`forsale` BOOLEAN NOT NULL DEFAULT FALSE," //13
                         + "`finisheddate` VARCHAR(16)," //14
-                        + "`protected` BOOLEAN NOT NULL DEFAULT '0'," //15
-                        + "`auctionned` BOOLEAN NOT NULL DEFAULT '0'," //16
+                        + "`protected` BOOLEAN NOT NULL DEFAULT FALSE," //15
+                        + "`auctionned` BOOLEAN NOT NULL DEFAULT FALSE," //16
                         + "`currentbid` DOUBLE NOT NULL DEFAULT '0'," //17
                         + "`currentbidder` VARCHAR(32)," //18
                         + "`currentbidderId` BLOB(16)," //19
