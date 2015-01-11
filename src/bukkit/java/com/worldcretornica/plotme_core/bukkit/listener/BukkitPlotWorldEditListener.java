@@ -1,12 +1,11 @@
 package com.worldcretornica.plotme_core.bukkit.listener;
 
 import com.worldcretornica.plotme_core.*;
+import com.worldcretornica.plotme_core.api.ILocation;
 import com.worldcretornica.plotme_core.bukkit.PlotMe_CorePlugin;
 import com.worldcretornica.plotme_core.bukkit.api.BukkitLocation;
 import com.worldcretornica.plotme_core.bukkit.api.BukkitMaterial;
 import com.worldcretornica.plotme_core.bukkit.api.BukkitPlayer;
-import java.io.BufferedReader;
-import java.io.File;
 import java.util.logging.Level;
 import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
@@ -32,60 +31,8 @@ public class BukkitPlotWorldEditListener implements Listener {
         if (event.getTo() == null || event.getFrom() == null) {
             return;
         }
-        BukkitLocation from = new BukkitLocation(event.getFrom());
-        BukkitLocation to = new BukkitLocation(event.getTo());
-
-        if (event.getFrom().getWorld() == null) {
-            plugin.getLogger().log(Level.WARNING, "Event from has no world");
-        } else {
-            if (from.getLocation() == null) {
-                plugin.getLogger().log(Level.INFO, "BukkitLocation from's location-object is null");
-            } else {
-                if (from.getLocation().getWorld() == null) {
-                    plugin.getLogger().log(Level.INFO, "BukkitLocation from's location-object's world is null");
-                } else {
-                    if (from.getLocation().getWorld().getName() == null) {
-                        plugin.getLogger().log(Level.INFO, "BukkitLocation from's location-object's world's name is null");
-                    } else {
-                        plugin.getLogger().log(Level.INFO, "BukkitLocation From Worldname: {0}", from.getLocation().getWorld().getName());
-                        if (from.getWorld() == null) {
-                            plugin.getLogger().log(Level.WARNING, "BukkitLocation From's getWorld returns null");
-                        } else {
-                            if (from.getWorld().getName() == null) {
-                                plugin.getLogger().log(Level.WARNING, "BukkitLocation From's getWorld's getName returns null");
-                            }
-                        }
-                    }
-                }
-            }
-
-        }
-
-        if (event.getTo().getWorld() == null) {
-            plugin.getLogger().log(Level.WARNING, "Event to has no world");
-        } else {
-            if (to.getLocation() == null) {
-                plugin.getLogger().log(Level.INFO, "BukkitLocation to's location-object is null");
-            } else {
-                if (to.getLocation().getWorld() == null) {
-                    plugin.getLogger().log(Level.INFO, "BukkitLocation to's location-object's world is null");
-                } else {
-                    if (to.getLocation().getWorld().getName() == null) {
-                        plugin.getLogger().log(Level.INFO, "BukkitLocation to's location-object's world's name is null");
-                    } else {
-                        plugin.getLogger().log(Level.INFO, "BukkitLocation To Worldname: {0}", to.getLocation().getWorld().getName());
-                        if (to.getWorld() == null) {
-                            plugin.getLogger().log(Level.WARNING, "BukkitLocation To's getWorld returns null");
-                        } else {
-                            if (to.getWorld().getName() == null) {
-                                plugin.getLogger().log(Level.WARNING, "BukkitLocation To's getWorld's getName returns null");
-                            }
-                        }
-                    }
-                }
-            }
-
-        }
+        ILocation from = new BukkitLocation(event.getFrom());
+        ILocation to = new BukkitLocation(event.getTo());
 
         BukkitPlayer player = plugin.wrapPlayer(event.getPlayer());
 
@@ -93,9 +40,9 @@ public class BukkitPlotWorldEditListener implements Listener {
 
         boolean changemask = false;
 
-        if (!event.getFrom().getWorld().getName().equalsIgnoreCase(event.getTo().getWorld().getName())) {
+        if (!from.getWorld().getName().equalsIgnoreCase(to.getWorld().getName())) {
             changemask = true;
-        } else if (from.getLocation() != to.getLocation()) {
+        } else if (((BukkitLocation) from).getLocation() != ((BukkitLocation) to).getLocation()) {
             String idFrom = PlotMeCoreManager.getPlotId(from);
             idTo = PlotMeCoreManager.getPlotId(to);
 

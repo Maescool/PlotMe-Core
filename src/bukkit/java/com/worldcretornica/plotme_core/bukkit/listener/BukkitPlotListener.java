@@ -1,6 +1,7 @@
 package com.worldcretornica.plotme_core.bukkit.listener;
 
 import com.worldcretornica.plotme_core.*;
+import com.worldcretornica.plotme_core.api.ILocation;
 import com.worldcretornica.plotme_core.bukkit.api.BukkitBlock;
 import com.worldcretornica.plotme_core.bukkit.api.BukkitEntity;
 import com.worldcretornica.plotme_core.bukkit.api.BukkitLocation;
@@ -503,7 +504,7 @@ public class BukkitPlotListener implements Listener {
 
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     public void onEntityExplode(EntityExplodeEvent event) {
-        BukkitLocation location = new BukkitLocation(event.getLocation());
+        ILocation location = new BukkitLocation(event.getLocation());
 
         PlotMapInfo pmi = api.getPlotMeCoreManager().getMap(location);
 
@@ -625,7 +626,7 @@ public class BukkitPlotListener implements Listener {
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     public void onHangingBreakByEntity(HangingBreakByEntityEvent event) {
         Entity entity = event.getRemover();
-        BukkitLocation location = new BukkitLocation(event.getEntity().getLocation());
+        ILocation location = new BukkitLocation(event.getEntity().getLocation());
 
         if (entity instanceof Player) {
             BukkitPlayer player = new BukkitPlayer((Player) entity);
@@ -679,7 +680,7 @@ public class BukkitPlotListener implements Listener {
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     public void onPlayerInteractEntity(PlayerInteractEntityEvent event) {
         Player player = event.getPlayer();
-        BukkitLocation location = new BukkitLocation(event.getRightClicked().getLocation());
+        ILocation location = new BukkitLocation(event.getRightClicked().getLocation());
 
         if (api.getPlotMeCoreManager().isPlotWorld(location)) {
             boolean canbuild = !player.hasPermission(PermissionNames.ADMIN_BUILDANYWHERE);
@@ -725,7 +726,7 @@ public class BukkitPlotListener implements Listener {
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     public void onPlayerEggThrow(PlayerEggThrowEvent event) {
         Player player = event.getPlayer();
-        BukkitLocation location = new BukkitLocation(event.getEgg().getLocation());
+        ILocation location = new BukkitLocation(event.getEgg().getLocation());
 
         if (api.getPlotMeCoreManager().isPlotWorld(location)) {
             boolean canbuild = player.hasPermission(PermissionNames.ADMIN_BUILDANYWHERE);
@@ -751,7 +752,7 @@ public class BukkitPlotListener implements Listener {
 
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     public void onCreatureSpawn(CreatureSpawnEvent event) {
-        BukkitLocation location = new BukkitLocation(event.getLocation());
+        ILocation location = new BukkitLocation(event.getLocation());
 
         if (api.getPlotMeCoreManager().isPlotWorld(location)) {
             String id = PlotMeCoreManager.getPlotId(location);
