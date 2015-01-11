@@ -34,9 +34,15 @@ public class BukkitPlotWorldEditListener implements Listener {
         BukkitLocation to = new BukkitLocation(event.getTo());
 
         if (from.getWorld() == null) {
-            plugin.getLogger().log(Level.INFO, "Player is in no-man's land");
+            plugin.getLogger().log(Level.INFO, "Player came from no-man's land");
         } else {
-            plugin.getLogger().log(Level.INFO, "Worldname: {0}", event.getFrom().getWorld().getName());
+            plugin.getLogger().log(Level.INFO, "From Worldname: {0}", event.getFrom().getWorld().getName());
+        }
+        
+        if (to.getWorld() == null) {
+            plugin.getLogger().log(Level.INFO, "Player went to no-man's land");
+        } else {
+            plugin.getLogger().log(Level.INFO, "To Worldname: {0}", event.getTo().getWorld().getName());
         }
 
         BukkitPlayer player = plugin.wrapPlayer(event.getPlayer());
@@ -45,11 +51,9 @@ public class BukkitPlotWorldEditListener implements Listener {
 
         boolean changemask = false;
 
-        if (!from.getWorld()
-                .getName().equalsIgnoreCase(to.getWorld().getName())) {
+        if (!from.getWorld().getName().equalsIgnoreCase(to.getWorld().getName())) {
             changemask = true;
-        } else if (from.getLocation()
-                != to.getLocation()) {
+        } else if (from.getLocation() != to.getLocation()) {
             String idFrom = PlotMeCoreManager.getPlotId(from);
             idTo = PlotMeCoreManager.getPlotId(to);
 
@@ -58,9 +62,7 @@ public class BukkitPlotWorldEditListener implements Listener {
             }
         }
 
-        if (changemask
-                && api.getPlotMeCoreManager()
-                .isPlotWorld(to.getWorld())) {
+        if (changemask && api.getPlotMeCoreManager().isPlotWorld(to.getWorld())) {
             if (api.getPlotMeCoreManager().isPlayerIgnoringWELimit(player)) {
                 worldEdit.removeMask(player);
             } else {
