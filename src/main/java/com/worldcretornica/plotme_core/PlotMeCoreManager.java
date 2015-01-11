@@ -335,6 +335,10 @@ public class PlotMeCoreManager {
         if (world == null || getGenManager(world) == null) {
             return false;
         }
+        if (getPlotMaps().isEmpty()) {
+            plugin.getLogger().severe("Oops.. plotmap not loaded properly? something went fishy");
+            return false;
+        }
         return getPlotMaps().containsKey(world.getName().toLowerCase());
     }
 
