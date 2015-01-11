@@ -8,14 +8,16 @@ import org.bukkit.Location;
 public class BukkitLocation implements ILocation {
 
     private final Location location;
+    private final BukkitWorld worldWrapper;
 
     public BukkitLocation(Location location) {
         this.location = location;
+        this.worldWrapper = new BukkitWorld(location.getWorld());
     }
 
     @Override
     public World getWorld() {
-        return new BukkitWorld(location.getWorld());
+        return worldWrapper;
     }
 
     @Override
