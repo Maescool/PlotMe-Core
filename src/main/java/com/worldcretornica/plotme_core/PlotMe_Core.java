@@ -106,7 +106,7 @@ public class PlotMe_Core {
                 IConfigSection config = getServerBridge().loadDefaultConfig("worlds." + world);
                 config.set("BottomBlockId", null);
                 config.set("AutoLinkPlots", null);
-                plotMeCoreManager.addPlotMap(worldname, pmi);
+                getPlotMeCoreManager().addPlotMap(worldname, pmi);
                 getLogger().log(Level.INFO, "Loaded world: {0}", world);
             }
         }
