@@ -35,13 +35,27 @@ public class BukkitPlotWorldEditListener implements Listener {
         BukkitLocation from = new BukkitLocation(event.getFrom());
         BukkitLocation to = new BukkitLocation(event.getTo());
 
-        if (from.getWorld() == null) {
-            plugin.getLogger().log(Level.INFO, "Player came from no-man's land");
+        if (event.getFrom().getWorld() == null) {
+            plugin.getLogger().log(Level.WARNING, "Event from has no world");
         } else {
-            plugin.getLogger().log(Level.INFO, "From Worldname: {0}", event.getFrom().getWorld().getName());
+
+            if (from.getLocation() == null) {
+                plugin.getLogger().log(Level.INFO, "BukkitLocation from's location-object is null");
+            } else {
+                if (from.getLocation().getWorld() == null) {
+                    plugin.getLogger().log(Level.INFO, "BukkitLocation from's location-object's world is null");
+                } else {
+                    if (from.getLocation().getWorld().getName() == null) {
+                        plugin.getLogger().log(Level.INFO, "BukkitLocation from's location-object's world's name is null");
+                    }else{
+                        plugin.getLogger().log(Level.INFO, "From Worldname: {0}", from.getLocation().getWorld().getName());
+                    }
+                }
+            }
+
         }
-        
-        if (to.getWorld() == null) {
+
+        if (event.getTo().getWorld() == null) {
             plugin.getLogger().log(Level.INFO, "Player went to no-man's land");
         } else {
             plugin.getLogger().log(Level.INFO, "To Worldname: {0}", event.getTo().getWorld().getName());
@@ -53,7 +67,6 @@ public class BukkitPlotWorldEditListener implements Listener {
 
         boolean changemask = false;
 
-        try{
         if (!from.getWorld().getName().equalsIgnoreCase(to.getWorld().getName())) {
             changemask = true;
         } else if (from.getLocation() != to.getLocation()) {
@@ -63,9 +76,6 @@ public class BukkitPlotWorldEditListener implements Listener {
             if (!idFrom.equals(idTo)) {
                 changemask = true;
             }
-        }
-        }catch(Exception e){
-            e.printStackTrace();
         }
 
         if (changemask && api.getPlotMeCoreManager().isPlotWorld(to.getWorld())) {
