@@ -5,6 +5,8 @@ import com.worldcretornica.plotme_core.bukkit.PlotMe_CorePlugin;
 import com.worldcretornica.plotme_core.bukkit.api.BukkitLocation;
 import com.worldcretornica.plotme_core.bukkit.api.BukkitMaterial;
 import com.worldcretornica.plotme_core.bukkit.api.BukkitPlayer;
+import java.io.BufferedReader;
+import java.io.File;
 import java.util.logging.Level;
 import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
@@ -51,6 +53,7 @@ public class BukkitPlotWorldEditListener implements Listener {
 
         boolean changemask = false;
 
+        try{
         if (!from.getWorld().getName().equalsIgnoreCase(to.getWorld().getName())) {
             changemask = true;
         } else if (from.getLocation() != to.getLocation()) {
@@ -60,6 +63,9 @@ public class BukkitPlotWorldEditListener implements Listener {
             if (!idFrom.equals(idTo)) {
                 changemask = true;
             }
+        }
+        }catch(Exception e){
+            e.printStackTrace();
         }
 
         if (changemask && api.getPlotMeCoreManager().isPlotWorld(to.getWorld())) {
