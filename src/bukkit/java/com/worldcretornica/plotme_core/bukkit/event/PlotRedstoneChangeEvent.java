@@ -2,24 +2,23 @@ package com.worldcretornica.plotme_core.bukkit.event;
 
 import com.worldcretornica.plotme_core.Plot;
 import com.worldcretornica.plotme_core.PlotMe_Core;
-import com.worldcretornica.plotme_core.api.IPlayer;
+import com.worldcretornica.plotme_core.api.Player;
 import com.worldcretornica.plotme_core.api.World;
 import com.worldcretornica.plotme_core.api.event.InternalPlotRedstoneChangeEvent;
 import com.worldcretornica.plotme_core.bukkit.api.BukkitPlayer;
 import com.worldcretornica.plotme_core.bukkit.api.BukkitWorld;
-import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 
 public class PlotRedstoneChangeEvent extends PlotEvent implements Cancellable {
 
     private final InternalPlotRedstoneChangeEvent event;
 
-    public PlotRedstoneChangeEvent(PlotMe_Core instance, org.bukkit.World world, Plot plot, Player player, boolean protect) {
+    public PlotRedstoneChangeEvent(PlotMe_Core instance, org.bukkit.World world, Plot plot, org.bukkit.entity.Player player, boolean protect) {
         super(instance, plot, world);
         event = new InternalPlotRedstoneChangeEvent(instance, new BukkitWorld(world), plot, new BukkitPlayer(player), protect);
     }
 
-    public PlotRedstoneChangeEvent(PlotMe_Core instance, World world, Plot plot, IPlayer player, boolean protect) {
+    public PlotRedstoneChangeEvent(PlotMe_Core instance, World world, Plot plot, Player player, boolean protect) {
         super(instance, plot, world);
         event = new InternalPlotRedstoneChangeEvent(instance, world, plot, player, protect);
     }
@@ -34,7 +33,7 @@ public class PlotRedstoneChangeEvent extends PlotEvent implements Cancellable {
         event.setCanceled(cancel);
     }
 
-    public Player getPlayer() {
+    public org.bukkit.entity.Player getPlayer() {
         return ((BukkitPlayer) event.getPlayer()).getPlayer();
     }
 

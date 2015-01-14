@@ -58,5 +58,5 @@ public interface IEventFactory {
 
     InternalPlotWorldLoadEvent callPlotWorldLoadEvent(String worldname, int nbPlots);
     
-    InternalPlotRedstoneChangeEvent callPlotRedstoneChangeEvent(PlotMe_Core plugin, World world, Plot plot, IPlayer player, boolean protect);
+    InternalPlotRedstoneChangeEvent callPlotRedstoneChangeEvent(PlotMe_Core plugin, World world, Plot plot, Player player, boolean protect);
 }
