@@ -1,7 +1,7 @@
 package com.worldcretornica.plotme_core;
 
 import com.worldcretornica.plotme_core.api.IBiome;
-import com.worldcretornica.plotme_core.api.IPlayer;
+import com.worldcretornica.plotme_core.api.Player;
 import com.worldcretornica.plotme_core.api.World;
 
 import java.sql.Date;
@@ -224,13 +224,13 @@ public class Plot implements Comparable<Plot> {
             plugin.getSqlManager().deletePlotAllowed(PlotMeCoreManager.getIdX(getId()), PlotMeCoreManager.getIdZ(getId()), name, uuid, getWorld());
 
             if (plugin.getServerBridge().getPlotWorldEdit() != null) {
-                IPlayer player = plugin.getServerBridge().getPlayer(uuid);
+                Player player = plugin.getServerBridge().getPlayer(uuid);
 
                 if (player != null) {
                     if (plugin.getPlotMeCoreManager().isPlotWorld(player.getWorld())) {
-                        if (plugin.getPlotMeCoreManager().isPlayerIgnoringWELimit(player))
+                        if (plugin.getPlotMeCoreManager().isPlayerIgnoringWELimit(player)) {
                             plugin.getServerBridge().getPlotWorldEdit().removeMask(player);
-                        else {
+                        } else {
                             plugin.getServerBridge().getPlotWorldEdit().setMask(player);
                         }
                     }
@@ -252,13 +252,15 @@ public class Plot implements Comparable<Plot> {
             plugin.getSqlManager().deletePlotAllowed(PlotMeCoreManager.getIdX(getId()), PlotMeCoreManager.getIdZ(getId()), name, uuid, getWorld());
 
             if (plugin.getServerBridge().getPlotWorldEdit() != null) {
-                IPlayer player = plugin.getServerBridge().getPlayer(uuid);
+                Player player = plugin.getServerBridge().getPlayer(uuid);
 
                 if (player != null) {
                     if (plugin.getPlotMeCoreManager().isPlotWorld(player.getWorld())) {
-                        if (plugin.getPlotMeCoreManager().isPlayerIgnoringWELimit(player))
+                        if (plugin.getPlotMeCoreManager().isPlayerIgnoringWELimit(player)) {
                             plugin.getServerBridge().getPlotWorldEdit().removeMask(player);
-                        else plugin.getServerBridge().getPlotWorldEdit().setMask(player);
+                        } else {
+                            plugin.getServerBridge().getPlotWorldEdit().setMask(player);
+                        }
                     }
                 }
             }
@@ -305,7 +307,7 @@ public class Plot implements Comparable<Plot> {
     }
 
     public boolean isAllowedConsulting(String name) {
-        IPlayer player = plugin.getServerBridge().getPlayerExact(name);
+        Player player = plugin.getServerBridge().getPlayerExact(name);
         if (player != null) {
             return isAllowedInternal(name, player.getUniqueId(), true, true);
         } else {
@@ -331,7 +333,7 @@ public class Plot implements Comparable<Plot> {
             return true;
         }
 
-        IPlayer player = plugin.getServerBridge().getPlayer(uuid);
+        Player player = plugin.getServerBridge().getPlayer(uuid);
         if (getOwnerId() != null && getOwnerId().equals(uuid)) {
             return true;
         }
@@ -352,15 +354,17 @@ public class Plot implements Comparable<Plot> {
             if (u != null && u.equals(uuid) || uuid == null && str.equalsIgnoreCase(name)) {
                 return true;
             }
-            if (IncludeGroup && str.toLowerCase().startsWith("group:") && player != null)
-                if (player.hasPermission("plotme.group." + str.replace("Group:", "")))
+            if (IncludeGroup && str.toLowerCase().startsWith("group:") && player != null) {
+                if (player.hasPermission("plotme.group." + str.replace("Group:", ""))) {
                     return true;
+                }
+            }
         }
         return false;
     }
 
     public boolean isDeniedConsulting(String name) {
-        IPlayer player = plugin.getServerBridge().getPlayerExact(name);
+        Player player = plugin.getServerBridge().getPlayerExact(name);
         if (player != null) {
             return isDeniedInternal(name, player.getUniqueId());
         } else {
@@ -378,10 +382,11 @@ public class Plot implements Comparable<Plot> {
 
     public boolean isDeniedInternal(String name, UUID uuid) {
 
-        if (isAllowedInternal(name, uuid, false, false))
+        if (isAllowedInternal(name, uuid, false, false)) {
             return false;
+        }
 
-        IPlayer player = null;
+        Player player = null;
         if (uuid != null) {
             player = plugin.getServerBridge().getPlayer(uuid);
         }
@@ -393,7 +398,9 @@ public class Plot implements Comparable<Plot> {
             }
 
             UUID u = list.get(str);
-            if (str.equalsIgnoreCase(name) || uuid != null && (u != null && u.equals(uuid) || str.toLowerCase().startsWith("group:") && player != null && player.hasPermission("plotme.group." + str.replace("Group:", "")))) {
+            if (str.equalsIgnoreCase(name) || uuid != null && (u != null && u.equals(uuid)
+                                                               || str.toLowerCase().startsWith("group:") && player != null && player
+                    .hasPermission("plotme.group." + str.replace("Group:", "")))) {
                 return true;
             }
         }

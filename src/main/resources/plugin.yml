@@ -62,6 +62,7 @@ permissions:
         plotme.admin.bypassdeny: true
         plotme.admin.buildanywhere: true
         plotme.admin.redstone: true
+        plotme.admin.reload: true
     plotme.unblock.*:
       default: true
       description: Unblocks a certain item that was blocked in the config
