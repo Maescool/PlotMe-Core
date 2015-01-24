@@ -33,6 +33,8 @@ import com.worldcretornica.plotme_core.commands.CmdShowHelp;
 import com.worldcretornica.plotme_core.commands.CmdTP;
 import com.worldcretornica.plotme_core.commands.CmdUndeny;
 import com.worldcretornica.plotme_core.commands.CmdWEAnywhere;
+import com.worldcretornica.plotme_core.commands.CmdEntity;
+import com.worldcretornica.plotme_core.commands.CmdRedstone;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -71,6 +73,8 @@ public class BukkitCommand implements CommandExecutor {
     private final CmdTP tp;
     private final CmdUndeny undeny;
     private final CmdWEAnywhere weAnywhere;
+    private final CmdEntity entity;
+    private final CmdRedstone redstone;
     private final PlotMe_CorePlugin plugin;
 
     public BukkitCommand(PlotMe_CorePlugin instance) {
@@ -106,6 +110,8 @@ public class BukkitCommand implements CommandExecutor {
         tp = new CmdTP(api);
         undeny = new CmdUndeny(api);
         weAnywhere = new CmdWEAnywhere(api);
+        entity = new CmdEntity(api);
+        redstone = new CmdRedstone(api);
     }
 
     private String C(String caption) {
@@ -241,6 +247,12 @@ public class BukkitCommand implements CommandExecutor {
                     }
                     if ("bid".equalsIgnoreCase(args[0])) {
                         return bid.exec(player, args);
+                    }
+                    if ("entity".equalsIgnoreCase(args[0])){
+                        return entity.exec(player, args);
+                    }
+                    if ("redstone".equalsIgnoreCase(args[0])){
+                        return redstone.exec(player, args);
                     }
                     // arg can be "home" or "home:n"
                     if ((args[0].toLowerCase() + ":").startsWith("home:") || (args[0].toLowerCase() + ":").startsWith("h:")) {
