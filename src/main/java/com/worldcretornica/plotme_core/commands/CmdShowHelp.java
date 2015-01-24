@@ -324,13 +324,13 @@ public class CmdShowHelp extends PlotCommand {
             } else if ("bid".equalsIgnoreCase(allowedCommand)) {
                 player.sendMessage("§a /plotme bid <" + C("WordAmount") + ">");
                 player.sendMessage("§b " + C("HelpBid"));
-            } else if ("entity".equalsIgnoreCase(allowedCommand)){
-                player.sendMessage("§a /plotme add <" + C("WordPlayer") + ">");
-                player.sendMessage("§b "+ C("HelpEntity"));
             } else if ("redstone".equalsIgnoreCase(allowedCommand)){
                 player.sendMessage("§a /plotme redstone <" + C("WordEnable") + "|" + C("WordDisable") + ">");
                 player.sendMessage("§b "+ C("HelpRedstone"));
-            }
+            } else if ("entity".equalsIgnoreCase(allowedCommand)){
+                player.sendMessage("§a /plotme add <" + C("WordPlayer") + ">");
+                player.sendMessage("§b "+ C("HelpEntity"));
+            } 
         }
         return true;
     }
