@@ -31,8 +31,9 @@ public class CmdInfo extends PlotCommand {
                     player.sendMessage("§a" + C("InfoExpire") + ": §b" + ((plot.getExpiredDate() == null )? C("WordNever") : plot.getExpiredDate())
                             + "§a " + C("InfoFinished") + ": §b" + ((plot.isFinished()) ? C("WordYes") : C("WordNo"))
                             + "§a " + C("InfoProtected") + ": §b" + ((plot.isProtect()) ?  C("WordYes") :  C("WordNo"))
-                            + "§a " + C("InfoRedstoneProtected") + ": §b" + ((plot.isRedstoneProtect()) ? C("WordYes") : C("WordNo"))
                     );
+
+                    player.sendMessage("§a " + C("InfoRedstoneProtected") + ": §b" + ((plot.isRedstoneProtect()) ? C("WordYes") : C("WordNo")));
 
                     if (plot.allowedcount() > 0) {
                         player.sendMessage("§a" + C("InfoHelpers") + ": §b" + plot.getAllowed());
