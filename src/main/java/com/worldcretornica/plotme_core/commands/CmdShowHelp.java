@@ -121,7 +121,7 @@ public class CmdShowHelp extends PlotCommand {
             }
         }
 
-        int maxPage = (int) Math.ceil(allowed_commands.size() / 4);
+        int maxPage = (int) Math.ceil(allowed_commands.size() / 4.f);
 
         if (page > maxPage || page < 1) {
             page = 1;
@@ -129,9 +129,7 @@ public class CmdShowHelp extends PlotCommand {
 
         player.sendMessage("§c ---==§b" + C("HelpTitle") + " " + page + "/" + maxPage + "§c==--- ");
 
-        if (page == 1) player.sendMessage("Number of commands available: "+allowed_commands.size());
-
-        for (int ctr = (((page - 1) * 4)); ctr < (page * 4) && ctr < allowed_commands.size(); ctr++) {
+        for (int ctr = (page - 1) * 4; ctr < (page * 4) && ctr < allowed_commands.size(); ctr++) {
             String allowedCommand = allowed_commands.get(ctr);
 
             if ("limit".equalsIgnoreCase(allowedCommand)) {
