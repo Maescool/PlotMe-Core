@@ -123,13 +123,13 @@ public class CmdShowHelp extends PlotCommand {
 
         int maxPage = (int) Math.ceil(allowed_commands.size() / 4);
 
-        if (page > maxPage) {
+        if (page > maxPage || page < 1) {
             page = 1;
         }
 
         player.sendMessage("§c ---==§b" + C("HelpTitle") + " " + page + "/" + maxPage + "§c==--- ");
 
-        for (int ctr = (page - 1) * 4; ctr <= (page * 4) && ctr < allowed_commands.size(); ctr++) {
+        for (int ctr = ((page - 1) * 4); ctr <= (page * 4) && ctr < allowed_commands.size(); ctr++) {
             String allowedCommand = allowed_commands.get(ctr);
 
             if ("limit".equalsIgnoreCase(allowedCommand)) {
