@@ -121,7 +121,7 @@ public class CmdShowHelp extends PlotCommand {
             }
         }
 
-        int maxPage = (int) Math.floor(allowed_commands.size() / 4);
+        int maxPage = (int) Math.ceil(allowed_commands.size() / 4);
 
         if (page > maxPage) {
             page = 1;
