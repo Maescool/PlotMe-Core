@@ -95,11 +95,11 @@ public class CmdShowHelp extends PlotCommand {
         if (player.hasPermission(PermissionNames.ADMIN_ADDTIME)) {
             allowed_commands.add("addtime");
         }
-        if (player.hasPermission(PermissionNames.USER_ADD) || player.hasPermission(PermissionNames.ADMIN_ADD)){
-            allowed_commands.add("entity");
-        }
         if (player.hasPermission(PermissionNames.USER_REDSTONE) || player.hasPermission(PermissionNames.ADMIN_REDSTONE)){
             allowed_commands.add("redstone");
+        }
+        if (player.hasPermission(PermissionNames.USER_ADD) || player.hasPermission(PermissionNames.ADMIN_ADD)){
+            allowed_commands.add("entity");
         }
 
         PlotMapInfo pmi = plugin.getPlotMeCoreManager().getMap(player);
