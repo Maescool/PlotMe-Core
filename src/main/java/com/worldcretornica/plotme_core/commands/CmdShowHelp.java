@@ -327,8 +327,7 @@ public class CmdShowHelp extends PlotCommand {
             } else if ("entity".equalsIgnoreCase(allowedCommand)){
                 player.sendMessage("§a /plotme add <" + C("WordPlayer") + ">");
                 player.sendMessage("§b "+ C("HelpEntity"));
-            }
-             else if ("redstone".equalsIgnoreCase(allowedCommand)){
+            } else if ("redstone".equalsIgnoreCase(allowedCommand)){
                 player.sendMessage("§a /plotme redstone <" + C("WordEnable") + "|" + C("WordDisable") + ">");
                 player.sendMessage("§b "+ C("HelpRedstone"));
             }
