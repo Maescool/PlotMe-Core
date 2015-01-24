@@ -31,6 +31,7 @@ import com.worldcretornica.plotme_core.api.event.InternalPlotTeleportEvent;
 import com.worldcretornica.plotme_core.api.event.InternalPlotTeleportHomeEvent;
 import com.worldcretornica.plotme_core.api.event.InternalPlotWorldCreateEvent;
 import com.worldcretornica.plotme_core.api.event.InternalPlotWorldLoadEvent;
+import com.worldcretornica.plotme_core.api.event.InternalPlotRedstoneChangeEvent;
 import org.bukkit.Bukkit;
 
 import java.util.Map;
@@ -201,7 +202,7 @@ public class BukkitEventFactory implements IEventFactory {
     }
     
     @Override
-    public InternalPlotRedstoneChangeEvent callPlotRedstoneChangeEvent(PlotMe_Core plugin, World world, Plot plot, Player player, boolean protect) {
+    public InternalPlotRedstoneChangeEvent callPlotRedstoneChangeEvent(PlotMe_Core plugin, IWorld world, Plot plot, IPlayer player, boolean protect) {
         PlotRedstoneChangeEvent event = new PlotRedstoneChangeEvent(plugin, world, plot, player, protect);
         Bukkit.getPluginManager().callEvent(event);
         return event.getInternal();

@@ -332,7 +332,7 @@ public class BukkitPlotListener implements Listener {
                     if (!id.isEmpty()) {
                         Plot plot = PlotMeCoreManager.getPlotById(id, pmi);
                         if (plot != null && plot.isRedstoneProtect()) {
-                            if ((!plot.isAllowed(player.getName(), player.getUniqueId())) && canbuild) {
+                            if ((!plot.isAllowed(player.getName(), player.getUniqueId())) && canBuild) {
                                 player.sendMessage(api.getUtil().C("ErrCannotRedstone"));
                                 event.setCancelled(true);
                             }

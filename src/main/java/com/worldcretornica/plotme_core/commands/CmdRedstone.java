@@ -1,12 +1,10 @@
 package com.worldcretornica.plotme_core.commands;
 
 import com.worldcretornica.plotme_core.*;
-import com.worldcretornica.plotme_core.api.Player;
-import com.worldcretornica.plotme_core.api.World;
-import com.worldcretornica.plotme_core.api.event.InternalPlotAddAllowedEvent;
+import com.worldcretornica.plotme_core.api.IPlayer;
+import com.worldcretornica.plotme_core.api.IWorld;
 import com.worldcretornica.plotme_core.api.event.InternalPlotRedstoneChangeEvent;
 import java.util.logging.Level;
-import net.milkbowl.vault.economy.EconomyResponse;
 
 public class CmdRedstone extends PlotCommand {
 
@@ -14,9 +12,9 @@ public class CmdRedstone extends PlotCommand {
         super(instance);
     }
 
-    public boolean exec(Player player, String[] args) {
+    public boolean exec(IPlayer player, String[] args) {
         if (player.hasPermission(PermissionNames.ADMIN_REDSTONE) || player.hasPermission(PermissionNames.USER_REDSTONE)) {
-            World world = player.getWorld();
+            IWorld world = player.getWorld();
             PlotMapInfo pmi = plugin.getPlotMeCoreManager().getMap(world);
             if (plugin.getPlotMeCoreManager().isPlotWorld(world)) {
                 String id = PlotMeCoreManager.getPlotId(player);
