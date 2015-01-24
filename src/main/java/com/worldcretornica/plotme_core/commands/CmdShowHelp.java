@@ -129,7 +129,7 @@ public class CmdShowHelp extends PlotCommand {
 
         player.sendMessage("§c ---==§b" + C("HelpTitle") + " " + page + "/" + maxPage + "§c==--- ");
 
-        for (int ctr = ((page - 1) * 4); ctr <= (page * 4) && ctr < allowed_commands.size(); ctr++) {
+        for (int ctr = (((page - 1) * 4)-1); ctr < (page * 4) && ctr < allowed_commands.size(); ctr++) {
             String allowedCommand = allowed_commands.get(ctr);
 
             if ("limit".equalsIgnoreCase(allowedCommand)) {
