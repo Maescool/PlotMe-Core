@@ -78,7 +78,9 @@ public class PlotMe_Core {
         setupDefaultCaptions();
         setupMySQL();
         getPlotMeCoreManager().getPlotMaps().clear();
+        setPlotMeCoreManager(new PlotMeCoreManager(this));
         //setupWorlds();
+        serverBridge.setupCommands();
     }
 
     public Logger getLogger() {
