@@ -193,7 +193,7 @@ public class SpongeServerBridge extends IServerBridge {
     }
 
     @Override
-    public boolean addMultiverseWorld(String worldName, String environment, String seed, String generator) {
+    public boolean addMultiverseWorld(String worldName, String seed, String generator) {
         // TODO Auto-generated method stub
         return false;
     }
