@@ -70,7 +70,7 @@
                 <version>1.9.1</version>
                 <executions>
                     <execution>
-                        <id>add-bukkit-sources</id>
+                        <id>add-sources</id>
                         <phase>generate-sources</phase>
                         <goals>
                             <goal>add-source</goal>
@@ -78,17 +78,6 @@
                         <configuration>
                             <sources>
                                 <source>src/bukkit/java</source>
-                            </sources>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>add-sponge-sources</id>
-                        <phase>generate-sources</phase>
-                        <goals>
-                            <goal>add-source</goal>
-                        </goals>
-                        <configuration>
-                            <sources>
                                 <source>src/sponge/java</source>
                             </sources>
                         </configuration>

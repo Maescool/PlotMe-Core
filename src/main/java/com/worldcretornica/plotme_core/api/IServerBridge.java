@@ -15,10 +15,6 @@ public abstract class IServerBridge {
 
     private boolean usinglwc;
 
-    public abstract IPlotMe_ChunkGenerator getPlotMeGenerator(String pluginname, String worldname);
-
-    public abstract IPlotMe_ChunkGenerator getPlotMeGenerator(String worldname);
-
     public abstract IOfflinePlayer getOfflinePlayer(UUID uuid);
 
     public abstract IOfflinePlayer getOfflinePlayer(String player);
@@ -29,11 +25,11 @@ public abstract class IServerBridge {
      * @param uuid UUID of the player to retrieve
      * @return a player if one was found, null otherwise
      */
-    public abstract Player getPlayer(UUID uuid);
+    public abstract IPlayer getPlayer(UUID uuid);
 
-    public abstract Player getPlayerExact(String name);
+    public abstract IPlayer getPlayerExact(String name);
 
-    public abstract List<Player> getOnlinePlayers();
+    public abstract List<IPlayer> getOnlinePlayers();
 
     public abstract Logger getLogger();
 
@@ -53,9 +49,9 @@ public abstract class IServerBridge {
      * @param player of the player
      * @return Amount currently held in players account
      */
-    public abstract double getBalance(Player player);
+    public abstract double getBalance(IPlayer player);
 
-    public abstract EconomyResponse withdrawPlayer(Player player, double price);
+    public abstract EconomyResponse withdrawPlayer(IPlayer player, double price);
 
     public abstract EconomyResponse depositPlayer(IOfflinePlayer playercurrentbidder, double currentBid);
 
@@ -65,8 +61,8 @@ public abstract class IServerBridge {
         return usinglwc;
     }
 
-    public void setUsinglwc(boolean usinglwc) {
-        this.usinglwc = usinglwc;
+    public void setUsinglwc(boolean usingLwc) {
+        this.usinglwc = usingLwc;
     }
 
     /**
@@ -75,7 +71,7 @@ public abstract class IServerBridge {
      * @param worldName the name of the world
      * @return a world with the given name, or null if none exists
      */
-    public abstract World getWorld(String worldName);
+    public abstract IWorld getWorld(String worldName);
 
     public abstract void setupCommands();
 
@@ -101,7 +97,7 @@ public abstract class IServerBridge {
 
     public abstract void saveResource(String fileName, boolean replace);
 
-    public abstract boolean addMultiverseWorld(String worldname, String environment, String seed, String worldtype, boolean bool, String generator);
+    public abstract boolean addMultiverseWorld(String worldName, String environment, String seed, String generator);
 
     public abstract List<String> getBiomes();
 
@@ -109,13 +105,11 @@ public abstract class IServerBridge {
      * Get all Existing Plotworlds.
      * @return all plotworlds on the server
      */
-    public abstract List<World> getWorlds();
+    public abstract List<IWorld> getWorlds();
 
-    public abstract boolean createPlotWorld(String worldname, String generator, Map<String, String> args);
+    public abstract boolean createPlotWorld(String worldName, String generator, Map<String, String> args);
 
     public abstract IMaterial getMaterial(String string);
-
-    public abstract IEntityType getEntityType(String string);
 
     public abstract IConfigSection loadDefaultConfig(String string);
 

@@ -1,8 +1,8 @@
 package com.worldcretornica.plotme_core.bukkit.api;
 
 import com.worldcretornica.plotme_core.api.IEntity;
-import com.worldcretornica.plotme_core.api.Location;
-import com.worldcretornica.plotme_core.api.World;
+import com.worldcretornica.plotme_core.api.ILocation;
+import com.worldcretornica.plotme_core.api.IWorld;
 import org.bukkit.entity.Entity;
 
 import java.util.UUID;
@@ -16,12 +16,12 @@ public class BukkitEntity implements IEntity {
     }
 
     @Override
-    public Location getLocation() {
+    public ILocation getLocation() {
         return new BukkitLocation(entity.getLocation());
     }
 
     @Override
-    public void setLocation(Location location) {
+    public void setLocation(ILocation location) {
         BukkitLocation loc = null;
         if (location instanceof BukkitLocation) {
             loc = (BukkitLocation) location;
@@ -37,7 +37,7 @@ public class BukkitEntity implements IEntity {
      * @return the world the entity is in
      */
     @Override
-    public World getWorld() {
+    public IWorld getWorld() {
         return new BukkitWorld(entity.getWorld());
     }
 

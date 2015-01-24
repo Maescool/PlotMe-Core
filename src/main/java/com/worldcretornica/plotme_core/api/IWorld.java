@@ -1,11 +1,7 @@
 package com.worldcretornica.plotme_core.api;
 
 
-public interface World {
-
-    boolean isPlotMeGenerator();
-
-    IPlotMe_ChunkGenerator getGenerator();
+public interface IWorld {
 
     /**
      * Get the name of the world

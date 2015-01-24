@@ -4,7 +4,7 @@ import com.worldcretornica.plotme_core.PermissionNames;
 import com.worldcretornica.plotme_core.Plot;
 import com.worldcretornica.plotme_core.PlotMeCoreManager;
 import com.worldcretornica.plotme_core.PlotMe_Core;
-import com.worldcretornica.plotme_core.api.Player;
+import com.worldcretornica.plotme_core.api.IPlayer;
 
 public class CmdAddTime extends PlotCommand {
 
@@ -12,30 +12,37 @@ public class CmdAddTime extends PlotCommand {
         super(instance);
     }
 
-    public boolean exec(Player player) {
+    public boolean exec(IPlayer player) {
         if (player.hasPermission(PermissionNames.ADMIN_ADDTIME)) {
-            if (plugin.getPlotMeCoreManager().isPlotWorld(player)) {
-                String id = PlotMeCoreManager.getPlotId(player);
+            if (plugin.getPlotMeCoreManager().getMap(player).getDaysToExpiration() != 0) {
+                if (plugin.getPlotMeCoreManager().isPlotWorld(player)) {
+                    String id = PlotMeCoreManager.getPlotId(player);
 
-                if (id.isEmpty()) {
-                    player.sendMessage("§c" + C("MsgNoPlotFound"));
-                } else if (!plugin.getPlotMeCoreManager().isPlotAvailable(id, player)) {
-                    Plot plot = plugin.getPlotMeCoreManager().getPlotById(id, player);
-                    if (plot != null) {
-                        String name = player.getName();
+                    if (id.isEmpty()) {
+                        player.sendMessage("§c" + C("MsgNoPlotFound"));
+                    } else if (!plugin.getPlotMeCoreManager().isPlotAvailable(id, player)) {
+                        Plot plot = plugin.getPlotMeCoreManager().getPlotById(id, player);
+                        if (plot != null) {
+                            String name = player.getName();
 
-                        plot.resetExpire(plugin.getPlotMeCoreManager().getMap(player).getDaysToExpiration());
-                        player.sendMessage(C("MsgPlotExpirationReset"));
+                            plot.resetExpire(plugin.getPlotMeCoreManager().getMap(player).getDaysToExpiration());
+                            player.sendMessage(C("MsgPlotExpirationReset"));
 
-                        if (isAdvancedLogging()) {
-                            serverBridge.getLogger().info(name + " reset expiration on plot " + id);
+                            if (isAdvancedLogging()) {
+                                serverBridge.getLogger().info(name + " reset expiration on plot " + id);
+                            }
                         }
+                    } else {
+                        player.sendMessage("§c" + C("MsgThisPlot") + "(" + id + ") " + C("MsgHasNoOwner"));
+                        return true;
                     }
                 } else {
-                    player.sendMessage("§c" + C("MsgThisPlot") + "(" + id + ") " + C("MsgHasNoOwner"));
+                    player.sendMessage("§c" + C("MsgNotPlotWorld"));
+                    return true;
                 }
             } else {
-                player.sendMessage("§c" + C("MsgNotPlotWorld"));
+                player.sendMessage("Plots don't expire in this world");
+                return true;
             }
         } else {
             player.sendMessage("§c" + C("MsgPermissionDenied"));

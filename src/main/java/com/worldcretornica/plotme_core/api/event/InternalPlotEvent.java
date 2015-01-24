@@ -3,8 +3,8 @@ package com.worldcretornica.plotme_core.api.event;
 import com.worldcretornica.plotme_core.Plot;
 import com.worldcretornica.plotme_core.PlotMeCoreManager;
 import com.worldcretornica.plotme_core.PlotMe_Core;
-import com.worldcretornica.plotme_core.api.Location;
-import com.worldcretornica.plotme_core.api.World;
+import com.worldcretornica.plotme_core.api.ILocation;
+import com.worldcretornica.plotme_core.api.IWorld;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -13,11 +13,11 @@ import java.util.UUID;
 
 public class InternalPlotEvent {
 
-    protected final World world;
+    protected final IWorld world;
     final PlotMe_Core plugin;
     private final Plot plot;
 
-    public InternalPlotEvent(PlotMe_Core instance, Plot plot, World world) {
+    public InternalPlotEvent(PlotMe_Core instance, Plot plot, IWorld world) {
         plugin = instance;
         this.plot = plot;
         this.world = world;
@@ -37,7 +37,7 @@ public class InternalPlotEvent {
      *
      * @return world
      */
-    public World getWorld() {
+    public IWorld getWorld() {
         return world;
     }
 
@@ -59,7 +59,7 @@ public class InternalPlotEvent {
      *
      * @return location of the upper corner
      */
-    public Location getUpperBound() {
+    public ILocation getUpperBound() {
         if (getPlot() != null) {
             return PlotMeCoreManager.getPlotTopLoc(world, getPlot().getId());
         } else {
@@ -72,7 +72,7 @@ public class InternalPlotEvent {
      *
      * @return location of the lower corner
      */
-    public Location getLowerBound() {
+    public ILocation getLowerBound() {
         if (getPlot() != null) {
             return PlotMeCoreManager.getPlotBottomLoc(world, getPlot().getId());
         } else {
@@ -142,7 +142,7 @@ public class InternalPlotEvent {
      *
      * @return home location
      */
-    public Location getHomeLocation() {
+    public ILocation getHomeLocation() {
         if (getPlot() != null) {
             return PlotMeCoreManager.getPlotHome(world, getPlot().getId());
         } else {

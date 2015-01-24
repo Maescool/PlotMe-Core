@@ -5,8 +5,8 @@ import com.worldcretornica.plotme_core.Plot;
 import com.worldcretornica.plotme_core.PlotMapInfo;
 import com.worldcretornica.plotme_core.PlotMeCoreManager;
 import com.worldcretornica.plotme_core.PlotMe_Core;
-import com.worldcretornica.plotme_core.api.Player;
-import com.worldcretornica.plotme_core.api.World;
+import com.worldcretornica.plotme_core.api.IPlayer;
+import com.worldcretornica.plotme_core.api.IWorld;
 import com.worldcretornica.plotme_core.api.event.InternalPlotRemoveAllowedEvent;
 import net.milkbowl.vault.economy.EconomyResponse;
 
@@ -18,9 +18,9 @@ public class CmdRemove extends PlotCommand {
         super(instance);
     }
 
-    public boolean exec(Player player, String[] args) {
+    public boolean exec(IPlayer player, String[] args) {
         if (player.hasPermission(PermissionNames.ADMIN_REMOVE) || player.hasPermission(PermissionNames.USER_REMOVE)) {
-            World world = player.getWorld();
+            IWorld world = player.getWorld();
             PlotMapInfo pmi = plugin.getPlotMeCoreManager().getMap(world);
             if (plugin.getPlotMeCoreManager().isPlotWorld(world)) {
                 String id = PlotMeCoreManager.getPlotId(player);
@@ -31,10 +31,10 @@ public class CmdRemove extends PlotCommand {
                         player.sendMessage(C("WordUsage") + ": §c/plotme remove <" + C("WordPlayer") + ">");
                     } else {
                         Plot plot = PlotMeCoreManager.getPlotById(id, pmi);
-                        UUID playeruuid = player.getUniqueId();
+                        UUID playerUniqueId = player.getUniqueId();
                         String allowed = args[1];
 
-                        if (plot.getOwnerId().equals(playeruuid) || player.hasPermission(PermissionNames.ADMIN_REMOVE)) {
+                        if (plot.getOwnerId().equals(playerUniqueId) || player.hasPermission(PermissionNames.ADMIN_REMOVE)) {
                             if (plot.isAllowedConsulting(allowed) || plot.isGroupAllowed(allowed)) {
 
                                 double price = 0.0;

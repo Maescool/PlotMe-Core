@@ -3,8 +3,8 @@ package com.worldcretornica.plotme_core.commands;
 import com.worldcretornica.plotme_core.PermissionNames;
 import com.worldcretornica.plotme_core.Plot;
 import com.worldcretornica.plotme_core.PlotMe_Core;
-import com.worldcretornica.plotme_core.api.Player;
-import com.worldcretornica.plotme_core.api.World;
+import com.worldcretornica.plotme_core.api.IPlayer;
+import com.worldcretornica.plotme_core.api.IWorld;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -16,7 +16,7 @@ public class CmdPlotList extends PlotCommand {
         super(instance);
     }
 
-    public boolean exec(Player player, String[] args) {
+    public boolean exec(IPlayer player, String[] args) {
         if (player.hasPermission(PermissionNames.USER_LIST)) {
             if (plugin.getPlotMeCoreManager().isPlotWorld(player)) {
                 String name;
@@ -32,11 +32,11 @@ public class CmdPlotList extends PlotCommand {
                     player.sendMessage(C("MsgListOfPlotsWhereYou"));
                 }
 
-                String oldworld = "";
+                String oldWorld = "";
 
                 // Get plots of that player
                 for (Plot plot : plugin.getSqlManager().getPlayerPlots(name, uuid)) {
-                    World world = serverBridge.getWorld(plot.getWorld());
+                    IWorld world = serverBridge.getWorld(plot.getWorld());
                     if (world != null) {
                         plugin.getPlotMeCoreManager().getMap(world).addPlot(plot.getId(), plot);
                     }
@@ -44,23 +44,23 @@ public class CmdPlotList extends PlotCommand {
                     StringBuilder addition = new StringBuilder();
 
                     // Display worlds
-                    if (!oldworld.equalsIgnoreCase(plot.getWorld())) {
-                        oldworld = plot.getWorld();
+                    if (!oldWorld.equalsIgnoreCase(plot.getWorld())) {
+                        oldWorld = plot.getWorld();
                         player.sendMessage("  World: " + plot.getWorld());
                     }
 
                     // Is it expired?
                     if (plot.getExpiredDate() != null) {
-                        Date tempdate = plot.getExpiredDate();
+                        Date expiredDate = plot.getExpiredDate();
 
-                        if (tempdate.before(Calendar.getInstance().getTime())) {
+                        if (expiredDate.before(Calendar.getInstance().getTime())) {
                             addition.append("§c @" + plot.getExpiredDate() + "§r");
                         } else {
                             addition.append(" @" + plot.getExpiredDate());
                         }
                     }
 
-                    // Is it auctionned?
+                    // Is it auctioned?
                     if (plot.isAuctioned()) {
                         if (plot.getCurrentBidder() != null) {
                             addition.append(

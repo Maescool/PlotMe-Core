@@ -6,8 +6,8 @@ import com.worldcretornica.plotme_core.PlotMapInfo;
 import com.worldcretornica.plotme_core.PlotMeCoreManager;
 import com.worldcretornica.plotme_core.PlotMe_Core;
 import com.worldcretornica.plotme_core.api.IOfflinePlayer;
-import com.worldcretornica.plotme_core.api.Player;
-import com.worldcretornica.plotme_core.api.World;
+import com.worldcretornica.plotme_core.api.IPlayer;
+import com.worldcretornica.plotme_core.api.IWorld;
 import com.worldcretornica.plotme_core.api.event.InternalPlotAuctionEvent;
 import net.milkbowl.vault.economy.EconomyResponse;
 
@@ -17,8 +17,8 @@ public class CmdAuction extends PlotCommand {
         super(instance);
     }
 
-    public boolean exec(Player player, String[] args) {
-        World world = player.getWorld();
+    public boolean exec(IPlayer player, String[] args) {
+        IWorld world = player.getWorld();
         PlotMapInfo pmi = plugin.getPlotMeCoreManager().getMap(world);
         if (plugin.getPlotMeCoreManager().isPlotWorld(world)) {
             if (plugin.getPlotMeCoreManager().isEconomyEnabled(pmi)) {
@@ -38,11 +38,11 @@ public class CmdAuction extends PlotCommand {
                                 if (plot.isAuctioned()) {
                                     if (plot.getCurrentBidderId() != null) {
                                         if (player.hasPermission(PermissionNames.ADMIN_AUCTION)) {
-                                            IOfflinePlayer playercurrentbidder = serverBridge.getOfflinePlayer(plot.getCurrentBidderId());
-                                            EconomyResponse er = serverBridge.depositPlayer(playercurrentbidder, plot.getCurrentBid());
+                                            IOfflinePlayer currentBidder = serverBridge.getOfflinePlayer(plot.getCurrentBidderId());
+                                            EconomyResponse er = serverBridge.depositPlayer(currentBidder, plot.getCurrentBid());
 
                                             if (er.transactionSuccess()) {
-                                                for (Player onlinePlayers : serverBridge.getOnlinePlayers()) {
+                                                for (IPlayer onlinePlayers : serverBridge.getOnlinePlayers()) {
                                                     if (onlinePlayers.getName().equalsIgnoreCase(plot.getCurrentBidder())) {
                                                         onlinePlayers.sendMessage(C("MsgAuctionCancelledOnPlot")
                                                                                   + " " + id + " " + C("MsgOwnedBy") + " " + plot.getOwner() + ". "

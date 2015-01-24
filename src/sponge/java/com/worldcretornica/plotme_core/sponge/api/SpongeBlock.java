@@ -1,27 +1,30 @@
-package com.worldcretornica.plotme_core.bukkit.api;
+package com.worldcretornica.plotme_core.sponge.api;
 
 import com.worldcretornica.plotme_core.api.IBiome;
 import com.worldcretornica.plotme_core.api.IBlock;
 import com.worldcretornica.plotme_core.api.ILocation;
 import com.worldcretornica.plotme_core.api.IWorld;
-import org.bukkit.block.Block;
+import org.spongepowered.api.block.BlockLoc;
 
-public class BukkitBlock implements IBlock {
+/**
+ * Created by Matthew on 1/15/2015.
+ */
+public class SpongeBlock implements IBlock {
 
-    private final Block block;
+    private final BlockLoc block;
 
-    public BukkitBlock(Block block) {
+    public SpongeBlock(BlockLoc block) {
         this.block = block;
     }
 
     @Override
     public ILocation getLocation() {
-        return new BukkitLocation(block.getLocation());
+        return new SpongeLocation(block.getLocation());
     }
 
     @Override
     public IWorld getWorld() {
-        return new BukkitWorld(block.getWorld());
+        return null;
     }
 
     @Override
@@ -31,7 +34,8 @@ public class BukkitBlock implements IBlock {
 
     @Override
     public int getY() {
-        return block.getY();
+        return block.getY()
+                ;
     }
 
     @Override
@@ -39,38 +43,33 @@ public class BukkitBlock implements IBlock {
         return block.getZ();
     }
 
-    @SuppressWarnings("deprecation")
     @Override
     public int getTypeId() {
-        return block.getTypeId();
+        return 0;
     }
 
     @Override
     public IBiome getBiome() {
-        return new BukkitBiome(block.getBiome());
+        return null;
     }
 
     @Override
     public void setBiome(IBiome biome) {
-        block.setBiome(((BukkitBiome) biome).getBiome());
+
     }
 
-    @SuppressWarnings("deprecation")
     @Override
     public boolean setTypeIdAndData(short id, byte data, boolean applyPhysics) {
-        return block.setTypeIdAndData(id, data, applyPhysics);
+        return false;
     }
 
-    @SuppressWarnings("deprecation")
     @Override
     public byte getData() {
-        return block.getData();
+        return 0;
     }
 
-    @SuppressWarnings("deprecation")
     @Override
     public void setTypeId(int id, boolean applyPhysics) {
-        block.setTypeId(id, applyPhysics);
-    }
 
+    }
 }

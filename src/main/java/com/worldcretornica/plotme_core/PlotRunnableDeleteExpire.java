@@ -1,7 +1,7 @@
 package com.worldcretornica.plotme_core;
 
-import com.worldcretornica.plotme_core.api.CommandSender;
-import com.worldcretornica.plotme_core.api.World;
+import com.worldcretornica.plotme_core.api.ICommandSender;
+import com.worldcretornica.plotme_core.api.IWorld;
 import com.worldcretornica.plotme_core.api.event.InternalPlotResetEvent;
 
 import java.util.List;
@@ -9,9 +9,9 @@ import java.util.List;
 public class PlotRunnableDeleteExpire implements Runnable {
 
     private final PlotMe_Core plugin;
-    private final CommandSender sender;
+    private final ICommandSender sender;
 
-    public PlotRunnableDeleteExpire(PlotMe_Core instance, CommandSender sender) {
+    public PlotRunnableDeleteExpire(PlotMe_Core instance, ICommandSender sender) {
         plugin = instance;
         this.sender = sender;
     }
@@ -22,22 +22,22 @@ public class PlotRunnableDeleteExpire implements Runnable {
         PlotMeCoreManager plotMeCoreManager = plugin.getPlotMeCoreManager();
 
         if (plugin.getWorldCurrentlyProcessingExpired() != null) {
-            World world = plugin.getWorldCurrentlyProcessingExpired();
-            List<Plot> expiredplots = sqlmanager.getExpiredPlots(world.getName(), 1, 5);
+            IWorld world = plugin.getWorldCurrentlyProcessingExpired();
+            List<Plot> expiredPlots = sqlmanager.getExpiredPlots(world.getName(), 1, 5);
 
-            if (expiredplots.isEmpty()) {
+            if (expiredPlots.isEmpty()) {
                 plugin.setCounterExpired((short) 0);
             } else {
                 String ids = "";
 
-                for (Plot expiredplot : expiredplots) {
-                    InternalPlotResetEvent event = plugin.getServerBridge().getEventFactory().callPlotResetEvent(plugin, world, expiredplot, sender);
+                for (Plot expiredPlot : expiredPlots) {
+                    InternalPlotResetEvent event = plugin.getServerBridge().getEventFactory().callPlotResetEvent(plugin, world, expiredPlot, sender);
 
                     if (!event.isCancelled()) {
-                        plotMeCoreManager.clear(world, expiredplot, sender, ClearReason.Expired);
+                        plotMeCoreManager.clear(world, expiredPlot, sender, ClearReason.Expired);
 
-                        String id = expiredplot.getId();
-                        ids += "§c" + id + "§r, ";
+                        String id = expiredPlot.getId();
+                        ids += id + ", ";
 
                         plotMeCoreManager.removePlot(world, id);
                         PlotMeCoreManager.removeOwnerSign(world, id);

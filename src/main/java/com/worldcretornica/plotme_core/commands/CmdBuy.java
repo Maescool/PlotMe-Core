@@ -5,8 +5,8 @@ import com.worldcretornica.plotme_core.Plot;
 import com.worldcretornica.plotme_core.PlotMeCoreManager;
 import com.worldcretornica.plotme_core.PlotMe_Core;
 import com.worldcretornica.plotme_core.api.IOfflinePlayer;
-import com.worldcretornica.plotme_core.api.Player;
-import com.worldcretornica.plotme_core.api.World;
+import com.worldcretornica.plotme_core.api.IPlayer;
+import com.worldcretornica.plotme_core.api.IWorld;
 import com.worldcretornica.plotme_core.api.event.InternalPlotBuyEvent;
 import net.milkbowl.vault.economy.EconomyResponse;
 
@@ -16,8 +16,8 @@ public class CmdBuy extends PlotCommand {
         super(instance);
     }
 
-    public boolean exec(Player player) {
-        World world = player.getWorld();
+    public boolean exec(IPlayer player) {
+        IWorld world = player.getWorld();
         if (plugin.getPlotMeCoreManager().isPlotWorld(world)) {
             if (plugin.getPlotMeCoreManager().isEconomyEnabled(world)) {
                 if (player.hasPermission(PermissionNames.USER_BUY) || player.hasPermission("PlotMe.admin.buy")) {
@@ -34,11 +34,11 @@ public class CmdBuy extends PlotCommand {
                             if (plot.getOwner().equalsIgnoreCase(buyer)) {
                                 player.sendMessage("§c" + C("MsgCannotBuyOwnPlot"));
                             } else {
-                                int plotlimit = getPlotLimit(player);
+                                int plotLimit = getPlotLimit(player);
 
-                                if (plotlimit != -1
+                                if (plotLimit != -1
                                     && plugin.getSqlManager().getPlotCount(world.getName().toLowerCase(), player.getUniqueId(), player.getName())
-                                       >= plotlimit) {
+                                       >= plotLimit) {
                                     player.sendMessage(C("MsgAlreadyReachedMaxPlots") + " ("
                                                        + plugin.getSqlManager()
                                             .getPlotCount(world.getName().toLowerCase(), player.getUniqueId(), player.getName()) + "/" + getPlotLimit(
@@ -60,19 +60,19 @@ public class CmdBuy extends PlotCommand {
                                             EconomyResponse er = serverBridge.withdrawPlayer(player, cost);
 
                                             if (er.transactionSuccess()) {
-                                                String oldowner = plot.getOwner();
-                                                IOfflinePlayer playercurrentbidder = null;
+                                                String oldOwner = plot.getOwner();
+                                                IOfflinePlayer currentbidder = null;
 
                                                 if (plot.getOwnerId() != null) {
-                                                    playercurrentbidder = serverBridge.getOfflinePlayer(plot.getOwnerId());
+                                                    currentbidder = serverBridge.getOfflinePlayer(plot.getOwnerId());
                                                 }
 
-                                                if (playercurrentbidder != null) {
-                                                    EconomyResponse er2 = serverBridge.depositPlayer(playercurrentbidder, cost);
+                                                if (currentbidder != null) {
+                                                    EconomyResponse er2 = serverBridge.depositPlayer(currentbidder, cost);
 
                                                     if (er2.transactionSuccess()) {
-                                                        for (Player onlinePlayers : serverBridge.getOnlinePlayers()) {
-                                                            if (onlinePlayers.getName().equalsIgnoreCase(oldowner)) {
+                                                        for (IPlayer onlinePlayers : serverBridge.getOnlinePlayers()) {
+                                                            if (onlinePlayers.getName().equalsIgnoreCase(oldOwner)) {
                                                                 onlinePlayers.sendMessage(C("WordPlot") + " " + id + " "
                                                                                           + C("MsgSoldTo") + " " + buyer + ". " + Util()
                                                                         .moneyFormat(cost, true));

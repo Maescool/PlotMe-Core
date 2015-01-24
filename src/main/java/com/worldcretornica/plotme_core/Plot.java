@@ -1,8 +1,8 @@
 package com.worldcretornica.plotme_core;
 
 import com.worldcretornica.plotme_core.api.IBiome;
-import com.worldcretornica.plotme_core.api.Player;
-import com.worldcretornica.plotme_core.api.World;
+import com.worldcretornica.plotme_core.api.IPlayer;
+import com.worldcretornica.plotme_core.api.IWorld;
 
 import java.sql.Date;
 import java.sql.Timestamp;
@@ -11,9 +11,10 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.UUID;
 
-public class Plot implements Comparable<Plot> {
+public class Plot implements Cloneable {
 
     //TODO look into removing reference to plugin
+
     private final PlotMe_Core plugin;
 
     private String owner;
@@ -22,17 +23,17 @@ public class Plot implements Comparable<Plot> {
     private PlayerList allowed;
     private PlayerList denied;
     private IBiome biome;
-    private Date expireddate;
+    private Date expiredDate;
     private boolean finished;
     private String id;
-    private double customprice;
-    private boolean forsale;
-    private String finisheddate;
+    private double customPrice;
+    private boolean forSale;
+    private String finishedDate;
     private boolean protect;
     private boolean auctioned;
-    private String currentbidder;
-    private double currentbid;
-    private UUID currentbidderId;
+    private String currentBidder;
+    private double currentBid;
+    private UUID currentBidderId;
     private String plotName;
     private Timestamp lastPlotClear;
     private boolean redstoneProtect;
@@ -63,7 +64,7 @@ public class Plot implements Comparable<Plot> {
         setRedstoneProtect(false);
     }
 
-    public Plot(PlotMe_Core plugin, String owner, UUID uuid, World world, String plotid, int days) {
+    public Plot(PlotMe_Core plugin, String owner, UUID uuid, IWorld world, String plotId, int days) {
         this.plugin = plugin;
         setOwner(owner);
         setOwnerId(uuid);
@@ -71,7 +72,7 @@ public class Plot implements Comparable<Plot> {
         allowed = new PlayerList();
         denied = new PlayerList();
         setBiome(this.plugin.getServerBridge().getBiome("PLAINS"));
-        setId(plotid);
+        setId(plotId);
 
         if (days == 0) {
             setExpiredDate(null);
@@ -94,7 +95,8 @@ public class Plot implements Comparable<Plot> {
         setRedstoneProtect(false);
     }
 
-    public Plot(PlotMe_Core plugin, String owner, UUID ownerId, String world, String biome, Date expiredDate, boolean finished,
+    public Plot(PlotMe_Core plugin, String owner, UUID ownerId, String world, String biome, Date expiredDate,
+                boolean finished,
                 PlayerList allowed, String id, double customPrice, boolean sale, String finishedDate,
                 boolean protect, String bidder, UUID bidderId, double bid, boolean isAuctioned, PlayerList denied, Timestamp lastPlotClear, boolean redstoneProtect) {
         this.plugin = plugin;
@@ -224,7 +226,7 @@ public class Plot implements Comparable<Plot> {
             plugin.getSqlManager().deletePlotAllowed(PlotMeCoreManager.getIdX(getId()), PlotMeCoreManager.getIdZ(getId()), name, uuid, getWorld());
 
             if (plugin.getServerBridge().getPlotWorldEdit() != null) {
-                Player player = plugin.getServerBridge().getPlayer(uuid);
+                IPlayer player = plugin.getServerBridge().getPlayer(uuid);
 
                 if (player != null) {
                     if (plugin.getPlotMeCoreManager().isPlotWorld(player.getWorld())) {
@@ -252,7 +254,7 @@ public class Plot implements Comparable<Plot> {
             plugin.getSqlManager().deletePlotAllowed(PlotMeCoreManager.getIdX(getId()), PlotMeCoreManager.getIdZ(getId()), name, uuid, getWorld());
 
             if (plugin.getServerBridge().getPlotWorldEdit() != null) {
-                Player player = plugin.getServerBridge().getPlayer(uuid);
+                IPlayer player = plugin.getServerBridge().getPlayer(uuid);
 
                 if (player != null) {
                     if (plugin.getPlotMeCoreManager().isPlotWorld(player.getWorld())) {
@@ -307,7 +309,7 @@ public class Plot implements Comparable<Plot> {
     }
 
     public boolean isAllowedConsulting(String name) {
-        Player player = plugin.getServerBridge().getPlayerExact(name);
+        IPlayer player = plugin.getServerBridge().getPlayerExact(name);
         if (player != null) {
             return isAllowedInternal(name, player.getUniqueId(), true, true);
         } else {
@@ -327,18 +329,14 @@ public class Plot implements Comparable<Plot> {
         return isAllowedInternal("", uuid, true, true);
     }
 
-    private boolean isAllowedInternal(String name, UUID uuid, boolean IncludeStar, boolean IncludeGroup) {
+    private boolean isAllowedInternal(String name, UUID uuid, boolean checkStar, boolean checkGroup) {
 
-        if (IncludeStar && "*".equals(getOwner())) {
-            return true;
-        }
-
-        Player player = plugin.getServerBridge().getPlayer(uuid);
+        IPlayer player = plugin.getServerBridge().getPlayer(uuid);
         if (getOwnerId() != null && getOwnerId().equals(uuid)) {
             return true;
         }
 
-        if (IncludeGroup && getOwner().toLowerCase().startsWith("group:") && player != null) {
+        if (checkGroup && getOwner().toLowerCase().startsWith("group:") && player != null) {
             if (player.hasPermission("plotme.group." + getOwner().replace("Group:", ""))) {
                 return true;
             }
@@ -346,7 +344,7 @@ public class Plot implements Comparable<Plot> {
 
         HashMap<String, UUID> list = allowed().getAllPlayers();
         for (String str : list.keySet()) {
-            if (IncludeStar && "*".equals(str)) {
+            if (checkStar && "*".equals(str)) {
                 return true;
             }
 
@@ -354,7 +352,7 @@ public class Plot implements Comparable<Plot> {
             if (u != null && u.equals(uuid) || uuid == null && str.equalsIgnoreCase(name)) {
                 return true;
             }
-            if (IncludeGroup && str.toLowerCase().startsWith("group:") && player != null) {
+            if (checkGroup && str.toLowerCase().startsWith("group:") && player != null) {
                 if (player.hasPermission("plotme.group." + str.replace("Group:", ""))) {
                     return true;
                 }
@@ -364,7 +362,7 @@ public class Plot implements Comparable<Plot> {
     }
 
     public boolean isDeniedConsulting(String name) {
-        Player player = plugin.getServerBridge().getPlayerExact(name);
+        IPlayer player = plugin.getServerBridge().getPlayerExact(name);
         if (player != null) {
             return isDeniedInternal(name, player.getUniqueId());
         } else {
@@ -386,7 +384,7 @@ public class Plot implements Comparable<Plot> {
             return false;
         }
 
-        Player player = null;
+        IPlayer player = null;
         if (uuid != null) {
             player = plugin.getServerBridge().getPlayer(uuid);
         }
@@ -398,10 +396,20 @@ public class Plot implements Comparable<Plot> {
             }
 
             UUID u = list.get(str);
-            if (str.equalsIgnoreCase(name) || uuid != null && (u != null && u.equals(uuid)
-                                                               || str.toLowerCase().startsWith("group:") && player != null && player
-                    .hasPermission("plotme.group." + str.replace("Group:", "")))) {
+            if (str.equalsIgnoreCase(name)) {
                 return true;
+            } else if (uuid != null) {
+                if (u != null && u.equals(uuid)) {
+                    return true;
+                } else if (str.toLowerCase().startsWith("group:")) {
+                    if (player != null) {
+                        if (player.hasPermission("plotme.group." + str.replace("Group:", ""))) {
+                            return true;
+                        }
+                    } else {
+                        plugin.getLogger().warning("Something went wrong checking for denied.");
+                    }
+                }
             }
         }
         return false;
@@ -423,18 +431,9 @@ public class Plot implements Comparable<Plot> {
         return denied().size();
     }
 
-    @Override
-    public int compareTo(Plot plot) {
-        if (getExpiredDate().equals(plot.getExpiredDate())) {
-            return getOwner().compareTo(plot.getOwner());
-        } else {
-            return getExpiredDate().compareTo(plot.getExpiredDate());
-        }
-    }
-
-    private void updateFinished(String finishtime, boolean isfinished) {
-        updateField("finisheddate", finishtime);
-        updateField("finished", isfinished);
+    private void updateFinished(String finishTime, boolean isFinished) {
+        updateField("finisheddate", finishTime);
+        updateField("finished", isFinished);
     }
 
     public void updateField(String field, Object value) {
@@ -450,11 +449,11 @@ public class Plot implements Comparable<Plot> {
     }
 
     public final Date getExpiredDate() {
-        return expireddate;
+        return expiredDate;
     }
 
-    public final void setExpiredDate(Date expireddate) {
-        this.expireddate = expireddate;
+    public final void setExpiredDate(Date expiredDate) {
+        this.expiredDate = expiredDate;
     }
 
     public final boolean isFinished() {
@@ -474,27 +473,27 @@ public class Plot implements Comparable<Plot> {
     }
 
     public final double getCustomPrice() {
-        return customprice;
+        return customPrice;
     }
 
-    public final void setCustomPrice(double customprice) {
-        this.customprice = customprice;
+    public final void setCustomPrice(double customPrice) {
+        this.customPrice = customPrice;
     }
 
     public final boolean isForSale() {
-        return forsale;
+        return forSale;
     }
 
-    public final void setForSale(boolean forsale) {
-        this.forsale = forsale;
+    public final void setForSale(boolean forSale) {
+        this.forSale = forSale;
     }
 
     public final String getFinishedDate() {
-        return finisheddate;
+        return finishedDate;
     }
 
-    public final void setFinishedDate(String finisheddate) {
-        this.finisheddate = finisheddate;
+    public final void setFinishedDate(String finishedDate) {
+        this.finishedDate = finishedDate;
     }
 
     public final boolean isProtect() {
@@ -514,27 +513,27 @@ public class Plot implements Comparable<Plot> {
     }
 
     public final String getCurrentBidder() {
-        return currentbidder;
+        return currentBidder;
     }
 
-    public final void setCurrentBidder(String currentbidder) {
-        this.currentbidder = currentbidder;
+    public final void setCurrentBidder(String currentBidder) {
+        this.currentBidder = currentBidder;
     }
 
     public final UUID getCurrentBidderId() {
-        return currentbidderId;
+        return currentBidderId;
     }
 
     public final void setCurrentBidderId(UUID uuid) {
-        currentbidderId = uuid;
+        currentBidderId = uuid;
     }
 
     public final double getCurrentBid() {
-        return currentbid;
+        return currentBid;
     }
 
-    public final void setCurrentBid(double currentbid) {
-        this.currentbid = currentbid;
+    public final void setCurrentBid(double currentBid) {
+        this.currentBid = currentBid;
     }
 
     public void setPlotName(String plotName) {
@@ -555,5 +554,10 @@ public class Plot implements Comparable<Plot> {
 
     public void setRedstoneProtect(boolean redstoneProtect) {
         this.redstoneProtect = redstoneProtect;
+    }
+
+    @Override
+    protected Plot clone() throws CloneNotSupportedException {
+        return (Plot) super.clone();
     }
 }

@@ -4,9 +4,8 @@ import com.worldcretornica.plotme_core.PermissionNames;
 import com.worldcretornica.plotme_core.Plot;
 import com.worldcretornica.plotme_core.PlotMeCoreManager;
 import com.worldcretornica.plotme_core.PlotMe_Core;
-import com.worldcretornica.plotme_core.api.Location;
-import com.worldcretornica.plotme_core.api.Player;
-import com.worldcretornica.plotme_core.api.World;
+import com.worldcretornica.plotme_core.api.IPlayer;
+import com.worldcretornica.plotme_core.api.IWorld;
 import com.worldcretornica.plotme_core.bukkit.api.BukkitBiome;
 
 public class CmdInfo extends PlotCommand {
@@ -15,9 +14,9 @@ public class CmdInfo extends PlotCommand {
         super(instance);
     }
 
-    public boolean exec(Player player) {
+    public boolean exec(IPlayer player) {
         if (player.hasPermission(PermissionNames.USER_INFO)) {
-            World world = player.getWorld();
+            IWorld world = player.getWorld();
             if (plugin.getPlotMeCoreManager().isPlotWorld(world)) {
                 String id = PlotMeCoreManager.getPlotId(player);
 
@@ -115,11 +114,13 @@ public class CmdInfo extends PlotCommand {
                             }
                         }
                     }
-                    Location bottom = PlotMeCoreManager.getPlotBottomLoc(world, id);
-                    Location top = PlotMeCoreManager.getPlotTopLoc(world, id);
+                    int bottomX = PlotMeCoreManager.bottomX(id, world);
+                    int bottomZ = PlotMeCoreManager.bottomZ(id, world);
+                    int topX = PlotMeCoreManager.topX(id, world);
+                    int topZ = PlotMeCoreManager.topZ(id, world);
 
-                    player.sendMessage("§b" + C("WordBottom") + ": §r" + bottom.getBlockX() + "§9,§r" + bottom.getBlockZ());
-                    player.sendMessage("§b" + C("WordTop") + ": §r" + top.getBlockX() + "§9,§r" + top.getBlockZ());
+                    player.sendMessage("§b" + C("WordBottom") + ": §r" + bottomX + "§9,§r" + bottomZ);
+                    player.sendMessage("§b" + C("WordTop") + ": §r" + topX + "§9,§r" + topZ);
 
                 } else {
                     player.sendMessage("§c" + C("MsgThisPlot") + " (" + id + ") " + C("MsgHasNoOwner"));

@@ -9,7 +9,7 @@ public interface IEntity extends IActor {
      *
      * @return the location of entity
      */
-    Location getLocation();
+    ILocation getLocation();
 
     /**
      * Sets the location of the entity
@@ -17,14 +17,14 @@ public interface IEntity extends IActor {
      *
      * @param location new location
      */
-    void setLocation(Location location);
+    void setLocation(ILocation location);
 
     /**
      * Get the world the entity is currently in.
      *
      * @return the world the entity is in
      */
-    World getWorld();
+    IWorld getWorld();
 
     /**
      * Mark the entity's removal.

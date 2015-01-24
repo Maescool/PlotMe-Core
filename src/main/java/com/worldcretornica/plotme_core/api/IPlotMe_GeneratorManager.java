@@ -5,73 +5,73 @@ import java.util.Map;
 
 public interface IPlotMe_GeneratorManager {
 
-    String getPlotId(Location location);
+    String getPlotId(ILocation location);
 
-    String getPlotId(Player player);
+    String getPlotId(IPlayer player);
 
-    List<Player> getPlayersInPlot(String id);
+    List<IPlayer> getPlayersInPlot(String id);
 
-    void fillroad(String id1, String id2, World world);
+    void fillroad(String id1, String id2, IWorld world);
 
-    void fillmiddleroad(String id1, String id2, World world);
+    void fillmiddleroad(String id1, String id2, IWorld world);
 
-    void setOwnerDisplay(World world, String id, String line1, String line2, String line3, String line4);
+    void setOwnerDisplay(IWorld world, String id, String line1, String line2, String line3, String line4);
 
-    void setSellerDisplay(World world, String id, String line1, String line2, String line3, String line4);
+    void setSellerDisplay(IWorld world, String id, String line1, String line2, String line3, String line4);
 
-    void setAuctionDisplay(World world, String id, String line1, String line2, String line3, String line4);
+    void setAuctionDisplay(IWorld world, String id, String line1, String line2, String line3, String line4);
 
-    void removeOwnerDisplay(World world, String id);
+    void removeOwnerDisplay(IWorld world, String id);
 
-    void removeSellerDisplay(World world, String id);
+    void removeSellerDisplay(IWorld world, String id);
 
-    void removeAuctionDisplay(World world, String id);
+    void removeAuctionDisplay(IWorld world, String id);
 
     int getIdX(String id);
 
     int getIdZ(String id);
 
-    Location getPlotBottomLoc(World world, String id);
+    ILocation getPlotBottomLoc(IWorld world, String id);
 
-    Location getPlotTopLoc(World world, String id);
+    ILocation getPlotTopLoc(IWorld world, String id);
 
-    void setBiome(World world, String id, IBiome biome);
+    void setBiome(IWorld world, String id, IBiome biome);
 
-    void refreshPlotChunks(World world, String id);
+    void refreshPlotChunks(IWorld world, String id);
 
-    Location getTop(World world, String id);
+    ILocation getTop(IWorld world, String id);
 
-    Location getBottom(World world, String id);
+    ILocation getBottom(IWorld world, String id);
 
-    void clear(Location bottom, Location top);
+    void clear(ILocation bottom, ILocation top);
 
-    Long[] clear(Location bottom, Location top, long maxBlocks, Long[] start);
+    Long[] clear(ILocation bottom, ILocation top, long maxBlocks, Long[] start);
 
-    Long[] clear(World world, String id, long maxBlocks, Long[] start);
+    Long[] clear(IWorld world, String id, long maxBlocks, Long[] start);
 
-    void adjustPlotFor(World world, String id, boolean claimed, boolean protect, boolean auctionned, boolean forSale);
+    void adjustPlotFor(IWorld world, String id, boolean claimed, boolean protect, boolean auctioned, boolean forSale);
 
-    boolean isBlockInPlot(String id, Location blocklocation);
+    boolean isBlockInPlot(String id, ILocation blockLocation);
 
-    boolean movePlot(World world, String idFrom, String idTo);
+    boolean movePlot(IWorld world, String idFrom, String idTo);
 
-    int bottomX(String id, World world);
+    int bottomX(String id, IWorld world);
 
-    int bottomZ(String id, World world);
+    int bottomZ(String id, IWorld world);
 
-    int topX(String id, World world);
+    int topX(String id, IWorld world);
 
-    int topZ(String id, World world);
+    int topZ(String id, IWorld world);
 
-    Location getPlotHome(World world, String id);
+    ILocation getPlotHome(IWorld world, String id);
 
     boolean isValidId(String id);
 
-    boolean createConfig(String worldname, Map<String, String> args);
+    boolean createConfig(String worldName, Map<String, String> args);
 
     Map<String, String> getDefaultGenerationConfig();
 
-    int getPlotSize(String worldname);
+    int getPlotSize(String worldName);
 
-    int getRoadHeight(String worldname);
+    int getRoadHeight(String worldName);
 }

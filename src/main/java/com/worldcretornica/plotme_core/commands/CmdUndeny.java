@@ -5,8 +5,8 @@ import com.worldcretornica.plotme_core.Plot;
 import com.worldcretornica.plotme_core.PlotMapInfo;
 import com.worldcretornica.plotme_core.PlotMeCoreManager;
 import com.worldcretornica.plotme_core.PlotMe_Core;
-import com.worldcretornica.plotme_core.api.Player;
-import com.worldcretornica.plotme_core.api.World;
+import com.worldcretornica.plotme_core.api.IPlayer;
+import com.worldcretornica.plotme_core.api.IWorld;
 import com.worldcretornica.plotme_core.api.event.InternalPlotRemoveDeniedEvent;
 import net.milkbowl.vault.economy.EconomyResponse;
 
@@ -16,9 +16,9 @@ public class CmdUndeny extends PlotCommand {
         super(instance);
     }
 
-    public boolean exec(Player player, String[] args) {
+    public boolean exec(IPlayer player, String[] args) {
         if (player.hasPermission(PermissionNames.ADMIN_UNDENY) || player.hasPermission(PermissionNames.USER_UNDENY)) {
-            World world = player.getWorld();
+            IWorld world = player.getWorld();
             PlotMapInfo pmi = plugin.getPlotMeCoreManager().getMap(world);
             if (plugin.getPlotMeCoreManager().isPlotWorld(world)) {
                 String id = PlotMeCoreManager.getPlotId(player);
@@ -29,10 +29,10 @@ public class CmdUndeny extends PlotCommand {
                         player.sendMessage(C("WordUsage") + ": §c/plotme undeny <" + C("WordPlayer") + ">");
                     } else {
                         Plot plot = PlotMeCoreManager.getPlotById(id, pmi);
-                        String playername = player.getName();
+                        String playerName = player.getName();
                         String denied = args[1];
 
-                        if (plot.getOwner().equalsIgnoreCase(playername) || player.hasPermission(PermissionNames.ADMIN_UNDENY)) {
+                        if (plot.getOwner().equalsIgnoreCase(playerName) || player.hasPermission(PermissionNames.ADMIN_UNDENY)) {
                             if (plot.isDeniedConsulting(denied) || plot.isGroupDenied(denied)) {
 
                                 double price = 0.0;
@@ -76,11 +76,11 @@ public class CmdUndeny extends PlotCommand {
                                     if (isAdvancedLogging()) {
                                         if (price != 0) {
                                             serverBridge.getLogger()
-                                                    .info(playername + " " + C("MsgUndeniedPlayer") + " " + denied + " " + C("MsgFromPlot") + " " + id
+                                                    .info(playerName + " " + C("MsgUndeniedPlayer") + " " + denied + " " + C("MsgFromPlot") + " " + id
                                                           + (" " + C("WordFor") + " " + price));
                                         } else {
                                             serverBridge.getLogger()
-                                                    .info(playername + " " + C("MsgUndeniedPlayer") + " " + denied + " " + C("MsgFromPlot") + " "
+                                                    .info(playerName + " " + C("MsgUndeniedPlayer") + " " + denied + " " + C("MsgFromPlot") + " "
                                                           + id);
                                         }
                                     }

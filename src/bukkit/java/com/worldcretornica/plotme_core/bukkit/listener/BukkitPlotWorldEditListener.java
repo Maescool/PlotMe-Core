@@ -28,37 +28,34 @@ public class BukkitPlotWorldEditListener implements Listener {
     private final PlotMe_CorePlugin plugin;
 
 
-    public BukkitPlotWorldEditListener(PlotMe_CorePlugin core, PlotWorldEdit worldEdit, PlotMe_CorePlugin plugin) {
-        api = core.getAPI();
+    public BukkitPlotWorldEditListener(PlotWorldEdit worldEdit, PlotMe_CorePlugin plugin) {
+        api = plugin.getAPI();
         this.plugin = plugin;
         this.worldEdit = worldEdit;
     }
 
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     public void onPlayerMove(PlayerMoveEvent event) {
-        if (event.getTo() == null || event.getFrom() == null) {
-            return;
-        }
         BukkitLocation from = new BukkitLocation(event.getFrom());
         BukkitLocation to = new BukkitLocation(event.getTo());
 
-        BukkitPlayer player = plugin.wrapPlayer(event.getPlayer());
+        BukkitPlayer player = (BukkitPlayer) plugin.wrapPlayer(event.getPlayer());
 
         String idTo = "";
 
-        boolean changemask = false;
+        boolean changeMask = false;
         if (!from.getWorld().getName().equalsIgnoreCase(to.getWorld().getName())) {
-            changemask = true;
+            changeMask = true;
         } else if (from.getLocation() != to.getLocation()) {
             String idFrom = PlotMeCoreManager.getPlotId(from);
             idTo = PlotMeCoreManager.getPlotId(to);
 
             if (!idFrom.equals(idTo)) {
-                changemask = true;
+                changeMask = true;
             }
         }
 
-        if (changemask && api.getPlotMeCoreManager().isPlotWorld(to.getWorld())) {
+        if (changeMask && api.getPlotMeCoreManager().isPlotWorld(to.getWorld())) {
             if (api.getPlotMeCoreManager().isPlayerIgnoringWELimit(player)) {
                 worldEdit.removeMask(player);
             } else {
@@ -83,12 +80,9 @@ public class BukkitPlotWorldEditListener implements Listener {
 
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     public void onPlayerTeleport(PlayerTeleportEvent event) {
-        BukkitPlayer player = new BukkitPlayer(event.getPlayer());
+        BukkitPlayer player = (BukkitPlayer) plugin.wrapPlayer(event.getPlayer());
         BukkitLocation from = new BukkitLocation(event.getFrom());
         BukkitLocation to = new BukkitLocation(event.getTo());
-        if (event.getTo() == null) {
-            return;
-        }
         if (api.getPlotMeCoreManager().isPlotWorld(from)) {
             if (api.getPlotMeCoreManager().isPlotWorld(to)) {
                 worldEdit.setMask(player);
@@ -102,15 +96,9 @@ public class BukkitPlotWorldEditListener implements Listener {
 
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     public void onPlayerPortal(PlayerPortalEvent event) {
-        BukkitPlayer player = new BukkitPlayer(event.getPlayer());
-        if (event.getFrom() == null || event.getTo() == null) {
-            return;
-        }
+        BukkitPlayer player = (BukkitPlayer) plugin.wrapPlayer(event.getPlayer());
         BukkitLocation from = new BukkitLocation(event.getFrom());
         BukkitLocation to = new BukkitLocation(event.getTo());
-        if (event.getTo() == null) {
-            return;
-        }
         if (api.getPlotMeCoreManager().isPlotWorld(from)) {
             if (api.getPlotMeCoreManager().isPlotWorld(to)) {
                 worldEdit.setMask(player);
@@ -124,7 +112,7 @@ public class BukkitPlotWorldEditListener implements Listener {
 
     @EventHandler(priority = EventPriority.LOWEST, ignoreCancelled = true)
     public void onPlayerCommandPreprocess(PlayerCommandPreprocessEvent event) {
-        BukkitPlayer player = new BukkitPlayer(event.getPlayer());
+        BukkitPlayer player = (BukkitPlayer) plugin.wrapPlayer(event.getPlayer());
 
         if (api.getPlotMeCoreManager().isPlotWorld(player)) {
             if (!api.getPlotMeCoreManager().isPlayerIgnoringWELimit(player)) {
@@ -145,7 +133,7 @@ public class BukkitPlotWorldEditListener implements Listener {
 
     @EventHandler(priority = EventPriority.LOW, ignoreCancelled = true)
     public void onPlayerInteract(PlayerInteractEvent event) {
-        BukkitPlayer player = new BukkitPlayer(event.getPlayer());
+        BukkitPlayer player = (BukkitPlayer) plugin.wrapPlayer(event.getPlayer());
         BukkitLocation location = new BukkitLocation(event.getClickedBlock().getLocation());
 
         if (api.getPlotMeCoreManager().isPlotWorld(location)) {

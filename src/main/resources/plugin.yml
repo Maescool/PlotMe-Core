@@ -2,17 +2,16 @@ name: PlotMe
 main: com.worldcretornica.plotme_core.bukkit.PlotMe_CorePlugin
 version: ${project.version}
 author: ZachBora
-authors: [flungo, MattBDev]
-website: http://dev.bukkit.org/server-mods/plotme/
-load: POSTWORLD
-softdepend: [WorldEdit, Vault, LWC, Multiverse-Core, PlotMe-DefaultGenerator]
+authors: [MattBDev]
+website: http://worldcretornica.github.io/PlotMe-Core/
+load: STARTUP
 description: >
              Handles plot management and protection
 commands:
     plotme:
       description: List PlotMe commands
-      usage: /plotme
       aliases: [p,plot]
+      permission-message: "You do not have the required permissions to use this PlotMe Command."
 permissions:
     plotme.use:
       description: Gives default user commands
@@ -160,5 +159,7 @@ permissions:
       description: Gives the expired command
     plotme.admin.buildanywhere:
       description: Allows to build anywhere in the plot world
+    plotme.group.*:
+      description: Group of players    
     plotme.admin.redstone:
       description: Gives the redstone command for any plots
