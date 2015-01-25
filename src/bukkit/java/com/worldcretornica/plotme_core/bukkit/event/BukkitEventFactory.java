@@ -195,12 +195,12 @@ public class BukkitEventFactory implements IEventFactory {
     }
 
     @Override
-    public InternalPlotWorldLoadEvent callPlotWorldLoadEvent(String worldname, int nbPlots) {
-        PlotWorldLoadEvent event = new PlotWorldLoadEvent(worldname, nbPlots);
+    public InternalPlotWorldLoadEvent callPlotWorldLoadEvent(String worldName, int nbPlots) {
+        PlotWorldLoadEvent event = new PlotWorldLoadEvent(worldName, nbPlots);
         Bukkit.getPluginManager().callEvent(event);
         return event.getInternal();
     }
-    
+
     @Override
     public InternalPlotRedstoneChangeEvent callPlotRedstoneChangeEvent(PlotMe_Core plugin, IWorld world, Plot plot, IPlayer player, boolean protect) {
         PlotRedstoneChangeEvent event = new PlotRedstoneChangeEvent(plugin, world, plot, player, protect);
