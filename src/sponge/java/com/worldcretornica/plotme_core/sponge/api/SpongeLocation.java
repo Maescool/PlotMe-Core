@@ -4,6 +4,7 @@ import com.worldcretornica.plotme_core.api.IBlock;
 import com.worldcretornica.plotme_core.api.ILocation;
 import com.worldcretornica.plotme_core.api.IWorld;
 import org.spongepowered.api.world.Location;
+import org.spongepowered.api.world.World;
 
 public class SpongeLocation implements ILocation {
 
@@ -15,7 +16,7 @@ public class SpongeLocation implements ILocation {
 
     @Override
     public IWorld getWorld() {
-        return null;
+        return new SpongeWorld((World) location.getExtent());
     }
 
     @Override
@@ -35,17 +36,17 @@ public class SpongeLocation implements ILocation {
 
     @Override
     public double getX() {
-        return 0;
+        return location.getPosition().getX();
     }
 
     @Override
     public double getY() {
-        return 0;
+        return location.getPosition().getY();
     }
 
     @Override
     public double getZ() {
-        return 0;
+        return location.getPosition().getZ();
     }
 
     @Override

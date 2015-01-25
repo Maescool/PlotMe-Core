@@ -29,6 +29,7 @@ public class PlotMe_Core {
     private PlotMeCoreManager plotMeCoreManager;
     private SqlManager sqlManager;
     private Util util;
+    private int clearTaskID;
 
     public PlotMe_Core(IServerBridge serverObjectBuilder) {
         serverBridge = serverObjectBuilder;
@@ -61,7 +62,6 @@ public class PlotMe_Core {
         setupConfig();
         setupDefaultCaptions();
         setPlotMeCoreManager(new PlotMeCoreManager(this));
-        //setupWorlds(); // TODO: Remove concept of pmi so this is not needed
         serverBridge.setupCommands();
         setUtil(new Util(this));
         serverBridge.setupHooks();
@@ -238,7 +238,7 @@ public class PlotMe_Core {
         plotsToClear.offer(plotToClear);
 
         Runnable pms = new PlotMeSpool(this, plotToClear);
-        serverBridge.scheduleSyncRepeatingTask(pms, 0L, 60L);
+        setClearTaskID(serverBridge.scheduleSyncRepeatingTask(pms, 0L, 60L));
     }
 
     public void removePlotToClear(PlotToClear plotToClear, int taskId) {
@@ -285,4 +285,11 @@ public class PlotMe_Core {
         this.util = util;
     }
 
+    public int getClearTaskID() {
+        return clearTaskID;
+    }
+
+    public void setClearTaskID(int clearTaskID) {
+        this.clearTaskID = clearTaskID;
+    }
 }

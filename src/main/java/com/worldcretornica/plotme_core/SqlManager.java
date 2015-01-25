@@ -6,7 +6,15 @@ import com.worldcretornica.plotme_core.bukkit.api.BukkitBiome;
 import com.worldcretornica.plotme_core.utils.UUIDFetcher;
 
 import java.io.File;
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.DatabaseMetaData;
+import java.sql.Date;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -344,12 +352,12 @@ public class SqlManager {
                                     + "`bottomZ` INTEGER NOT NULL DEFAULT '0'," //8
                                     + "`biome` VARCHAR(32) NOT NULL DEFAULT '0'," //9
                                     + "`expireddate` DATE,"  //10
-                                    + "`finished` BOOLEAN NOT NULL DEFAULT FALSE," //11
+                                    + "`finished` BOOLEAN NOT NULL DEFAULT '0'," //11
                                     + "`customprice` DOUBLE NOT NULL DEFAULT '0'," //12
-                                    + "`forsale` BOOLEAN NOT NULL DEFAULT FALSE," //13
+                                    + "`forsale` BOOLEAN NOT NULL DEFAULT '0'," //13
                                     + "`finisheddate` VARCHAR(16)," //14
-                                    + "`protected` BOOLEAN NOT NULL DEFAULT FALSE," //15
-                                    + "`auctionned` BOOLEAN NOT NULL DEFAULT FALSE," //16
+                                    + "`protected` BOOLEAN NOT NULL DEFAULT '0'," //15
+                                    + "`auctionned` BOOLEAN NOT NULL DEFAULT '0'," //16
                                     + "`currentbid` DOUBLE NOT NULL DEFAULT '0'," //17
                                     + "`currentbidder` VARCHAR(32)," //18
                                     + "`currentbidderId` BLOB(16)," //19
@@ -364,26 +372,26 @@ public class SqlManager {
 
             if (!tableExists("plotmeAllowed")) {
                 String ALLOWED_TABLE = "CREATE TABLE `plotmeAllowed` ("
-                                               + "`idX` INTEGER,"
-                                               + "`idZ` INTEGER,"
-                                               + "`world` varchar(32) NOT NULL,"
-                                               + "`player` varchar(32) NOT NULL,"
-                                               + "`playerid` blob(16),"
-                                               + "PRIMARY KEY (idX, idZ, world, player) "
-                                               + ");";
+                                       + "`idX` INTEGER,"
+                                       + "`idZ` INTEGER,"
+                                       + "`world` varchar(32) NOT NULL,"
+                                       + "`player` varchar(32) NOT NULL,"
+                                       + "`playerid` blob(16),"
+                                       + "PRIMARY KEY (idX, idZ, world, player) "
+                                       + ");";
                 st.executeUpdate(ALLOWED_TABLE);
                 conn.commit();
             }
 
             if (!tableExists("plotmeDenied")) {
                 String DENIED_TABLE = "CREATE TABLE `plotmeDenied` ("
-                                              + "`idX` INTEGER,"
-                                              + "`idZ` INTEGER,"
-                                              + "`world` varchar(32) NOT NULL,"
-                                              + "`player` varchar(32) NOT NULL,"
-                                              + "`playerid` blob(16),"
-                                              + "PRIMARY KEY (idX, idZ, world, player) "
-                                              + ");";
+                                      + "`idX` INTEGER,"
+                                      + "`idZ` INTEGER,"
+                                      + "`world` varchar(32) NOT NULL,"
+                                      + "`player` varchar(32) NOT NULL,"
+                                      + "`playerid` blob(16),"
+                                      + "PRIMARY KEY (idX, idZ, world, player) "
+                                      + ");";
                 st.executeUpdate(DENIED_TABLE);
                 conn.commit();
             }
@@ -885,26 +893,26 @@ public class SqlManager {
             if (setPlots.next()) {
                 String owner = setPlots.getString("owner");
                 String biome = setPlots.getString("biome");
-                Date expireddate = null;
+                Date expiredDate = null;
                 try {
-                    expireddate = setPlots.getDate("expireddate");
+                    expiredDate = setPlots.getDate("expireddate");
                 } catch (SQLException ignored) {
                 }
                 boolean finished = setPlots.getBoolean("finished");
                 PlayerList allowed = new PlayerList();
                 PlayerList denied = new PlayerList();
-                double customprice = setPlots.getDouble("customprice");
-                boolean forsale = setPlots.getBoolean("forsale");
-                String finisheddate;
+                double customPrice = setPlots.getDouble("customprice");
+                boolean forSale = setPlots.getBoolean("forsale");
+                String finishedDate;
                 if (finished) {
-                    finisheddate = setPlots.getString("finisheddate");
+                    finishedDate = setPlots.getString("finisheddate");
                 } else {
-                    finisheddate = null;
+                    finishedDate = null;
                 }
                 boolean protect = setPlots.getBoolean("protected");
-                String currentbidder = setPlots.getString("currentbidder");
-                double currentbid = setPlots.getDouble("currentbid");
-                boolean auctionned = setPlots.getBoolean("auctionned");
+                String currentBidder = setPlots.getString("currentbidder");
+                double currentBid = setPlots.getDouble("currentbid");
+                boolean auctioned = setPlots.getBoolean("auctionned");
 
                 Timestamp lastPlotClear = setPlots.getTimestamp("lastplotclear");
                 boolean redstoneProtect = setPlots.getBoolean("redstoneprotect");
@@ -917,9 +925,9 @@ public class SqlManager {
                 if (byOwner != null) {
                     ownerId = UUIDFetcher.fromBytes(byOwner);
                 }
-                UUID currentbidderid = null;
+                UUID currentBidderId = null;
                 if (byBidder != null) {
-                    currentbidderid = UUIDFetcher.fromBytes(byBidder);
+                    currentBidderId = UUIDFetcher.fromBytes(byBidder);
                 }
 
                 statementAllowed = conn.prepareStatement("SELECT * FROM plotmeAllowed WHERE LOWER(world) = ? AND idX = ? AND idZ = ?");
@@ -957,9 +965,9 @@ public class SqlManager {
                 }
                 setDenied.close();
 
-                plot = new Plot(plugin, owner, ownerId, world, biome, expireddate, finished, allowed,
-                                idX + ";" + idZ, customprice, forsale, finisheddate, protect,
-                                currentbidder, currentbidderid, currentbid, auctionned, denied, lastPlotClear, redstoneProtect);
+                plot = new Plot(plugin, owner, ownerId, world, biome, expiredDate, finished, allowed,
+                                idX + ";" + idZ, customPrice, forSale, finishedDate, protect,
+                                currentBidder, currentBidderId, currentBid, auctioned, denied, lastPlotClear, redstoneProtect);
             }
         } catch (SQLException ex) {
             plugin.getLogger().severe("Plot load Exception :");
@@ -993,26 +1001,26 @@ public class SqlManager {
     }
 
     public void loadPlotsAsynchronously(String world) {
-        final String worldname = world;
+        final String worldName = world;
 
         plugin.getServerBridge().runTaskAsynchronously(new Runnable() {
             @Override
             public void run() {
-                plugin.getLogger().info("Starting to load plots for world " + worldname);
+                plugin.getLogger().info("Starting to load plots for world " + worldName);
 
-                HashMap<String, Plot> plots = getPlots(worldname);
+                HashMap<String, Plot> plots = getPlots(worldName);
 
-                PlotMapInfo pmi = plugin.getPlotMeCoreManager().getMap(worldname);
+                PlotMapInfo pmi = plugin.getPlotMeCoreManager().getMap(worldName);
 
                 for (String id : plots.keySet()) {
                     pmi.addPlot(id, plots.get(id));
                     plugin.getServerBridge().getEventFactory()
-                            .callPlotLoadedEvent(plugin, plugin.getServerBridge().getWorld(worldname), plots.get(id));
+                            .callPlotLoadedEvent(plugin, plugin.getServerBridge().getWorld(worldName), plots.get(id));
                 }
 
                 // plugin.getLogger().info("Done loading " + pmi.getNbPlots() +
                 // " plots for world " + worldname);
-                plugin.getServerBridge().getEventFactory().callPlotWorldLoadEvent(worldname, pmi.getNbPlots());
+                plugin.getServerBridge().getEventFactory().callPlotWorldLoadEvent(worldName, pmi.getNbPlots());
             }
         });
     }
@@ -1038,21 +1046,21 @@ public class SqlManager {
                 int idZ = setPlots.getInt("idZ");
                 String owner = setPlots.getString("owner");
                 String biome = setPlots.getString("biome");
-                Date expireddate = null;
+                Date expiredDate = null;
                 try {
-                    expireddate = setPlots.getDate("expireddate");
+                    expiredDate = setPlots.getDate("expireddate");
                 } catch (SQLException ignored) {
                 }
                 boolean finished = setPlots.getBoolean("finished");
                 PlayerList allowed = new PlayerList();
                 PlayerList denied = new PlayerList();
-                double customprice = setPlots.getDouble("customprice");
-                boolean forsale = setPlots.getBoolean("forsale");
-                String finisheddate = setPlots.getString("finisheddate");
+                double customPrice = setPlots.getDouble("customprice");
+                boolean forSale = setPlots.getBoolean("forsale");
+                String finishedDate = setPlots.getString("finisheddate");
                 boolean protect = setPlots.getBoolean("protected");
-                String currentbidder = setPlots.getString("currentbidder");
-                double currentbid = setPlots.getDouble("currentbid");
-                boolean auctionned = setPlots.getBoolean("auctionned");
+                String currentBidder = setPlots.getString("currentbidder");
+                double currentBid = setPlots.getDouble("currentbid");
+                boolean auctioned = setPlots.getBoolean("auctionned");
 
                 Timestamp lastPlotClear = setPlots.getTimestamp("lastplotclear");
                 boolean redstoneProtect = setPlots.getBoolean("redstoneProtect");
@@ -1065,9 +1073,9 @@ public class SqlManager {
                 if (byOwner != null) {
                     ownerId = UUIDFetcher.fromBytes(byOwner);
                 }
-                UUID currentbidderid = null;
+                UUID currentBidderId = null;
                 if (byBidder != null) {
-                    currentbidderid = UUIDFetcher.fromBytes(byBidder);
+                    currentBidderId = UUIDFetcher.fromBytes(byBidder);
                 }
 
                 statementAllowed = conn.createStatement();
@@ -1102,8 +1110,8 @@ public class SqlManager {
 
                 setDenied.close();
 
-                Plot plot = new Plot(plugin, owner, ownerId, world, biome, expireddate, finished, allowed, idX + ";" + idZ,
-                                     customprice, forsale, finisheddate, protect, currentbidder, currentbidderid, currentbid, auctionned, denied, lastPlotClear, redstoneProtect);
+                Plot plot = new Plot(plugin, owner, ownerId, world, biome, expiredDate, finished, allowed, idX + ";" + idZ,
+                                     customPrice, forSale, finishedDate, protect, currentBidder, currentBidderId, currentBid, auctioned, denied, lastPlotClear, redstoneProtect);
                 ret.put(idX + ";" + idZ, plot);
             }
         } catch (SQLException ex) {
@@ -1494,15 +1502,17 @@ public class SqlManager {
             Connection conn = getConnection();
 
             if (playerId == null) {
-                statementPlot = conn.prepareStatement(
-                                        "SELECT DISTINCT A.* FROM plotmePlots A LEFT JOIN plotmeAllowed B ON A.idX = B.idX AND A.idZ = B.idZ AND A.world = B.world "
-                                        + " WHERE owner = ? OR B.player = ? ORDER BY A.world");
+                statementPlot =
+                        conn.prepareStatement(
+                                "SELECT DISTINCT A.* FROM plotmePlots A LEFT JOIN plotmeAllowed B ON A.idX = B.idX AND A.idZ = B.idZ AND A.world = B.world "
+                                + " WHERE owner = ? OR B.player = ? ORDER BY A.world");
                 statementPlot.setString(1, playername);
                 statementPlot.setString(2, playername);
             } else {
-                statementPlot = conn.prepareStatement(
-                                        "SELECT DISTINCT A.* FROM plotmePlots A LEFT JOIN plotmeAllowed B ON A.idX = B.idX AND A.idZ = B.idZ AND A.world = B.world "
-                                        + " WHERE ownerId = ? OR B.playerId = ? ORDER BY A.world");
+                statementPlot =
+                        conn.prepareStatement(
+                                "SELECT DISTINCT A.* FROM plotmePlots A LEFT JOIN plotmeAllowed B ON A.idX = B.idX AND A.idZ = B.idZ AND A.world = B.world "
+                                + " WHERE ownerId = ? OR B.playerId = ? ORDER BY A.world");
                 statementPlot.setBytes(1, UUIDFetcher.toBytes(playerId));
                 statementPlot.setBytes(2, UUIDFetcher.toBytes(playerId));
             }
@@ -1717,9 +1727,10 @@ public class SqlManager {
                 }
 
                 setDenied.close();
-                Plot plot = new Plot(plugin, owner, ownerId, world, biome, expireddate, finished, allowed,
-                        idX + ";" + idZ, customprice, forsale, finisheddate, protect,
-                        currentbidder, currentbidderid, currentbid, auctionned, denied, lastPlotClear, redstoneProtect);
+
+                Plot plot = new Plot(plugin, owner, ownerId, world1, biome, expireddate, finished, allowed,
+                                     idX + ";" + idZ, customprice, forsale, finisheddate, protect,
+                                     currentbidder, currentbidderid, currentbid, auctionned, denied, lastPlotClear, redstoneProtect);
 
                 ret.add(plot);
             }
