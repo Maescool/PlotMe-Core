@@ -36,9 +36,9 @@ public class CmdRedstone extends PlotCommand {
 
                         if (plot.getOwner().equalsIgnoreCase(player.getName()) || player.hasPermission(PermissionNames.ADMIN_REDSTONE)) {
                             if (enabled && plot.isRedstoneProtect()) {
-                                player.sendMessage("§c" + C("MsgAlreadyRedstoneEnabled"));
+                                player.sendMessage("§c" + C("MsgRedstoneAlreadyEnabled"));
                             } else if (!enabled && !plot.isRedstoneProtect()) {
-                                player.sendMessage("§c" + C("MsgAlreadyRedstoneDisabled"));
+                                player.sendMessage("§c" + C("MsgRedstoneAlreadyDisabled"));
                             } else {
                                 InternalPlotRedstoneChangeEvent event = serverBridge.getEventFactory().callPlotRedstoneChangeEvent(plugin, world, plot, player, enabled);
                                 if (!event.isCancelled()) {
