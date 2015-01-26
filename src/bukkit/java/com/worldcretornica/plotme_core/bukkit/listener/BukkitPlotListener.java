@@ -45,6 +45,7 @@ import org.bukkit.event.world.StructureGrowEvent;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.List;
+import org.bukkit.event.player.PlayerInteractAtEntityEvent;
 
 public class BukkitPlotListener implements Listener {
 
@@ -690,6 +691,52 @@ public class BukkitPlotListener implements Listener {
 
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     public void onPlayerInteractEntity(PlayerInteractEntityEvent event) {
+        Player player = event.getPlayer();
+        BukkitLocation location = new BukkitLocation(event.getRightClicked().getLocation());
+
+        if (api.getPlotMeCoreManager().isPlotWorld(location)) {
+            boolean canBuild = !player.hasPermission(PermissionNames.ADMIN_BUILDANYWHERE);
+            String id = PlotMeCoreManager.getPlotId(location);
+
+            if (id.isEmpty()) {
+                if (canBuild) {
+                    player.sendMessage(api.getUtil().C("ErrCannotBuild"));
+                    event.setCancelled(true);
+                }
+            } else {
+                PlotToClear ptc = api.getPlotLocked(location.getWorld().getName(), id);
+
+                if (ptc != null) {
+                    switch (ptc.getReason()) {
+                        case Clear:
+                            player.sendMessage(api.getUtil().C("MsgPlotLockedClear"));
+                            break;
+                        case Reset:
+                            player.sendMessage(api.getUtil().C("MsgPlotLockedReset"));
+                            break;
+                        case Expired:
+                            player.sendMessage(api.getUtil().C("MsgPlotLockedExpired"));
+                            break;
+                    }
+                    event.setCancelled(true);
+                } else {
+                    Plot plot = api.getPlotMeCoreManager().getPlotById(id, location.getWorld());
+
+                    if (plot == null || !plot.isAllowed(player.getName(), player.getUniqueId())) {
+                        if (canBuild) {
+                            player.sendMessage(api.getUtil().C("ErrCannotBuild"));
+                            event.setCancelled(true);
+                        }
+                    } else {
+                        plot.resetExpire(api.getPlotMeCoreManager().getMap(location).getDaysToExpiration());
+                    }
+                }
+            }
+        }
+    }
+    
+    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
+    public void onPlayerInteractAtEntity(PlayerInteractAtEntityEvent event) {
         Player player = event.getPlayer();
         BukkitLocation location = new BukkitLocation(event.getRightClicked().getLocation());
 
