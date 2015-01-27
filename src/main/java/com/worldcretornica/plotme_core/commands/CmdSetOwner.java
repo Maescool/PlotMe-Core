@@ -9,7 +9,9 @@ import com.worldcretornica.plotme_core.api.IOfflinePlayer;
 import com.worldcretornica.plotme_core.api.IPlayer;
 import com.worldcretornica.plotme_core.api.IWorld;
 import com.worldcretornica.plotme_core.api.event.InternalPlotOwnerChangeEvent;
+import com.worldcretornica.plotme_core.utils.UUIDFetcher;
 import net.milkbowl.vault.economy.EconomyResponse;
+import org.bukkit.Bukkit;
 
 public class CmdSetOwner extends PlotCommand {
 
@@ -100,10 +102,12 @@ public class CmdSetOwner extends PlotCommand {
                             plot.updateField("currentbidderid", null);
 
                             plot.setOwner(newOwner);
+                            plot.setOwnerId(Bukkit.getPlayer(newOwner).getUniqueId());
 
                             PlotMeCoreManager.setOwnerSign(world, plot);
 
                             plot.updateField("owner", newOwner);
+                            plot.updateField("ownerId", UUIDFetcher.toBytes(plot.getOwnerId()));
                         }
                     } else {
                         plugin.getPlotMeCoreManager().createPlot(world, id, newOwner, null, pmi);
