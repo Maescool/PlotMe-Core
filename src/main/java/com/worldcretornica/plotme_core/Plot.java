@@ -34,7 +34,6 @@ public class Plot implements Cloneable {
     private String currentBidder;
     private double currentBid;
     private UUID currentBidderId;
-    private String plotName;
     private Timestamp lastPlotClear;
     private boolean redstoneProtect;
 
@@ -534,10 +533,6 @@ public class Plot implements Cloneable {
 
     public final void setCurrentBid(double currentBid) {
         this.currentBid = currentBid;
-    }
-
-    public void setPlotName(String plotName) {
-        this.plotName = plotName;
     }
 
     public Timestamp getLastPlotClear() {

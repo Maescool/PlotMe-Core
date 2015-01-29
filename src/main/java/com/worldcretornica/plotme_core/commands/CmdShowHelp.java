@@ -98,9 +98,6 @@ public class CmdShowHelp extends PlotCommand {
         if (player.hasPermission(PermissionNames.USER_REDSTONE) || player.hasPermission(PermissionNames.ADMIN_REDSTONE)){
             allowed_commands.add("redstone");
         }
-        if (player.hasPermission(PermissionNames.USER_ADD) || player.hasPermission(PermissionNames.ADMIN_ADD)){
-            allowed_commands.add("entity");
-        }
 
         PlotMapInfo pmi = plugin.getPlotMeCoreManager().getMap(player);
 
@@ -327,10 +324,7 @@ public class CmdShowHelp extends PlotCommand {
             } else if ("redstone".equalsIgnoreCase(allowedCommand)){
                 player.sendMessage("§a /plotme redstone <" + C("WordEnable") + "|" + C("WordDisable") + ">");
                 player.sendMessage("§b "+ C("HelpRedstone"));
-            } else if ("entity".equalsIgnoreCase(allowedCommand)){
-                player.sendMessage("§a /plotme add <" + C("WordPlayer") + ">");
-                player.sendMessage("§b "+ C("HelpEntity"));
-            } 
+            }
         }
         return true;
     }
