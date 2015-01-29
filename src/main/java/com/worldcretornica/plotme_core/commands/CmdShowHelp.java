@@ -9,7 +9,6 @@ import com.worldcretornica.plotme_core.api.IWorld;
 import java.util.ArrayList;
 import java.util.List;
 
-@SuppressWarnings("SameReturnValue")
 public class CmdShowHelp extends PlotCommand {
 
     public CmdShowHelp(PlotMe_Core instance) {
@@ -99,11 +98,11 @@ public class CmdShowHelp extends PlotCommand {
             allowed_commands.add("redstone");
         }
 
-        PlotMapInfo pmi = plugin.getPlotMeCoreManager().getMap(player);
+        PlotMapInfo pmi = manager.getMap(player);
 
-        boolean economyEnabled = pmi != null && plugin.getPlotMeCoreManager().isEconomyEnabled(pmi);
+        boolean economyEnabled = pmi != null && manager.isEconomyEnabled(pmi);
 
-        if (plugin.getPlotMeCoreManager().isPlotWorld(player) && economyEnabled) {
+        if (manager.isPlotWorld(player) && economyEnabled) {
             if (player.hasPermission(PermissionNames.USER_BUY)) {
                 allowed_commands.add("buy");
             }
@@ -131,11 +130,11 @@ public class CmdShowHelp extends PlotCommand {
 
             if ("limit".equalsIgnoreCase(allowedCommand)) {
                 int plotLimit = getPlotLimit(player);
-                if (plugin.getPlotMeCoreManager().isPlotWorld(player)) {
+                if (manager.isPlotWorld(player)) {
 
                     IWorld world = player.getWorld();
 
-                    int ownedPlots = plugin.getSqlManager().getPlotCount(world.getName().toLowerCase(), player.getUniqueId(), player.getName());
+                    short ownedPlots = manager.getNbOwnedPlot(player.getUniqueId(), world.getName().toLowerCase());
 
                     if (plotLimit == -1) {
                         player.sendMessage(
@@ -145,9 +144,9 @@ public class CmdShowHelp extends PlotCommand {
                     }
                 } else if (serverBridge.getConfig().getBoolean("allowWorldTeleport")) {
 
-                    IWorld world = plugin.getPlotMeCoreManager().getFirstWorld();
+                    IWorld world = manager.getFirstWorld();
 
-                    int ownedPlots = plugin.getSqlManager().getPlotCount(world.getName().toLowerCase(), player.getUniqueId(), player.getName());
+                    short ownedPlots = manager.getNbOwnedPlot(player.getUniqueId(), world.getName().toLowerCase());
 
                     if (plotLimit == -1) {
                         player.sendMessage(
