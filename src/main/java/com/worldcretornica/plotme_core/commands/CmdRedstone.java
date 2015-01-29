@@ -15,16 +15,16 @@ public class CmdRedstone extends PlotCommand {
     public boolean exec(IPlayer player, String[] args) {
         if (player.hasPermission(PermissionNames.ADMIN_REDSTONE) || player.hasPermission(PermissionNames.USER_REDSTONE)) {
             IWorld world = player.getWorld();
-            PlotMapInfo pmi = plugin.getPlotMeCoreManager().getMap(world);
-            if (plugin.getPlotMeCoreManager().isPlotWorld(world)) {
-                String id = PlotMeCoreManager.getPlotId(player);
+            PlotMapInfo pmi = manager.getMap(world);
+            if (manager.isPlotWorld(world)) {
+                String id = manager.getPlotId(player);
                 if (id.isEmpty()) {
                     player.sendMessage("§c" + C("MsgNoPlotFound"));
-                } else if (!PlotMeCoreManager.isPlotAvailable(id, pmi)) {
+                } else if (!manager.isPlotAvailable(id, pmi)) {
                     if (args.length < 2) {
                         player.sendMessage(C("WordUsage") + " §c/plotme redstone <" + C("WordEnable") + "|" + C("WordDisable") + ">");
                     } else {
-                        Plot plot = PlotMeCoreManager.getPlotById(id, pmi);
+                        Plot plot = manager.getPlotById(id, pmi);
 
                         boolean enabled = false;
                         if (args[1].equalsIgnoreCase(C("WordEnable"))) {
@@ -43,7 +43,7 @@ public class CmdRedstone extends PlotCommand {
                                 InternalPlotRedstoneChangeEvent event = serverBridge.getEventFactory().callPlotRedstoneChangeEvent(plugin, world, plot, player, enabled);
                                 if (!event.isCancelled()) {
                                     plot.setRedstoneProtect(enabled);
-                                    plugin.getSqlManager().updatePlot(PlotMeCoreManager.getIdX(id), PlotMeCoreManager.getIdZ(id), plot.getWorld(), "redstoneprotect", enabled);
+                                    plugin.getSqlManager().updatePlot(manager.getIdX(id), manager.getIdZ(id), plot.getWorld(), "redstoneprotect", enabled);
                                     String word = C("WordDisabled");
                                     if (enabled) {
                                         player.sendMessage("§a" + C("MsgRedstoneNowEnabled"));

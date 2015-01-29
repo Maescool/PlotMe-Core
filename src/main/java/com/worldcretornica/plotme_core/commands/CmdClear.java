@@ -83,7 +83,7 @@ public class CmdClear extends PlotCommand {
                                     }
                                 }
                                 plot.setLastPlotClear(now);
-                                plugin.getSqlManager().updatePlot(PlotMeCoreManager.getIdX(id), PlotMeCoreManager.getIdZ(id), plot.getWorld(), "lastplotclear", now);
+                                plugin.getSqlManager().updatePlot(manager.getIdX(id), manager.getIdZ(id), plot.getWorld(), "lastplotclear", now);
                             } else {
                                 Date timeLeft = new Date(plot.getLastPlotClear().getTime() + plugin.getServerBridge().getConfig().getInt("PlotClearTime") - now.getTime());
                                 DateFormat formatter = new SimpleDateFormat("HH:mm:ss");
