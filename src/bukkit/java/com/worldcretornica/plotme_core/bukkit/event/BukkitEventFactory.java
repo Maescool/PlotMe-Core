@@ -29,6 +29,7 @@ import com.worldcretornica.plotme_core.api.event.InternalPlotResetEvent;
 import com.worldcretornica.plotme_core.api.event.InternalPlotSellChangeEvent;
 import com.worldcretornica.plotme_core.api.event.InternalPlotTeleportEvent;
 import com.worldcretornica.plotme_core.api.event.InternalPlotTeleportHomeEvent;
+import com.worldcretornica.plotme_core.api.event.InternalPlotTeleportMiddleEvent;
 import com.worldcretornica.plotme_core.api.event.InternalPlotWorldCreateEvent;
 import com.worldcretornica.plotme_core.api.event.InternalPlotWorldLoadEvent;
 import com.worldcretornica.plotme_core.api.event.InternalPlotRedstoneChangeEvent;
@@ -126,6 +127,13 @@ public class BukkitEventFactory implements IEventFactory {
     @Override
     public InternalPlotTeleportHomeEvent callPlotTeleportHomeEvent(PlotMe_Core plugin, IWorld world, Plot plot, IPlayer player) {
         PlotTeleportHomeEvent event = new PlotTeleportHomeEvent(plugin, world, plot, player);
+        Bukkit.getPluginManager().callEvent(event);
+        return event.getInternal();
+    }
+
+    @Override
+    public InternalPlotTeleportMiddleEvent callPlotTeleportMiddleEvent(PlotMe_Core plugin, IWorld world, Plot plot, IPlayer player, ILocation middle) {
+        PlotTeleportMiddleEvent event = new PlotTeleportMiddleEvent(plugin, world, plot, player, middle);
         Bukkit.getPluginManager().callEvent(event);
         return event.getInternal();
     }

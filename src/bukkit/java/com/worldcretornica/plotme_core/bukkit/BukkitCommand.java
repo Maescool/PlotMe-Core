@@ -20,6 +20,7 @@ import com.worldcretornica.plotme_core.commands.CmdDoneList;
 import com.worldcretornica.plotme_core.commands.CmdExpired;
 import com.worldcretornica.plotme_core.commands.CmdHome;
 import com.worldcretornica.plotme_core.commands.CmdInfo;
+import com.worldcretornica.plotme_core.commands.CmdMiddle;
 import com.worldcretornica.plotme_core.commands.CmdMove;
 import com.worldcretornica.plotme_core.commands.CmdPlotList;
 import com.worldcretornica.plotme_core.commands.CmdProtect;
@@ -34,6 +35,7 @@ import com.worldcretornica.plotme_core.commands.CmdTP;
 import com.worldcretornica.plotme_core.commands.CmdUndeny;
 import com.worldcretornica.plotme_core.commands.CmdWEAnywhere;
 import com.worldcretornica.plotme_core.commands.CmdRedstone;
+import com.worldcretornica.plotme_core.commands.CmdInteract;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -73,6 +75,9 @@ public class BukkitCommand implements CommandExecutor {
     private final CmdUndeny undeny;
     private final CmdWEAnywhere weAnywhere;
     private final CmdRedstone redstone;
+    private final CmdInteract interact;
+    private final CmdMiddle middle;
+    
     private final PlotMe_CorePlugin plugin;
 
     public BukkitCommand(PlotMe_CorePlugin instance) {
@@ -107,8 +112,10 @@ public class BukkitCommand implements CommandExecutor {
         showHelp = new CmdShowHelp(api);
         tp = new CmdTP(api);
         undeny = new CmdUndeny(api);
+        middle = new CmdMiddle(api);
         weAnywhere = new CmdWEAnywhere(api);
         redstone = new CmdRedstone(api);
+        interact = new CmdInteract(api);
     }
 
     private String C(String caption) {
@@ -247,6 +254,12 @@ public class BukkitCommand implements CommandExecutor {
                     }
                     if ("redstone".equalsIgnoreCase(args[0])){
                         return redstone.exec(player, args);
+                    }
+                    if ("interact".equalsIgnoreCase(args[0])){
+                        return interact.exec(player, args);
+                    }
+                    if ("middle".equalsIgnoreCase(args[0])) {
+                        return middle.exec(player, args);
                     }
                     // arg can be "home" or "home:n"
                     if ((args[0].toLowerCase() + ":").startsWith("home:") || (args[0].toLowerCase() + ":").startsWith("h:")) {
