@@ -340,6 +340,19 @@ public class BukkitPlotListener implements Listener {
                         }
                     }
                 }
+                
+                if (pmi.isInteractBlock(block.getTypeId())) {
+                    id = manager.getPlotId(block.getLocation());
+                    if (!id.isEmpty()) {
+                        Plot plot = manager.getPlotById(id, pmi);
+                        if (plot != null && plot.isInteractProtect()) {
+                            if ((!plot.isAllowed(player.getName(), player.getUniqueId())) && canBuild) {
+                                player.sendMessage(api.getUtil().C("ErrCannotInteract"));
+                                event.setCancelled(true);
+                            }
+                        }
+                    }
+                }
             }
         }
     }

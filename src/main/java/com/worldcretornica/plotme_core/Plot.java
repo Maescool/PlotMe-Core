@@ -36,6 +36,7 @@ public class Plot implements Cloneable {
     private UUID currentBidderId;
     private Timestamp lastPlotClear;
     private boolean redstoneProtect;
+    private boolean interactProtect;
 
     public Plot(PlotMe_Core plugin) {
         this.plugin = plugin;
@@ -60,7 +61,8 @@ public class Plot implements Cloneable {
         setCurrentBidderId(null);
         setCurrentBid(0.0);
         setLastPlotClear(null);
-        setRedstoneProtect(false);
+        setRedstoneProtect(true);
+        setInteractProtect(false);
     }
 
     public Plot(PlotMe_Core plugin, String owner, UUID uuid, IWorld world, String plotId, int days) {
@@ -91,13 +93,14 @@ public class Plot implements Cloneable {
         setCurrentBidderId(null);
         setCurrentBid(0.0);
         setLastPlotClear(null);
-        setRedstoneProtect(false);
+        setRedstoneProtect(true);
+        setInteractProtect(false);
     }
 
     public Plot(PlotMe_Core plugin, String owner, UUID ownerId, String world, String biome, Date expiredDate,
                 boolean finished,
                 PlayerList allowed, String id, double customPrice, boolean sale, String finishedDate,
-                boolean protect, String bidder, UUID bidderId, double bid, boolean isAuctioned, PlayerList denied, Timestamp lastPlotClear, boolean redstoneProtect) {
+                boolean protect, String bidder, UUID bidderId, double bid, boolean isAuctioned, PlayerList denied, Timestamp lastPlotClear, boolean redstoneProtect, boolean interactProtect) {
         this.plugin = plugin;
         setOwner(owner);
         setOwnerId(ownerId);
@@ -118,6 +121,7 @@ public class Plot implements Cloneable {
         this.denied = denied;
         setLastPlotClear(lastPlotClear);
         setRedstoneProtect(redstoneProtect);
+        setInteractProtect(interactProtect);
     }
 
     public void resetExpire(int days) {
@@ -548,6 +552,14 @@ public class Plot implements Cloneable {
     }
 
     public void setRedstoneProtect(boolean redstoneProtect) {
+        this.redstoneProtect = redstoneProtect;
+    }
+    
+    public boolean isInteractProtect() {
+        return redstoneProtect;
+    }
+
+    public void setInteractProtect(boolean redstoneProtect) {
         this.redstoneProtect = redstoneProtect;
     }
 

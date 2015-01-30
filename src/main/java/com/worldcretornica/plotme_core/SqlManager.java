@@ -140,7 +140,15 @@ public class SqlManager {
                 // RedstoneProtect
                 set = statement.executeQuery("SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = '" + schema + "' AND " + "TABLE_NAME='plotmePlots' AND column_name='redstoneprotect'");
                 if (!set.next()) {
-                    statement.execute("ALTER TABLE plotmePlots ADD redstoneprotect BOOLEAN NOT NULL DEFAULT FALSE;");
+                    statement.execute("ALTER TABLE plotmePlots ADD redstoneprotect BOOLEAN NOT NULL DEFAULT TRUE;");
+                    conn.commit();
+                }
+                set.close();
+                
+                // InteractProtect
+                set = statement.executeQuery("SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = '" + schema + "' AND " + "TABLE_NAME='plotmePlots' AND column_name='interactprotect'");
+                if (!set.next()) {
+                    statement.execute("ALTER TABLE plotmePlots ADD interactprotect BOOLEAN NOT NULL DEFAULT FALSE;");
                     conn.commit();
                 }
                 set.close();
@@ -250,6 +258,22 @@ public class SqlManager {
 
                 if (!found) {
                     statement.execute("ALTER TABLE plotmePlots ADD redstoneprotect BOOLEAN NOT NULL DEFAULT FALSE;");
+                    conn.commit();
+                }
+                set.close();
+                
+                // InteractProtect
+                set = statement.executeQuery("PRAGMA table_info(`plotmePlots`)");
+
+                while (set.next() && !found) {
+                    column = set.getString(2);
+                    if ("interactprotect".equalsIgnoreCase(column)) {
+                        found = true;
+                    }
+                }
+
+                if (!found) {
+                    statement.execute("ALTER TABLE plotmePlots ADD interactprotect BOOLEAN NOT NULL DEFAULT FALSE;");
                     conn.commit();
                 }
                 set.close();
@@ -363,7 +387,8 @@ public class SqlManager {
                                     + "`currentbidderId` BLOB(16)," //19
                                     + "`ownerId` BLOB(16)," //20
                                     + "`lastplotclear` DATETIME," //21
-                                    + "`redstoneprotect` BOOLEAN NOT NULL DEFAULT FALSE" //22
+                                    + "`redstoneprotect` BOOLEAN NOT NULL DEFAULT TRUE," //22
+                                    + "`interactprotect` BOOLEAN NOT NULL DEFAULT FALSE" //23
                                     + "PRIMARY KEY (idX, idZ, world) "
                                     + ");";
                 st.executeUpdate(PLOT_TABLE);
@@ -456,6 +481,7 @@ public class SqlManager {
 
                         Timestamp lastPlotClear = setPlots.getTimestamp("lastplotclear");
                         boolean redstoneProtect = setPlots.getBoolean("redstoneprotect");
+                        boolean interactProtect = setPlots.getBoolean("interactprotect");
 
                         byte[] byOwner = setPlots.getBytes("ownerId");
                         byte[] byBidder = setPlots.getBytes("currentbidderid");
@@ -501,7 +527,7 @@ public class SqlManager {
                         Plot plot = new Plot(plugin, owner, ownerId, world, biome,
                                             expireddate, finished, allowed, idX + ";" + idZ, customprice,
                                             forsale, finisheddate, protect, currentbidder, currentbidderid, currentbid,
-                                            auctionned, denied, lastPlotClear, redstoneProtect);
+                                            auctionned, denied, lastPlotClear, redstoneProtect, interactProtect);
                         addPlot(plot, idX, idZ, topX, bottomX, topZ, bottomZ);
 
                         size++;
@@ -568,8 +594,8 @@ public class SqlManager {
 
             strSql.append("INSERT INTO plotmePlots (idX, idZ, owner, world, topX, bottomX, topZ, bottomZ, ");
             strSql.append("biome, expireddate, finished, customprice, forsale, finisheddate, protected,");
-            strSql.append("auctionned, currentbid, currentbidder, currentbidderId, ownerId, lastplotclear, redstoneprotect) ");
-            strSql.append("VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
+            strSql.append("auctionned, currentbid, currentbidder, currentbidderId, ownerId, lastplotclear, redstoneprotect, interactprotect) ");
+            strSql.append("VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
 
             ps = conn.prepareStatement(strSql.toString());
             ps.setInt(1, idX);
@@ -605,6 +631,7 @@ public class SqlManager {
             }
             ps.setTimestamp(21, plot.getLastPlotClear());
             ps.setBoolean(22, plot.isRedstoneProtect());
+            ps.setBoolean(23, plot.isInteractProtect());
 
             ps.executeUpdate();
             conn.commit();
@@ -918,6 +945,7 @@ public class SqlManager {
 
                 Timestamp lastPlotClear = setPlots.getTimestamp("lastplotclear");
                 boolean redstoneProtect = setPlots.getBoolean("redstoneprotect");
+                boolean interactProtect = setPlots.getBoolean("interactprotect");
                 
                 byte[] byOwner = setPlots.getBytes("ownerId");
                 byte[] byBidder = setPlots.getBytes("currentbidderid");
@@ -969,7 +997,7 @@ public class SqlManager {
 
                 plot = new Plot(plugin, owner, ownerId, world, biome, expiredDate, finished, allowed,
                                 idX + ";" + idZ, customPrice, forSale, finishedDate, protect,
-                                currentBidder, currentBidderId, currentBid, auctioned, denied, lastPlotClear, redstoneProtect);
+                                currentBidder, currentBidderId, currentBid, auctioned, denied, lastPlotClear, redstoneProtect, interactProtect);
             }
         } catch (SQLException ex) {
             plugin.getLogger().severe("Plot load Exception :");
@@ -1066,6 +1094,7 @@ public class SqlManager {
 
                 Timestamp lastPlotClear = setPlots.getTimestamp("lastplotclear");
                 boolean redstoneProtect = setPlots.getBoolean("redstoneProtect");
+                boolean interactProtect = setPlots.getBoolean("interactProtect");
 
                 byte[] byOwner = setPlots.getBytes("ownerId");
                 byte[] byBidder = setPlots.getBytes("currentbidderid");
@@ -1113,7 +1142,7 @@ public class SqlManager {
                 setDenied.close();
 
                 Plot plot = new Plot(plugin, owner, ownerId, world, biome, expiredDate, finished, allowed, idX + ";" + idZ,
-                                     customPrice, forSale, finishedDate, protect, currentBidder, currentBidderId, currentBid, auctioned, denied, lastPlotClear, redstoneProtect);
+                                     customPrice, forSale, finishedDate, protect, currentBidder, currentBidderId, currentBid, auctioned, denied, lastPlotClear, redstoneProtect, interactProtect);
                 ret.put(idX + ";" + idZ, plot);
             }
         } catch (SQLException ex) {
@@ -1545,6 +1574,7 @@ public class SqlManager {
 
                 Timestamp lastPlotClear = setPlots.getTimestamp("lastplotclear");
                 boolean redstoneProtect = setPlots.getBoolean("redstoneprotect");
+                boolean interactProtect = setPlots.getBoolean("interactprotect");
 
                 byte[] byBidder = setPlots.getBytes("currentbidderid");
                 byte[] byOwner = setPlots.getBytes("ownerid");
@@ -1602,7 +1632,7 @@ public class SqlManager {
 
                 Plot plot = new Plot(plugin, owner, ownerId, world, biome, expireddate, finished, allowed,
                                      idX + ";" + idZ, customprice, forsale, finisheddate, protect,
-                                     currentbidder, currentbidderid, currentbid, auctionned, denied, lastPlotClear, redstoneProtect);
+                                     currentbidder, currentbidderid, currentbid, auctionned, denied, lastPlotClear, redstoneProtect, interactProtect);
 
                 ret.add(plot);
             }
@@ -1676,6 +1706,7 @@ public class SqlManager {
 
                 Timestamp lastPlotClear = setPlots.getTimestamp("lastplotclear");
                 boolean redstoneProtect = setPlots.getBoolean("redstoneprotect");
+                boolean interactProtect = setPlots.getBoolean("interactprotect");
 
                 byte[] byBidder = setPlots.getBytes("currentbidderid");
                 byte[] byOwner = setPlots.getBytes("ownerid");
@@ -1732,7 +1763,7 @@ public class SqlManager {
 
                 Plot plot = new Plot(plugin, owner, ownerId, world1, biome, expireddate, finished, allowed,
                                      idX + ";" + idZ, customprice, forsale, finisheddate, protect,
-                                     currentbidder, currentbidderid, currentbid, auctionned, denied, lastPlotClear, redstoneProtect);
+                                     currentbidder, currentbidderid, currentbid, auctionned, denied, lastPlotClear, redstoneProtect, interactProtect);
 
                 ret.add(plot);
             }

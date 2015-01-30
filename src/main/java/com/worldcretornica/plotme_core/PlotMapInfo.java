@@ -73,8 +73,16 @@ public class PlotMapInfo {
         return config.getIntegerList("RedstoneBlocks");
     }
     
+    public List<Integer> getInteractBlocks() {
+        return config.getIntegerList("InteractBlocks");
+    }
+    
     public boolean isRedstoneBlock(int blockId) {
         return getRedstoneBlocks().contains(blockId);
+    }
+    
+    public boolean isInteractBlock(int blockId) {
+        return getInteractBlocks().contains(blockId);
     }
 
     public int getPlotAutoLimit() {
