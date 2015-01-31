@@ -556,11 +556,11 @@ public class Plot implements Cloneable {
     }
     
     public boolean isInteractProtect() {
-        return redstoneProtect;
+        return interactProtect;
     }
 
-    public void setInteractProtect(boolean redstoneProtect) {
-        this.redstoneProtect = redstoneProtect;
+    public void setInteractProtect(boolean interactProtect) {
+        this.interactProtect = interactProtect;
     }
 
     @Override
