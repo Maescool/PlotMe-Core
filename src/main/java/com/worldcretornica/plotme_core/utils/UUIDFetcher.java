@@ -1,6 +1,7 @@
 package com.worldcretornica.plotme_core.utils;
 
 import com.google.common.collect.ImmutableList;
+import com.worldcretornica.plotme_core.bukkit.PlotMe_CorePlugin;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -49,6 +50,8 @@ public class UUIDFetcher implements Callable<Map<String, UUID>> {
         connection.setUseCaches(false);
         connection.setDoInput(true);
         connection.setDoOutput(true);
+        connection.setConnectTimeout(20000);
+        connection.setReadTimeout(20000);
         return connection;
     }
 

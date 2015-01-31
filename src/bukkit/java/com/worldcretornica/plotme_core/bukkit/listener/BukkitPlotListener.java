@@ -38,14 +38,15 @@ import org.bukkit.event.hanging.HangingBreakByEntityEvent;
 import org.bukkit.event.hanging.HangingPlaceEvent;
 import org.bukkit.event.player.PlayerBucketEmptyEvent;
 import org.bukkit.event.player.PlayerBucketFillEvent;
-import org.bukkit.event.player.PlayerEggThrowEvent;
 import org.bukkit.event.player.PlayerInteractAtEntityEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.world.StructureGrowEvent;
 import org.bukkit.inventory.ItemStack;
-
+import org.bukkit.event.entity.*;
+import org.bukkit.event.player.*;
 import java.util.List;
+import java.util.UUID;
 
 public class BukkitPlotListener implements Listener {
 
@@ -756,28 +757,35 @@ public class BukkitPlotListener implements Listener {
     }
 
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
-    public void onPlayerEggThrow(PlayerEggThrowEvent event) {
-        Player player = event.getPlayer();
-        BukkitLocation location = new BukkitLocation(event.getEgg().getLocation());
+    public void onProjectileLaunchEvent(ProjectileLaunchEvent event) {
+        if (event.getEntity() instanceof Player) {
+            PlotMapInfo pmi = manager.getMap(event.getEntity().getWorld().getName().toLowerCase());
+            if (pmi != null && !pmi.canUseProjectiles()) {
+                event.getEntity().sendMessage(api.getUtil().C("ErrCannotUseEggs"));
+            /* Player player = event.getPlayer();
+            BukkitLocation location = new BukkitLocation(event.getEgg().getLocation());
 
-        if (manager.isPlotWorld(location)) {
-            boolean canBuild = player.hasPermission(PermissionNames.ADMIN_BUILDANYWHERE);
-            String id = manager.getPlotId(location);
+            if (manager.isPlotWorld(location)) {
+                boolean canBuild = player.hasPermission(PermissionNames.ADMIN_BUILDANYWHERE);
+                String id = manager.getPlotId(location);
 
-            if (id.isEmpty()) {
-                if (!canBuild) {
-                    player.sendMessage(api.getUtil().C("ErrCannotUseEggs"));
-                    event.setHatching(false);
-                }
-            } else {
-                Plot plot = manager.getPlotById(id, location.getWorld());
-
-                if (plot == null || !plot.isAllowed(player.getName(), player.getUniqueId())) {
+                if (id.isEmpty()) {
                     if (!canBuild) {
                         player.sendMessage(api.getUtil().C("ErrCannotUseEggs"));
                         event.setHatching(false);
                     }
+                } else {
+                    Plot plot = pmi.getPlot(id);
+
+                    if (plot == null || !plot.isAllowed(player.getName(), player.getUniqueId())) {
+                        if (!canBuild) {
+                            player.sendMessage(api.getUtil().C("ErrCannotUseEggs"));
+                            event.setHatching(false);
+                        }
+                    }
                 }
+            }
+            */
             }
         }
     }
@@ -841,4 +849,9 @@ public class BukkitPlotListener implements Listener {
         api.getLogger().info("Done loading " + event.getNbPlots() + " plots for world " + event.getWorldName());
     }
 
+    @EventHandler(ignoreCancelled = true)
+    public void onPlayerQuit(PlayerQuitEvent event) {
+        UUID playerUUID = event.getPlayer().getUniqueId();
+        plugin.removePlayer(playerUUID);
+    }
 }

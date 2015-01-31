@@ -87,3 +87,4 @@ AutoLinkPlots: true
 DisableExplosion: true
 DisableIgnition: true
 UseProgressiveClear: false
+Projectiles: true
