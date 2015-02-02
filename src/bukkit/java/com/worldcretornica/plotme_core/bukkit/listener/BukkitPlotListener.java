@@ -6,7 +6,6 @@ import com.worldcretornica.plotme_core.PlotMapInfo;
 import com.worldcretornica.plotme_core.PlotMeCoreManager;
 import com.worldcretornica.plotme_core.PlotMe_Core;
 import com.worldcretornica.plotme_core.PlotToClear;
-
 import com.worldcretornica.plotme_core.bukkit.PlotMe_CorePlugin;
 import com.worldcretornica.plotme_core.bukkit.api.BukkitBlock;
 import com.worldcretornica.plotme_core.bukkit.api.BukkitEntity;
@@ -48,6 +47,8 @@ import org.bukkit.event.entity.*;
 import org.bukkit.event.player.*;
 import java.util.List;
 import java.util.UUID;
+import java.util.logging.Level;
+import org.bukkit.Material;
 
 public class BukkitPlotListener implements Listener {
 
@@ -478,7 +479,11 @@ public class BukkitPlotListener implements Listener {
             BlockFace face = event.getDirection();
 
             for (Block block : event.getBlocks()) {
+                if (block.getType() == Material.SLIME_BLOCK) {
+                    plugin.getLogger().log(Level.INFO, "Slime block extended");
+                }
                 String id = manager.getPlotId(new BukkitLocation(block.getLocation().add(face.getModX(), face.getModY(), face.getModZ())));
+                
 
                 if (id.isEmpty()) {
                     event.setCancelled(true);
@@ -499,6 +504,11 @@ public class BukkitPlotListener implements Listener {
         BukkitBlock block = new BukkitBlock(event.getRetractLocation().getBlock());
 
         if (manager.isPlotWorld(block.getWorld())) {
+            for (Block b : event.getBlocks()) {
+                if (b.getType() == Material.SLIME_BLOCK) {
+                    plugin.getLogger().log(Level.INFO, "Slime block retracted");
+                }
+            }
             String id = manager.getPlotId(block.getLocation());
 
             if (id.isEmpty()) {
