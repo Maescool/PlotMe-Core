@@ -343,7 +343,7 @@ public class BukkitPlotListener implements Listener {
                         }
                     }
                 }
-                
+
                 if (pmi.isInteractBlock(block.getTypeId())) {
                     id = manager.getPlotId(block.getLocation());
                     if (!id.isEmpty()) {
@@ -479,11 +479,7 @@ public class BukkitPlotListener implements Listener {
             BlockFace face = event.getDirection();
 
             for (Block block : event.getBlocks()) {
-                if (block.getType() == Material.SLIME_BLOCK) {
-                    plugin.getLogger().log(Level.INFO, "Slime block extended");
-                }
                 String id = manager.getPlotId(new BukkitLocation(block.getLocation().add(face.getModX(), face.getModY(), face.getModZ())));
-                
 
                 if (id.isEmpty()) {
                     event.setCancelled(true);
@@ -500,24 +496,21 @@ public class BukkitPlotListener implements Listener {
 
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     public void onBlockPistonRetract(BlockPistonRetractEvent event) {
-        @SuppressWarnings("deprecation")
-        BukkitBlock block = new BukkitBlock(event.getRetractLocation().getBlock());
+        BukkitLocation location = new BukkitLocation(event.getBlock().getLocation());
+        if (manager.isPlotWorld(location)) {
+            BlockFace face = event.getDirection();
 
-        if (manager.isPlotWorld(block.getWorld())) {
-            for (Block b : event.getBlocks()) {
-                if (b.getType() == Material.SLIME_BLOCK) {
-                    plugin.getLogger().log(Level.INFO, "Slime block retracted");
-                }
-            }
-            String id = manager.getPlotId(block.getLocation());
+            for (Block block : event.getBlocks()) {
+                String id = manager.getPlotId(new BukkitLocation(block.getLocation().add(-face.getModX(), -face.getModY(), -face.getModZ())));
 
-            if (id.isEmpty()) {
-                event.setCancelled(true);
-            } else {
-                PlotToClear ptc = api.getPlotLocked(block.getWorld().getName(), id);
-
-                if (ptc != null) {
+                if (id.isEmpty()) {
                     event.setCancelled(true);
+                } else {
+                    PlotToClear ptc = api.getPlotLocked(block.getWorld().getName(), id);
+
+                    if (ptc != null) {
+                        event.setCancelled(true);
+                    }
                 }
             }
         }
@@ -762,7 +755,7 @@ public class BukkitPlotListener implements Listener {
             }
         }
     }
-    
+
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     public void onPlayerInteractAtEntity(PlayerInteractAtEntityEvent event) {
         onPlayerInteractEntity(event);
@@ -774,30 +767,30 @@ public class BukkitPlotListener implements Listener {
             PlotMapInfo pmi = manager.getMap(event.getEntity().getWorld().getName());
             if (pmi != null && !pmi.canUseProjectiles()) {
                 event.getEntity().sendMessage(api.getUtil().C("ErrCannotUseEggs"));
-            /* Player player = event.getPlayer();
-            BukkitLocation location = new BukkitLocation(event.getEgg().getLocation());
+                /* Player player = event.getPlayer();
+                 BukkitLocation location = new BukkitLocation(event.getEgg().getLocation());
 
-            if (manager.isPlotWorld(location)) {
-                boolean canBuild = player.hasPermission(PermissionNames.ADMIN_BUILDANYWHERE);
-                String id = manager.getPlotId(location);
+                 if (manager.isPlotWorld(location)) {
+                 boolean canBuild = player.hasPermission(PermissionNames.ADMIN_BUILDANYWHERE);
+                 String id = manager.getPlotId(location);
 
-                if (id.isEmpty()) {
-                    if (!canBuild) {
-                        player.sendMessage(api.getUtil().C("ErrCannotUseEggs"));
-                        event.setHatching(false);
-                    }
-                } else {
-                    Plot plot = pmi.getPlot(id);
+                 if (id.isEmpty()) {
+                 if (!canBuild) {
+                 player.sendMessage(api.getUtil().C("ErrCannotUseEggs"));
+                 event.setHatching(false);
+                 }
+                 } else {
+                 Plot plot = pmi.getPlot(id);
 
-                    if (plot == null || !plot.isAllowed(player.getName(), player.getUniqueId())) {
-                        if (!canBuild) {
-                            player.sendMessage(api.getUtil().C("ErrCannotUseEggs"));
-                            event.setHatching(false);
-                        }
-                    }
-                }
-            }
-            */
+                 if (plot == null || !plot.isAllowed(player.getName(), player.getUniqueId())) {
+                 if (!canBuild) {
+                 player.sendMessage(api.getUtil().C("ErrCannotUseEggs"));
+                 event.setHatching(false);
+                 }
+                 }
+                 }
+                 }
+                 */
             }
         }
     }
