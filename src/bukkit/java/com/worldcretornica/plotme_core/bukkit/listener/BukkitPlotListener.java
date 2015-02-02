@@ -6,6 +6,7 @@ import com.worldcretornica.plotme_core.PlotMapInfo;
 import com.worldcretornica.plotme_core.PlotMeCoreManager;
 import com.worldcretornica.plotme_core.PlotMe_Core;
 import com.worldcretornica.plotme_core.PlotToClear;
+
 import com.worldcretornica.plotme_core.bukkit.PlotMe_CorePlugin;
 import com.worldcretornica.plotme_core.bukkit.api.BukkitBlock;
 import com.worldcretornica.plotme_core.bukkit.api.BukkitEntity;
@@ -494,6 +495,7 @@ public class BukkitPlotListener implements Listener {
 
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     public void onBlockPistonRetract(BlockPistonRetractEvent event) {
+        @SuppressWarnings("deprecation")
         BukkitBlock block = new BukkitBlock(event.getRetractLocation().getBlock());
 
         if (manager.isPlotWorld(block.getWorld())) {
@@ -759,7 +761,7 @@ public class BukkitPlotListener implements Listener {
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     public void onProjectileLaunchEvent(ProjectileLaunchEvent event) {
         if (event.getEntity() instanceof Player) {
-            PlotMapInfo pmi = manager.getMap(event.getEntity().getWorld().getName().toLowerCase());
+            PlotMapInfo pmi = manager.getMap(event.getEntity().getWorld().getName());
             if (pmi != null && !pmi.canUseProjectiles()) {
                 event.getEntity().sendMessage(api.getUtil().C("ErrCannotUseEggs"));
             /* Player player = event.getPlayer();

@@ -70,7 +70,10 @@ public class PlotMe_Core {
         setupDefaultCaptions();
         setupMySQL();
         PlotMeCoreManager.getInstance().getPlotMaps().clear();
-        //setupWorlds();
+        
+        for (String worldname : managers.keySet()) {
+            setupWorld(worldname.toLowerCase());
+        }
     }
 
     public Logger getLogger() {
@@ -122,7 +125,7 @@ public class PlotMe_Core {
     }
 
     private void setupWorld(String worldname) {
-        if (getGenManager(worldname.toLowerCase()) == null) {
+        if (getGenManager(worldname) == null) {
             getLogger().log(Level.SEVERE, "The world {0} either does not exist or not using a PlotMe generator", worldname);
             getLogger().log(Level.SEVERE, "Please ensure that {0} is set up and that it is using a PlotMe generator", worldname);
         } else {
@@ -133,7 +136,7 @@ public class PlotMe_Core {
             config.set("BottomBlockId", null);
             config.set("AutoLinkPlots", null);
             config.saveConfig();
-            PlotMeCoreManager.getInstance().addPlotMap(worldname.toLowerCase(), pmi);
+            PlotMeCoreManager.getInstance().addPlotMap(worldname, pmi);
         }
 
         if (PlotMeCoreManager.getInstance().getPlotMaps().isEmpty()) {

@@ -2,10 +2,11 @@ package com.worldcretornica.plotme_core.api;
 
 import com.worldcretornica.plotme_core.PlotWorldEdit;
 import com.worldcretornica.plotme_core.api.event.IEventFactory;
+
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.economy.EconomyResponse;
 
-import java.io.InputStream;
+import java.io.*;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -81,6 +82,8 @@ public abstract class IServerBridge {
     public abstract void setupListeners();
 
     public abstract void runTaskAsynchronously(Runnable runnable);
+    
+    public abstract void runTaskLaterAsynchronously(Runnable runnable, long delay);
 
     public abstract IBiome getBiome(String name);
 
@@ -106,12 +109,11 @@ public abstract class IServerBridge {
      * Get all Existing Plotworlds.
      * @return all plotworlds on the server
      */
-    public abstract List<IWorld> getWorlds();
+    public abstract Collection<IWorld> getWorlds();
 
     public abstract boolean createPlotWorld(String worldName, String generator, Map<String, String> args);
 
     public abstract IMaterial getMaterial(String string);
 
     public abstract IConfigSection loadDefaultConfig(String string);
-
 }

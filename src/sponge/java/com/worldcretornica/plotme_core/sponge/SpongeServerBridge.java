@@ -9,13 +9,17 @@ import com.worldcretornica.plotme_core.api.IPlayer;
 import com.worldcretornica.plotme_core.api.IServerBridge;
 import com.worldcretornica.plotme_core.api.IWorld;
 import com.worldcretornica.plotme_core.api.event.IEventFactory;
-import com.worldcretornica.plotme_core.bukkit.event.BukkitEventFactory;
-import com.worldcretornica.plotme_core.sponge.api.SpongePlayer;
+import com.worldcretornica.plotme_core.bukkit.event.*;
+import com.worldcretornica.plotme_core.sponge.api.*;
+
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.economy.EconomyResponse;
-import org.spongepowered.api.entity.player.Player;
 
-import java.io.InputStream;
+import org.spongepowered.api.entity.player.Player;
+import org.spongepowered.api.service.command.CommandService;
+import org.spongepowered.api.world.World;
+
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -137,13 +141,18 @@ public class SpongeServerBridge extends IServerBridge {
 
     @Override
     public IWorld getWorld(String worldName) {
-        // TODO Auto-generated method stub
-        return null;
+        World world = plugin.getGame().getServer().get().getWorld(worldName).orNull();
+        if (world != null) {
+            return new SpongeWorld(world);
+        } else {
+            return null;
+        }
     }
 
     @Override
     public void setupCommands() {
-        // TODO Auto-generated method stub
+        CommandService cmdService = plugin.getGame().getCommandDispatcher();
+        cmdService.register(plugin, new SpongeCommand(plugin), "plotme");
 
     }
 
@@ -226,9 +235,13 @@ public class SpongeServerBridge extends IServerBridge {
     }
 
     @Override
-    public List<IWorld> getWorlds() {
-        // TODO Auto-generated method stub
-        return null;
+    public Collection<IWorld> getWorlds() {
+        Collection<IWorld> worlds = new ArrayList<>();
+
+        for (World world : plugin.getGame().getServer().get().getWorlds()) {
+            worlds.add(new SpongeWorld(world));
+        }
+        return worlds;
     }
 
     @Override
@@ -247,6 +260,12 @@ public class SpongeServerBridge extends IServerBridge {
     public IConfigSection loadDefaultConfig(String string) {
         // TODO Auto-generated method stub
         return null;
+    }
+
+    @Override
+    public void runTaskLaterAsynchronously(Runnable runnable, long delay) {
+        // TODO Auto-generated method stub
+        
     }
 
 }
