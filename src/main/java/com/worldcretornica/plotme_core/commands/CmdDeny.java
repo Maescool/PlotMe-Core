@@ -34,7 +34,7 @@ public class CmdDeny extends PlotCommand {
 
                         if (plot.getOwner().equalsIgnoreCase(player.getName()) || player.hasPermission(PermissionNames.ADMIN_DENY)) {
                             if (plot.getOwner().equalsIgnoreCase(denied)) {
-                                player.sendMessage("Cannot deny owner");
+                                player.sendMessage(C("MsgCannotDenyOwner"));
                                 return true;
                             }
 
@@ -99,9 +99,8 @@ public class CmdDeny extends PlotCommand {
                                         }
                                     }
 
-                                    double price1 = -price;
                                     player.sendMessage(
-                                            C("WordPlayer") + " §c" + denied + "§r " + C("MsgNowDenied") + " " + Util().moneyFormat(price1, true));
+                                            C("WordPlayer") + " §c" + denied + "§r " + C("MsgNowDenied") + " " + Util().moneyFormat(-price, true));
 
                                     if (isAdvancedLogging()) {
                                         if (price == 0) {

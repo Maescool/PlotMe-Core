@@ -29,6 +29,10 @@ public class CmdAuction extends PlotCommand {
                             player.sendMessage("§c" + C("MsgNoPlotFound"));
                         } else if (!manager.isPlotAvailable(id, pmi)) {
                             Plot plot = manager.getPlotById(id, pmi);
+                            if (plot.isForSale()) {
+                                player.sendMessage(C("You cannot auction a plot that is for sale"));
+                                return true;
+                            }
 
                             String name = player.getName();
 
@@ -56,7 +60,7 @@ public class CmdAuction extends PlotCommand {
 
                                             plot.setAuctioned(false);
                                             manager.adjustWall(player);
-                                            manager.setSellSign(world, plot);
+                                            manager.removeAuctionSign(world, id);
                                             plot.setCurrentBid(0.0);
                                             plot.setCurrentBidder(null);
 
@@ -76,7 +80,7 @@ public class CmdAuction extends PlotCommand {
                                     } else {
                                         plot.setAuctioned(false);
                                         manager.adjustWall(player);
-                                        manager.setSellSign(world, plot);
+                                        manager.removeAuctionSign(world, id);
                                         plot.setCurrentBid(0.0);
                                         plot.setCurrentBidder(null);
 
@@ -110,7 +114,7 @@ public class CmdAuction extends PlotCommand {
                                             plot.setCurrentBid(bid);
                                             plot.setAuctioned(true);
                                             manager.adjustWall(player);
-                                            manager.setSellSign(world, plot);
+                                            manager.setAuctionSign(world, plot);
 
                                             plot.updateField("currentbid", bid);
                                             plot.updateField("auctionned", true);

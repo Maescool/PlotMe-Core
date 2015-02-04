@@ -154,6 +154,27 @@ public class PlotMeCoreManager {
         getGenManager(world).removeAuctionDisplay(world, id);
     }
 
+    public void setAuctionSign(IWorld world, Plot plot) {
+        String line1 = Util().C("SignOnAuction");
+        String line2;
+        if (plot.getCurrentBidder() == null) {
+            line2 = Util().C("SignMinimumBid");
+        } else {
+            line2 = Util().C("SignCurrentBid");
+        }
+        String line3 = String.valueOf(plot.getCurrentBid());
+        String line4 = "/plotme " + Util().C("CommandBid") + " <x>";
+        getGenManager(world).setAuctionDisplay(world,plot.getId(),line1,line2,line3,line4);
+    }
+    public void setSellSign(IWorld world, Plot plot) {
+        String line1 = Util().C("SignForSale");
+        String line2 = Util().C("SignPrice");
+        String line3 = String.valueOf(plot.getCustomPrice());
+        String line4 = "/plotme " + Util().C("CommandBuy");
+
+        getGenManager(world).setSellerDisplay(world, plot.getId(), line1, line2, line3, line4);
+    }
+
     public boolean isValidId(IWorld world, String id) {
         return getGenManager(world).isValidId(id);
     }
@@ -534,13 +555,20 @@ public class PlotMeCoreManager {
                 }
 
                 setOwnerSign(world, plot1);
-                setSellSign(world, plot1);
+                removeSellSign(world, plot1.getId());
+                removeAuctionSign(world, plot1.getId());
                 setOwnerSign(world, plot2);
-                setSellSign(world, plot2);
+                removeSellSign(world, plot2.getId());
+                removeAuctionSign(world, plot2.getId());
 
+            } else {
+                movePlotToEmpty(world, plot1, idTo);
             }
         } else if (plot2 != null) {
-            int idX = getIdX(idTo);
+            
+            movePlotToEmpty(world, plot2, idFrom);
+            
+            /*int idX = getIdX(idTo);
             int idZ = getIdZ(idTo);
             plugin.getSqlManager().deletePlot(idX, idZ, world.getName());
             removePlot(world, idTo);
@@ -564,10 +592,41 @@ public class PlotMeCoreManager {
             setOwnerSign(world, plot2);
             setSellSign(world, plot2);
             removeOwnerSign(world, idTo);
-            getGenManager(world).removeSellerDisplay(world, idTo);
+            removeSellSign(world, idTo);
+            removeAuctionSign(world, idTo);*/
         }
 
         return true;
+    }
+    
+    private void movePlotToEmpty(IWorld world, Plot filledPlot, String idDestination) {
+        String idFrom = filledPlot.getId();
+        int idX = getIdX(idFrom);
+        int idZ = getIdZ(idFrom);
+        plugin.getSqlManager().deletePlot(idX, idZ, world.getName());
+        removePlot(world, idFrom);
+
+        idX = getIdX(idDestination);
+        idZ = getIdZ(idDestination);
+        filledPlot.setId(idDestination);
+        plugin.getSqlManager().addPlot(filledPlot, idX, idZ, topX(idDestination, world), bottomX(idDestination, world), topZ(idDestination, world), bottomZ(idDestination, world));
+        addPlot(world, idDestination, filledPlot);
+
+        HashMap<String, UUID> allowed = filledPlot.allowed().getAllPlayers();
+        for (String player : allowed.keySet()) {
+            plugin.getSqlManager().addPlotAllowed(player, allowed.get(player), idX, idZ, world.getName());
+        }
+
+        HashMap<String, UUID> denied = filledPlot.denied().getAllPlayers();
+        for (String player : denied.keySet()) {
+            plugin.getSqlManager().addPlotDenied(player, denied.get(player), idX, idZ, world.getName());
+        }
+
+        setOwnerSign(world, filledPlot);
+        setSellSign(world, filledPlot);
+        removeOwnerSign(world, idFrom);
+        removeSellSign(world, idFrom);
+        removeAuctionSign(world, idFrom);
     }
 
     /**
@@ -597,45 +656,6 @@ public class PlotMeCoreManager {
                 }
             }
         });
-    }
-
-    public void setSellSign(IWorld world, Plot plot) {
-        String id = plot.getId();
-
-        getGenManager(world).removeSellerDisplay(world, id);
-
-        if (plot.isForSale() || plot.isAuctioned()) {
-            String line1 = "";
-            String line2 = "";
-            String line3 = "";
-            String line4 = "";
-            if (plot.isForSale()) {
-                line1 = Util().C("SignForSale");
-                line2 = Util().C("SignPrice");
-                line3 = String.valueOf(plot.getCustomPrice());
-                line4 = "/plotme " + Util().C("CommandBuy");
-            }
-
-            getGenManager(world).setSellerDisplay(world, plot.getId(), line1, line2, line3, line4);
-
-            line1 = "";
-            line2 = "";
-            line3 = "";
-            line4 = "";
-
-            if (plot.isAuctioned()) {
-                line1 = Util().C("SignOnAuction");
-                if (plot.getCurrentBidder() == null) {
-                    line2 = Util().C("SignMinimumBid");
-                } else {
-                    line2 = Util().C("SignCurrentBid");
-                }
-                line3 = String.valueOf(plot.getCurrentBid());
-                line4 = "/plotme " + Util().C("CommandBid") + " <x>";
-            }
-
-            getGenManager(world).setAuctionDisplay(world, plot.getId(), line1, line2, line3, line4);
-        }
     }
 
     public void clear(IWorld world, Plot plot, ICommandSender sender, ClearReason reason) {

@@ -6,6 +6,7 @@ import com.worldcretornica.plotme_core.PlotMapInfo;
 import com.worldcretornica.plotme_core.PlotMeCoreManager;
 import com.worldcretornica.plotme_core.PlotMe_Core;
 import com.worldcretornica.plotme_core.PlotToClear;
+
 import com.worldcretornica.plotme_core.bukkit.PlotMe_CorePlugin;
 import com.worldcretornica.plotme_core.bukkit.api.BukkitBlock;
 import com.worldcretornica.plotme_core.bukkit.api.BukkitEntity;
@@ -47,8 +48,6 @@ import org.bukkit.event.entity.*;
 import org.bukkit.event.player.*;
 import java.util.List;
 import java.util.UUID;
-import java.util.logging.Level;
-import org.bukkit.Material;
 
 public class BukkitPlotListener implements Listener {
 
@@ -563,9 +562,9 @@ public class BukkitPlotListener implements Listener {
         if (event.getIgnitingEntity() == null) {
             return;
         }
-        BukkitEntity entity = new BukkitEntity(event.getIgnitingEntity());
+        BukkitLocation location = new BukkitLocation(event.getBlock().getLocation());
 
-        PlotMapInfo pmi = manager.getMap(entity);
+        PlotMapInfo pmi = manager.getMap(location);
 
         if (pmi == null) {
             return;
@@ -573,12 +572,12 @@ public class BukkitPlotListener implements Listener {
         if (pmi.isDisableIgnition()) {
             event.setCancelled(true);
         } else {
-            String id = manager.getPlotId(entity.getLocation());
+            String id = manager.getPlotId(location);
 
             if (id.isEmpty()) {
                 event.setCancelled(true);
             } else {
-                PlotToClear ptc = api.getPlotLocked(entity.getWorld().getName(), id);
+                PlotToClear ptc = api.getPlotLocked(location.getWorld().getName(), id);
 
                 Player player = null;
                 if (ptc != null) {

@@ -1228,16 +1228,19 @@ public class SqlManager {
                 ps = conn.prepareStatement("SELECT Count(*) as NbPlot FROM plotmePlots WHERE LOWER(world) = ? AND owner = ?");
                 ps.setString(1, world.toLowerCase());
                 ps.setString(2, owner);
+                plugin.getLogger().info("The world being passed in plot count is: " + world.toLowerCase() + " and the owner is " + owner);
             } else {
                 ps = conn.prepareStatement("SELECT Count(*) as NbPlot FROM plotmePlots WHERE LOWER(world) = ? AND ownerId = ?");
                 ps.setString(1, world.toLowerCase());
                 ps.setBytes(2, UUIDFetcher.toBytes(ownerId));
+                plugin.getLogger().info("The world being passed in plot count is: " + world.toLowerCase() + " and the ownerId is " + ownerId);
             }
 
             setNbPlots = ps.executeQuery();
 
             if (setNbPlots.next()) {
                 nbplots = setNbPlots.getShort(1);
+                plugin.getLogger().info("Number of plots is now: " + nbplots);
             }
         } catch (SQLException ex) {
             plugin.getLogger().severe("PlotCount Exception :");
@@ -1599,20 +1602,20 @@ public class SqlManager {
                 if (!ownedonly) {
                     statementPlot.setString(2, playername);
                     if (!world.isEmpty()) {
-                        statementPlot.setString(3, world);
+                        statementPlot.setString(3, world.toLowerCase());
                     }
                 } else if (!world.isEmpty()) {
-                    statementPlot.setString(2, world);
+                    statementPlot.setString(2, world.toLowerCase());
                 }
             } else {
                 statementPlot.setBytes(1, UUIDFetcher.toBytes(playerId));
                 if (!ownedonly) {
                     statementPlot.setBytes(2, UUIDFetcher.toBytes(playerId));
                     if (!world.isEmpty()) {
-                        statementPlot.setString(3, world);
+                        statementPlot.setString(3, world.toLowerCase());
                     }
                 } else if (!world.isEmpty()) {
-                    statementPlot.setString(2, world);
+                    statementPlot.setString(2, world.toLowerCase());
                 }
             }
 
@@ -1659,7 +1662,7 @@ public class SqlManager {
                 }
 
                 statementAllowed = conn.prepareStatement("SELECT * FROM plotmeAllowed WHERE LOWER(world) = ? AND idX = ? AND idZ = ?");
-                statementAllowed.setString(1, currworld);
+                statementAllowed.setString(1, currworld.toLowerCase());
                 statementAllowed.setInt(2, idX);
                 statementAllowed.setInt(3, idZ);
 
@@ -1677,7 +1680,7 @@ public class SqlManager {
                 setAllowed.close();
 
                 statementDenied = conn.prepareStatement("SELECT * FROM plotmeDenied WHERE LOWER(world) = ? AND idX = ? AND idZ = ?");
-                statementDenied.setString(1, currworld);
+                statementDenied.setString(1, currworld.toLowerCase());
                 statementDenied.setInt(2, idX);
                 statementDenied.setInt(3, idZ);
 
