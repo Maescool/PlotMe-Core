@@ -6,44 +6,13 @@ import com.worldcretornica.plotme_core.PlotMapInfo;
 import com.worldcretornica.plotme_core.PlotMeCoreManager;
 import com.worldcretornica.plotme_core.PlotMe_Core;
 import com.worldcretornica.plotme_core.PlotToClear;
-
-import com.worldcretornica.plotme_core.bukkit.PlotMe_CorePlugin;
-import com.worldcretornica.plotme_core.bukkit.api.BukkitBlock;
-import com.worldcretornica.plotme_core.bukkit.api.BukkitEntity;
-import com.worldcretornica.plotme_core.bukkit.api.BukkitLocation;
-import com.worldcretornica.plotme_core.bukkit.api.BukkitPlayer;
-import com.worldcretornica.plotme_core.bukkit.event.PlotWorldLoadEvent;
-import org.bukkit.block.Block;
-import org.bukkit.block.BlockFace;
-import org.bukkit.block.BlockState;
-import org.bukkit.entity.Player;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.EventPriority;
-import org.bukkit.event.Listener;
-import org.bukkit.event.block.Action;
-import org.bukkit.event.block.BlockBreakEvent;
-import org.bukkit.event.block.BlockDamageEvent;
-import org.bukkit.event.block.BlockFadeEvent;
-import org.bukkit.event.block.BlockFormEvent;
-import org.bukkit.event.block.BlockFromToEvent;
-import org.bukkit.event.block.BlockGrowEvent;
-import org.bukkit.event.block.BlockIgniteEvent;
-import org.bukkit.event.block.BlockPistonExtendEvent;
-import org.bukkit.event.block.BlockPistonRetractEvent;
-import org.bukkit.event.block.BlockPlaceEvent;
-import org.bukkit.event.block.BlockSpreadEvent;
-import org.bukkit.event.entity.CreatureSpawnEvent;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.entity.EntityExplodeEvent;
-import org.bukkit.event.hanging.HangingBreakByEntityEvent;
-import org.bukkit.event.hanging.HangingPlaceEvent;
-import org.bukkit.event.player.PlayerBucketEmptyEvent;
-import org.bukkit.event.player.PlayerBucketFillEvent;
-import org.bukkit.event.player.PlayerInteractAtEntityEvent;
-import org.bukkit.event.player.PlayerInteractEntityEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.world.StructureGrowEvent;
-import org.bukkit.inventory.ItemStack;
+import com.worldcretornica.plotme_core.bukkit.*;
+import com.worldcretornica.plotme_core.bukkit.api.*;
+import com.worldcretornica.plotme_core.bukkit.event.*;
+import org.bukkit.block.*;
+import org.bukkit.entity.*;
+import org.bukkit.event.*;
+import org.bukkit.event.block.*;
 import org.bukkit.event.entity.*;
 import org.bukkit.event.player.*;
 import java.util.List;
@@ -242,9 +211,7 @@ public class BukkitPlotListener implements Listener {
         if (manager.isPlotWorld(block.getWorld())) {
             Player player = event.getPlayer();
 
-            String id = manager.getPlotId(block.getLocation());
-
-            PlotToClear ptc = api.getPlotLocked(block.getWorld().getName(), id);
+            PlotToClear ptc = api.getPlotLocked(block.getWorld().getName(), manager.getPlotId(block.getLocation()));
 
             if (ptc != null) {
                 switch (ptc.getReason()) {
@@ -263,9 +230,9 @@ public class BukkitPlotListener implements Listener {
                 boolean canBuild = !player.hasPermission(PermissionNames.ADMIN_BUILDANYWHERE);
                 PlotMapInfo pmi = manager.getMap(block.getWorld());
 
+                String id = manager.getPlotId(block.getLocation());
+                Plot plot = manager.getPlotById(id, pmi);
                 if (event.isBlockInHand() && event.getAction() == Action.RIGHT_CLICK_BLOCK) {
-
-                    id = manager.getPlotId(block.getLocation());
 
                     if (id.isEmpty()) {
                         if (canBuild) {
@@ -273,7 +240,6 @@ public class BukkitPlotListener implements Listener {
                             event.setCancelled(true);
                         }
                     } else {
-                        Plot plot = manager.getPlotById(id, pmi);
 
                         if (plot == null || !plot.isAllowed(player.getName(), player.getUniqueId())) {
                             if (canBuild) {
@@ -308,8 +274,6 @@ public class BukkitPlotListener implements Listener {
                     }
 
                     if (blocked) {
-                        id = manager.getPlotId(block.getLocation());
-
                         if (id.isEmpty()) {
                             if (canBuild) {
                                 if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
@@ -317,15 +281,11 @@ public class BukkitPlotListener implements Listener {
                                 }
                                 event.setCancelled(true);
                             }
-                        } else {
-                            Plot plot = manager.getPlotById(id, pmi);
-
-                            if ((plot == null || !plot.isAllowed(player.getName(), player.getUniqueId())) && canBuild) {
-                                if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
-                                    player.sendMessage(api.getUtil().C("ErrCannotUse"));
-                                }
-                                event.setCancelled(true);
+                        } else if ((plot == null || !plot.isAllowed(player.getName(), player.getUniqueId())) && canBuild) {
+                            if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
+                                player.sendMessage(api.getUtil().C("ErrCannotUse"));
                             }
+                            event.setCancelled(true);
                         }
                     }
                 }
@@ -857,5 +817,14 @@ public class BukkitPlotListener implements Listener {
     public void onPlayerQuit(PlayerQuitEvent event) {
         UUID playerUUID = event.getPlayer().getUniqueId();
         plugin.removePlayer(playerUUID);
+    }
+    
+    @EventHandler(ignoreCancelled = true)
+    public void onPlayerJoin(PlayerJoinEvent event) {
+        Player p = event.getPlayer();
+        
+        if(p != null) {
+            PlotMeCoreManager.getInstance().UpdatePlayerNameFromId(p.getUniqueId(), p.getName());
+        }
     }
 }
