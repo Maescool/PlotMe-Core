@@ -2098,6 +2098,7 @@ public class SqlManager {
             @Override
             public void run() {
                 PreparedStatement[] pss = new PreparedStatement[4];
+                byte[] uuidInBytes = UUIDFetcher.toBytes(uuid);
 
                 try {
                     Connection conn = getConnection();
@@ -2109,7 +2110,7 @@ public class SqlManager {
 
                     for (PreparedStatement ps : pss) {
                         ps.setString(1, newname);
-                        ps.setBytes(2, UUIDFetcher.toBytes(uuid));
+                        ps.setBytes(2, uuidInBytes);
                         ps.executeUpdate();
                     }
 
