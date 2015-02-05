@@ -112,7 +112,7 @@ public class UUIDFetcher implements Callable<Map<String, UUID>> {
                     List<String> sublist = names.subList(i * 100, Math.min((i + 1) * 100, names.size()));
                     String body = JSONArray.toJSONString(sublist);
                     writeBody(connection, body);
-                    if (connection.getResponseCode() != HttpURLConnection.HTTP_NO_CONTENT){
+                    if (connection.getResponseCode() == HttpURLConnection.HTTP_NO_CONTENT){
                         connection.disconnect();
                         throw new Exception("No content");
                     }
@@ -172,7 +172,7 @@ public class UUIDFetcher implements Callable<Map<String, UUID>> {
                         
                         if (connection != null) {
                             try {
-                                if (connection.getResponseCode() != HttpURLConnection.HTTP_NO_CONTENT){
+                                if (connection.getResponseCode() == HttpURLConnection.HTTP_NO_CONTENT){
                                     connection.disconnect();
                                     throw new Exception("No content");
                                 }
