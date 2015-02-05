@@ -14,7 +14,11 @@ import org.bukkit.entity.*;
 import org.bukkit.event.*;
 import org.bukkit.event.block.*;
 import org.bukkit.event.entity.*;
+import org.bukkit.event.hanging.*;
 import org.bukkit.event.player.*;
+import org.bukkit.event.world.StructureGrowEvent;
+import org.bukkit.inventory.ItemStack;
+
 import java.util.List;
 import java.util.UUID;
 
@@ -293,7 +297,6 @@ public class BukkitPlotListener implements Listener {
                 if (pmi.isRedstoneBlock(block.getTypeId())) {
                     id = manager.getPlotId(block.getLocation());
                     if (!id.isEmpty()) {
-                        Plot plot = manager.getPlotById(id, pmi);
                         if (plot != null && plot.isRedstoneProtect()) {
                             if ((!plot.isAllowed(player.getName(), player.getUniqueId())) && canBuild) {
                                 player.sendMessage(api.getUtil().C("ErrCannotRedstone"));
@@ -306,7 +309,6 @@ public class BukkitPlotListener implements Listener {
                 if (pmi.isInteractBlock(block.getTypeId())) {
                     id = manager.getPlotId(block.getLocation());
                     if (!id.isEmpty()) {
-                        Plot plot = manager.getPlotById(id, pmi);
                         if (plot != null && plot.isInteractProtect()) {
                             if ((!plot.isAllowed(player.getName(), player.getUniqueId())) && canBuild) {
                                 player.sendMessage(api.getUtil().C("ErrCannotInteract"));
