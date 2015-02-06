@@ -9,6 +9,7 @@ import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 public class Plot implements Cloneable {
@@ -34,6 +35,7 @@ public class Plot implements Cloneable {
     private String currentBidder;
     private double currentBid;
     private UUID currentBidderId;
+    private Map<String, Map<String, String>> metadata;
     private Timestamp lastPlotClear;
     private boolean redstoneProtect;
     private boolean interactProtect;
@@ -92,6 +94,7 @@ public class Plot implements Cloneable {
         setCurrentBidder(null);
         setCurrentBidderId(null);
         setCurrentBid(0.0);
+        metadata = new HashMap<>();
         setLastPlotClear(null);
         setRedstoneProtect(true);
         setInteractProtect(false);
@@ -100,7 +103,8 @@ public class Plot implements Cloneable {
     public Plot(PlotMe_Core plugin, String owner, UUID ownerId, String world, String biome, Date expiredDate,
                 boolean finished,
                 PlayerList allowed, String id, double customPrice, boolean sale, String finishedDate,
-                boolean protect, String bidder, UUID bidderId, double bid, boolean isAuctioned, PlayerList denied, Timestamp lastPlotClear, boolean redstoneProtect, boolean interactProtect) {
+                boolean protect, String bidder, UUID bidderId, double bid, boolean isAuctioned, PlayerList denied,
+                Map<String, Map<String, String>> metadata, Timestamp lastPlotClear, boolean redstoneProtect, boolean interactProtect) {
         this.plugin = plugin;
         setOwner(owner);
         setOwnerId(ownerId);
@@ -119,6 +123,7 @@ public class Plot implements Cloneable {
         setCurrentBidderId(bidderId);
         setCurrentBid(bid);
         this.denied = denied;
+        this.metadata = metadata;
         setLastPlotClear(lastPlotClear);
         setRedstoneProtect(redstoneProtect);
         setInteractProtect(interactProtect);
@@ -537,6 +542,22 @@ public class Plot implements Cloneable {
 
     public final void setCurrentBid(double currentBid) {
         this.currentBid = currentBid;
+    }
+    
+    public String getPlotProperty(String pluginname, String property) {
+        return metadata.get(pluginname).get(property);
+    }
+    
+    public boolean setPlotProperty(String pluginname, String property, String value) {
+        if (!metadata.containsKey(pluginname)) {
+            metadata.put(pluginname, new HashMap<String, String>());
+        }
+        metadata.get(pluginname).put(property, value);
+        return plugin.getSqlManager().savePlotProperty(PlotMeCoreManager.getInstance().getIdX(getId()), PlotMeCoreManager.getInstance().getIdZ(getId()), this.world, pluginname, property, value);
+    }
+    
+    public Map<String, Map<String, String>> getAllPlotProperties() {
+        return metadata;
     }
 
     public Timestamp getLastPlotClear() {

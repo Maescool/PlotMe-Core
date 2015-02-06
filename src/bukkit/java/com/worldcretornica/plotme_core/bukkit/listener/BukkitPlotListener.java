@@ -728,8 +728,9 @@ public class BukkitPlotListener implements Listener {
             PlotMapInfo pmi = manager.getMap(event.getEntity().getWorld().getName());
             if (pmi != null && !pmi.canUseProjectiles()) {
                 event.getEntity().sendMessage(api.getUtil().C("ErrCannotUseEggs"));
-                /* Player player = event.getPlayer();
-                 BukkitLocation location = new BukkitLocation(event.getEgg().getLocation());
+                event.setCancelled(true);
+            /* Player player = event.getPlayer();
+            BukkitLocation location = new BukkitLocation(event.getEgg().getLocation());
 
                  if (manager.isPlotWorld(location)) {
                  boolean canBuild = player.hasPermission(PermissionNames.ADMIN_BUILDANYWHERE);
@@ -753,6 +754,24 @@ public class BukkitPlotListener implements Listener {
                  }
                  */
             }
+        }
+    }
+    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
+    public void onBowEvent(EntityShootBowEvent event) {
+        if (event.getEntity() instanceof Player) {
+            PlotMapInfo pmi = manager.getMap(event.getEntity().getWorld().getName());
+            if (pmi != null && !pmi.canUseProjectiles()) {
+                event.getEntity().sendMessage(api.getUtil().C("ErrCannotUseEggs"));
+                event.setCancelled(true);
+            }
+        }
+    }
+    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
+    public void onEggEvent(PlayerEggThrowEvent event) {
+        PlotMapInfo pmi = manager.getMap(event.getEgg().getWorld().getName());
+        if (pmi != null && !pmi.canUseProjectiles()) {
+            event.getPlayer().sendMessage(api.getUtil().C("ErrCannotUseEggs"));
+            event.setHatching(false);
         }
     }
 

@@ -8,16 +8,17 @@ import com.worldcretornica.plotme_core.api.IPlotMe_GeneratorManager;
 import com.worldcretornica.plotme_core.api.IServerBridge;
 import com.worldcretornica.plotme_core.bukkit.api.*;
 
-import org.bukkit.Bukkit;
+import org.bukkit.*;
 import org.bukkit.entity.*;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.*;
 import org.mcstats.Metrics;
 import org.mcstats.Metrics.Graph;
 
 import java.io.*;
+import java.lang.reflect.Constructor;
 import java.util.HashMap;
 import java.util.UUID;
-
 
 public class PlotMe_CorePlugin extends JavaPlugin {
 
@@ -36,14 +37,32 @@ public class PlotMe_CorePlugin extends JavaPlugin {
         serverObjectBuilder = new BukkitServerBridge(this);
         
         AbstractSchematicUtil schematicutil = null;
-                
+        
         if (Bukkit.getVersion().contains("1.7")) {
-            schematicutil = new com.worldcretornica.plotme_core.bukkit.v1_7.SchematicUtil(this);
+            try {
+                Constructor<?> constructor = Class.forName("com.worldcretornica.plotme_core.bukkit.v1_7.SchematicUtil").getConstructor(Plugin.class);
+                schematicutil = (AbstractSchematicUtil) constructor.newInstance(this);
+            } catch (Exception e) {
+                getLogger().severe("Unable to create the SchematicUtil instance");
+                e.printStackTrace();
+            }
         } else if (Bukkit.getVersion().contains("1.8")) {
-            schematicutil = new com.worldcretornica.plotme_core.bukkit.v1_8.SchematicUtil(this);
+            try {
+                Constructor<?> constructor = Class.forName("com.worldcretornica.plotme_core.bukkit.v1_8.SchematicUtil").getConstructor(Plugin.class);
+                schematicutil = (AbstractSchematicUtil) constructor.newInstance(this);
+            } catch (Exception e) {
+                getLogger().severe("Unable to create the SchematicUtil instance");
+                e.printStackTrace();
+            }
         } else {
             getLogger().warning("This MC version is not supported yet, trying latest version!");
-            schematicutil = new com.worldcretornica.plotme_core.bukkit.v1_8.SchematicUtil(this);
+            try {
+                Constructor<?> constructor = Class.forName("com.worldcretornica.plotme_core.bukkit.v1_8.SchematicUtil").getConstructor(Plugin.class);
+                schematicutil = (AbstractSchematicUtil) constructor.newInstance(this);
+            } catch (Exception e) {
+                getLogger().severe("Unable to create the SchematicUtil instance");
+                e.printStackTrace();
+            }
         }
         
         plotme = new PlotMe_Core(serverObjectBuilder, schematicutil);
