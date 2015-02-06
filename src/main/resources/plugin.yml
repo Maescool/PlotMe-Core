@@ -1,6 +1,6 @@
 name: PlotMe
 main: com.worldcretornica.plotme_core.bukkit.PlotMe_CorePlugin
-version: ${project.version}
+version: 0.16.1
 author: ZachBora
 authors: [MattBDev]
 website: http://worldcretornica.github.io/PlotMe-Core/
@@ -68,7 +68,6 @@ permissions:
         plotme.admin.reload: true
         plotme.admin.middle: true
     plotme.unblock.*:
-      default: true
       description: Unblocks a certain item that was blocked in the config
     plotme.use.middle:
       description: Gives the middle command
