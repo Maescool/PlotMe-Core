@@ -1866,7 +1866,15 @@ public class SqlManager {
                 PreparedStatement psOwnerId = null;
                 PreparedStatement psCurrentBidderId = null;
                 PreparedStatement psAllowedPlayerId = null;
+                PreparedStatement psAllowedPlayerId2 = null;
+                PreparedStatement psAllowedPlayerId3 = null;
+                PreparedStatement psAllowedPlayerId4 = null;
+                PreparedStatement psAllowedPlayerId5 = null;
                 PreparedStatement psDeniedPlayerId = null;
+                PreparedStatement psDeniedPlayerId2 = null;
+                PreparedStatement psDeniedPlayerId3 = null;
+                PreparedStatement psDeniedPlayerId4 = null;
+                PreparedStatement psDeniedPlayerId5 = null;
 
                 PreparedStatement psDeleteOwner = null;
                 PreparedStatement psDeleteCurrentBidder = null;
@@ -1881,174 +1889,227 @@ public class SqlManager {
                     // Get all the players
                     statementPlayers = conn.createStatement();
                     // Exclude groups and names with * or missing
-                    String sql = "SELECT LOWER(owner) as Name FROM plotmePlots WHERE NOT owner IS NULL AND Not owner = '' AND Not owner LIKE 'group:%' AND Not owner LIKE '%*%' AND ownerid IS NULL GROUP BY LOWER(owner) ";
+                    String sql = "SELECT LOWER(owner) as Name FROM plotmePlots WHERE NOT owner IS NULL AND Not owner = '' AND ownerid IS NULL GROUP BY LOWER(owner) ";
                     sql += "UNION SELECT LOWER(currentbidder) as Name FROM plotmePlots WHERE NOT currentbidder IS NULL AND Not currentbidder = '' AND currentbidderid IS NULL GROUP BY LOWER(currentbidder) ";
                     sql += "UNION SELECT LOWER(player) as Name FROM plotmeAllowed WHERE NOT player IS NULL AND Not player = '' AND Not player LIKE 'group:%' AND Not player LIKE '%*%' AND playerid IS NULL GROUP BY LOWER(player) ";
                     sql += "UNION SELECT LOWER(player) as Name FROM plotmeDenied WHERE NOT player IS NULL AND Not player = '' AND Not player LIKE 'group:%' AND Not player LIKE '%*%' AND playerid IS NULL GROUP BY LOWER(player) ";
-
+                    sql += "LIMIT " + ((int) UUIDFetcher.PROFILES_PER_REQUEST);
+                    
                     setPlayers = statementPlayers.executeQuery(sql);
                     boolean boConversion = false;
+                    
                     if (setPlayers.next()) {
-                        List<String> names = new ArrayList<>();
-
-                        //Prepare delete statements
-                        psDeleteOwner = conn.prepareStatement("UPDATE plotmePlots SET owner = '' WHERE owner = ? ");
-                        psDeleteCurrentBidder = conn.prepareStatement("UPDATE plotmePlots SET currentbidder = null WHERE currentbidder = ? ");
-                        psDeleteAllowed = conn.prepareStatement("DELETE FROM plotmeAllowed WHERE player = ? ");
-                        psDeleteDenied = conn.prepareStatement("DELETE FROM plotmeDenied WHERE player = ? ");
-
                         do {
-                            String name = setPlayers.getString("Name");
-                            if (!name.isEmpty()) {
-                                if (COMPILE.matcher(name).matches()) {
-                                    names.add(name);
-                                } else {
-                                    plugin.getLogger().warning("Invalid name found : " + name + ", removing.");
-                                    psDeleteOwner.setString(1, name);
-                                    psDeleteOwner.executeUpdate();
-                                    psDeleteCurrentBidder.setString(1, name);
-                                    psDeleteCurrentBidder.executeUpdate();
-                                    psDeleteAllowed.setString(1, name);
-                                    psDeleteAllowed.executeUpdate();
-                                    psDeleteDenied.setString(1, name);
-                                    psDeleteDenied.executeUpdate();
-                                    conn.commit();
-                                }
-                            }
-                        } while (setPlayers.next());
-
-                        if (!names.isEmpty()) {
-                            UUIDFetcher fetcher = new UUIDFetcher(names);
-
-                            Map<String, UUID> response = null;
-
-                            try {
-                                plugin.getLogger().info("Fetching " + names.size() + " UUIDs from Mojang servers...");
-                                response = fetcher.call();
-                            } catch (Exception e) {
-                                plugin.getLogger().warning("Exception while running UUIDFetcher");
-                                e.printStackTrace();
-                            }
-
-                            if (!response.isEmpty()) {
-                                plugin.getLogger().info("Finished fetching " + response.size() + " UUIDs. Starting database update.");
-                                psOwnerId = conn.prepareStatement("UPDATE plotmePlots SET ownerid = ?, owner = ? WHERE LOWER(owner) = ? AND ownerid IS NULL");
-                                psCurrentBidderId = conn.prepareStatement("UPDATE plotmePlots SET currentbidderid = ?, currentbidder = ? WHERE LOWER(currentbidder) = ? AND currentbidderid IS NULL");
-                                psAllowedPlayerId = conn.prepareStatement("UPDATE plotmeAllowed SET playerid = ?, player = ? WHERE LOWER(player) = ? AND playerid IS NULL");
-                                psDeniedPlayerId = conn.prepareStatement("UPDATE plotmeDenied SET playerid = ?, player = ? WHERE LOWER(player) = ? AND playerid IS NULL");
-
-                                int nbConverted = 0;
-                                for (String keyname : response.keySet()) {
-                                    
-                                    String oldname;
-                                    String newname;
-                                    
-                                    if (keyname.contains(";")) {
-                                        oldname = keyname.substring(0, keyname.indexOf(";"));
-                                        newname = keyname.substring(keyname.indexOf(";") + 1);
+                            List<String> names = new ArrayList<>();
+    
+                            //Prepare delete statements
+                            psDeleteOwner = conn.prepareStatement("UPDATE plotmePlots SET owner = '' WHERE owner = ? ");
+                            psDeleteCurrentBidder = conn.prepareStatement("UPDATE plotmePlots SET currentbidder = null WHERE currentbidder = ? ");
+                            psDeleteAllowed = conn.prepareStatement("DELETE FROM plotmeAllowed WHERE player = ? ");
+                            psDeleteDenied = conn.prepareStatement("DELETE FROM plotmeDenied WHERE player = ? ");
+    
+                            do {
+                                String name = setPlayers.getString("Name");
+                                if (!name.isEmpty()) {
+                                    if (COMPILE.matcher(name).matches()) {
+                                        names.add(name);
                                     } else {
-                                        oldname = keyname;
-                                        newname = keyname;
-                                    }
-                                    
-                                    UUID uuid = response.get(keyname);
-                                    
-                                    if (uuid != null) {
-                                        // Owner
-                                        psOwnerId.setBytes(1, UUIDFetcher.toBytes(uuid));
-                                        psOwnerId.setString(2, newname);
-                                        psOwnerId.setString(3, oldname.toLowerCase());
-                                        int count = 0;
-                                        count += psOwnerId.executeUpdate();
-                                        // Bidder
-                                        psCurrentBidderId.setBytes(1, UUIDFetcher.toBytes(uuid));
-                                        psCurrentBidderId.setString(2, newname);
-                                        psCurrentBidderId.setString(3, oldname.toLowerCase());
-                                        count += psCurrentBidderId.executeUpdate();
-                                        // Allowed
-                                        psAllowedPlayerId.setBytes(1, UUIDFetcher.toBytes(uuid));
-                                        psAllowedPlayerId.setString(2, newname);
-                                        psAllowedPlayerId.setString(3, oldname.toLowerCase());
-                                        count += psAllowedPlayerId.executeUpdate();
-                                        // Denied
-                                        psDeniedPlayerId.setBytes(1, UUIDFetcher.toBytes(uuid));
-                                        psDeniedPlayerId.setString(2, newname);
-                                        psDeniedPlayerId.setString(3, oldname.toLowerCase());
-                                        count += psDeniedPlayerId.executeUpdate();
-                                        conn.commit();
-                                        if (count > 0) {
-                                            nbConverted++;
-                                        } else {
-                                            plugin.getLogger().warning("Unable to update player '" + keyname + "'");
-                                        }
-                                    } else {
-                                        //Couldnt' find player at mojang
-                                        
-                                        plugin.getLogger().warning("Name not found at mojang : " + oldname + ", removing.");
-                                        psDeleteOwner.setString(1, oldname);
+                                        plugin.getLogger().warning("Invalid name found : " + name + ", removing.");
+                                        psDeleteOwner.setString(1, name);
                                         psDeleteOwner.executeUpdate();
-                                        psDeleteCurrentBidder.setString(1, oldname);
+                                        psDeleteCurrentBidder.setString(1, name);
                                         psDeleteCurrentBidder.executeUpdate();
-                                        psDeleteAllowed.setString(1, oldname);
+                                        psDeleteAllowed.setString(1, name);
                                         psDeleteAllowed.executeUpdate();
-                                        psDeleteDenied.setString(1, oldname);
+                                        psDeleteDenied.setString(1, name);
                                         psDeleteDenied.executeUpdate();
                                         conn.commit();
                                     }
                                 }
-
-                                psOwnerId.close();
-                                psCurrentBidderId.close();
-                                psAllowedPlayerId.close();
-                                psDeniedPlayerId.close();
-
-                                //Update plot information
-                                for (PlotMapInfo pmi : PlotMeCoreManager.getInstance().getPlotMaps().values()) {
-                                    for (Plot plot : pmi.getLoadedPlots().values()) {                                        
-                                        for (Entry<String, UUID> player : response.entrySet()) {
-                                            
-                                            String newname = player.getKey();
-                                            String oldname = newname;
-                                            UUID uuid = player.getValue();
-                                            
-                                            if (newname.contains(";")) {
-                                                oldname = newname.substring(0, newname.indexOf(";"));
-                                                newname = newname.substring(newname.indexOf(";") + 1);
+                            } while (setPlayers.next());
+    
+                            if (!names.isEmpty()) {
+                                UUIDFetcher fetcher = new UUIDFetcher(names);
+    
+                                Map<String, UUID> response = null;
+    
+                                try {
+                                    plugin.getLogger().info("Fetching " + names.size() + " UUIDs from Mojang servers...");
+                                    response = fetcher.call();
+                                } catch (Exception e) {
+                                    plugin.getLogger().warning("Exception while running UUIDFetcher");
+                                    e.printStackTrace();
+                                }
+    
+                                if (!response.isEmpty()) {
+                                    //plugin.getLogger().info("Finished fetching " + response.size() + " UUIDs. Starting database update.");
+                                    
+                                    String sqlUpdate = "UPDATE plotmePlots SET ownerid = ?, owner = ? WHERE LOWER(owner) = ? AND ownerid IS NULL";
+                                    psOwnerId = conn.prepareStatement(sqlUpdate);
+                                    
+                                    
+                                    sqlUpdate = "UPDATE plotmePlots SET currentbidderid = ?, currentbidder = ? WHERE LOWER(currentbidder) = ? AND currentbidderid IS NULL";
+                                    psCurrentBidderId = conn.prepareStatement(sqlUpdate);
+                                    
+                                    
+                                    sqlUpdate = "CREATE TEMPORARY TABLE IF NOT EXISTS TEMPPLOTMEALLOWED(idX INT, idZ INT, world varchar(34));";
+                                    psAllowedPlayerId = conn.prepareStatement(sqlUpdate);
+                                    sqlUpdate = "INSERT INTO TEMPPLOTMEALLOWED SELECT idX, idZ, world FROM plotmeAllowed " +
+                                           "WHERE LOWER(player) = ? OR LOWER(player) = ? GROUP BY idX, idZ, world HAVING Count(*) = 2;";
+                                    psAllowedPlayerId2 = conn.prepareStatement(sqlUpdate);
+                                    sqlUpdate = "DELETE A1.* FROM plotmeAllowed A1 INNER JOIN TEMPPLOTMEALLOWED as A2 ON A1.idX = A2.idX AND A1.idZ = A2.idZ AND A1.world = A2.world " +
+                                           "WHERE LOWER(A1.player) = ?;";
+                                    psAllowedPlayerId3 = conn.prepareStatement(sqlUpdate);
+                                    sqlUpdate = "DROP TABLE TEMPPLOTMEALLOWED;";
+                                    psAllowedPlayerId4 = conn.prepareStatement(sqlUpdate);
+                                    sqlUpdate = "UPDATE plotmeAllowed SET playerid = ?, player = ? WHERE LOWER(player) = ? AND playerid IS NULL";
+                                    psAllowedPlayerId5 = conn.prepareStatement(sqlUpdate);
+                                    
+                                    
+                                    sqlUpdate = "CREATE TEMPORARY TABLE IF NOT EXISTS TEMPPLOTMEDENIED(idX INT, idZ INT, world varchar(34));";
+                                    psDeniedPlayerId = conn.prepareStatement(sqlUpdate);
+                                    sqlUpdate = "INSERT INTO TEMPPLOTMEDENIED SELECT idX, idZ, world FROM plotmeDenied " +
+                                           "WHERE LOWER(player) = ? OR LOWER(player) = ? GROUP BY idX, idZ, world HAVING Count(*) = 2;";
+                                    psDeniedPlayerId2 = conn.prepareStatement(sqlUpdate);
+                                    sqlUpdate = "DELETE D1.* FROM plotmeDenied D1 INNER JOIN TEMPPLOTMEDENIED as D2 ON D1.idX = D2.idX AND D1.idZ = D2.idZ AND D1.world = D2.world " +
+                                           "WHERE LOWER(D1.player) = ?;";
+                                    psDeniedPlayerId3 = conn.prepareStatement(sqlUpdate);
+                                    sqlUpdate = "DROP TABLE TEMPPLOTMEDENIED;";
+                                    psDeniedPlayerId4 = conn.prepareStatement(sqlUpdate);
+                                    sqlUpdate = "UPDATE plotmeDenied SET playerid = ?, player = ? WHERE LOWER(player) = ? AND playerid IS NULL";
+                                    psDeniedPlayerId5 = conn.prepareStatement(sqlUpdate);
+    
+                                    //int nbConverted = 0;
+                                    for (String keyname : response.keySet()) {
+                                        
+                                        String oldname;
+                                        String newname;
+                                        
+                                        if (keyname.contains(";")) {
+                                            oldname = keyname.substring(0, keyname.indexOf(";"));
+                                            newname = keyname.substring(keyname.indexOf(";") + 1);
+                                        } else {
+                                            oldname = keyname;
+                                            newname = keyname;
+                                        }
+                                        
+                                        UUID uuid = response.get(keyname);
+                                        
+                                        if (uuid != null) {
+                                            byte[] byteuuid = UUIDFetcher.toBytes(uuid);
+                                            // Owner
+                                            psOwnerId.setBytes(1, byteuuid);
+                                            psOwnerId.setString(2, newname);
+                                            psOwnerId.setString(3, oldname.toLowerCase());
+                                            int count = 0;
+                                            count += psOwnerId.executeUpdate();
+                                            // Bidder
+                                            psCurrentBidderId.setBytes(1, byteuuid);
+                                            psCurrentBidderId.setString(2, newname);
+                                            psCurrentBidderId.setString(3, oldname.toLowerCase());
+                                            count += psCurrentBidderId.executeUpdate();
+                                            // Allowed
+                                            psAllowedPlayerId.execute();
+                                            psAllowedPlayerId2.setString(1, oldname.toLowerCase());
+                                            psAllowedPlayerId2.setString(2, newname);
+                                            psAllowedPlayerId2.executeUpdate();
+                                            psAllowedPlayerId3.setString(1, newname);
+                                            psAllowedPlayerId3.executeUpdate();
+                                            psAllowedPlayerId4.execute();
+                                            psAllowedPlayerId5.setBytes(1, byteuuid);
+                                            psAllowedPlayerId5.setString(2, newname);
+                                            psAllowedPlayerId5.setString(3, oldname.toLowerCase());
+                                            count += psAllowedPlayerId5.executeUpdate();
+                                            // Denied
+                                            psDeniedPlayerId.execute();
+                                            psDeniedPlayerId2.setString(1, oldname.toLowerCase());
+                                            psDeniedPlayerId2.setString(2, newname);
+                                            psDeniedPlayerId2.executeUpdate();
+                                            psDeniedPlayerId3.setString(1, newname);
+                                            psDeniedPlayerId3.executeUpdate();
+                                            psDeniedPlayerId4.execute();
+                                            psDeniedPlayerId5.setBytes(1, byteuuid);
+                                            psDeniedPlayerId5.setString(2, newname);
+                                            psDeniedPlayerId5.setString(3, oldname.toLowerCase());
+                                            count += psDeniedPlayerId5.executeUpdate();
+                                            conn.commit();
+                                            if (count == 0) {
+                                                plugin.getLogger().warning("Unable to update player '" + keyname + "'");
                                             }
+                                        } else {
+                                            //Couldn't find player at mojang
                                             
-                                            //Owner
-                                            if (plot.getOwnerId() == null && plot.getOwner() != null && plot.getOwner().equalsIgnoreCase(oldname)) {
-                                                plot.setOwner(newname);
-                                                plot.setOwnerId(uuid);
-                                            }
-
-                                            //Bidder
-                                            if (plot.getCurrentBidderId() == null && 
-                                                    plot.getCurrentBidder() != null && 
-                                                    plot.getCurrentBidder().equalsIgnoreCase(oldname)) {
-                                                plot.setCurrentBidder(newname);
-                                                plot.setCurrentBidderId(uuid);
-                                            }
-
-                                            //Allowed
-                                            plot.allowed().replace(oldname, newname, uuid);
-
-                                            //Denied
-                                            plot.denied().replace(oldname, newname, uuid);
+                                            plugin.getLogger().warning("Name not found at mojang : " + oldname + ", removing.");
+                                            psDeleteOwner.setString(1, oldname);
+                                            psDeleteOwner.executeUpdate();
+                                            psDeleteCurrentBidder.setString(1, oldname);
+                                            psDeleteCurrentBidder.executeUpdate();
+                                            psDeleteAllowed.setString(1, oldname);
+                                            psDeleteAllowed.executeUpdate();
+                                            psDeleteDenied.setString(1, oldname);
+                                            psDeleteDenied.executeUpdate();
+                                            conn.commit();
                                         }
                                     }
+    
+                                    psOwnerId.close();
+                                    psCurrentBidderId.close();
+                                    psAllowedPlayerId.close();
+                                    psDeniedPlayerId.close();
+    
+                                    //Update plot information
+                                    for (PlotMapInfo pmi : PlotMeCoreManager.getInstance().getPlotMaps().values()) {
+                                        for (Plot plot : pmi.getLoadedPlots().values()) {                                        
+                                            for (Entry<String, UUID> player : response.entrySet()) {
+                                                
+                                                String newname = player.getKey();
+                                                String oldname = newname;
+                                                UUID uuid = player.getValue();
+                                                
+                                                if (newname.contains(";")) {
+                                                    oldname = newname.substring(0, newname.indexOf(";"));
+                                                    newname = newname.substring(newname.indexOf(";") + 1);
+                                                }
+                                                
+                                                //Owner
+                                                if (plot.getOwnerId() == null && plot.getOwner() != null && plot.getOwner().equalsIgnoreCase(oldname)) {
+                                                    plot.setOwner(newname);
+                                                    plot.setOwnerId(uuid);
+                                                }
+    
+                                                //Bidder
+                                                if (plot.getCurrentBidderId() == null && 
+                                                        plot.getCurrentBidder() != null && 
+                                                        plot.getCurrentBidder().equalsIgnoreCase(oldname)) {
+                                                    plot.setCurrentBidder(newname);
+                                                    plot.setCurrentBidderId(uuid);
+                                                }
+    
+                                                //Allowed
+                                                plot.allowed().replace(oldname, newname, uuid);
+    
+                                                //Denied
+                                                plot.denied().replace(oldname, newname, uuid);
+                                            }
+                                        }
+                                    }
+    
+                                    boConversion = true;
+                                    //plugin.getLogger().info("UUID conversion batch finished : " + nbConverted + " players");
                                 }
-
-                                boConversion = true;
-                                plugin.getLogger().info(nbConverted + " players converted");
                             }
-                        }
-                        
-                        psDeleteOwner.close();
-                        psDeleteCurrentBidder.close();
-                        psDeleteAllowed.close();
-                        psDeleteDenied.close();
+                            
+                            psDeleteOwner.close();
+                            psDeleteCurrentBidder.close();
+                            psDeleteAllowed.close();
+                            psDeleteDenied.close();
+                            
+                            setPlayers.close();
+                            setPlayers = statementPlayers.executeQuery(sql);
+                            
+                        } while(setPlayers.next());
                     }
+                    
                     setPlayers.close();
                     statementPlayers.close();
 

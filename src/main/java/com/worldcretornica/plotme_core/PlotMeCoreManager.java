@@ -10,13 +10,12 @@ import com.worldcretornica.plotme_core.api.ILocation;
 import com.worldcretornica.plotme_core.api.IPlayer;
 import com.worldcretornica.plotme_core.api.IPlotMe_GeneratorManager;
 import com.worldcretornica.plotme_core.api.IWorld;
-import com.worldcretornica.plotme_core.bukkit.api.*;
+import com.worldcretornica.plotme_core.bukkit.api.BukkitBiome;
 import com.worldcretornica.plotme_core.utils.Util;
 
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 import javax.inject.Singleton;
@@ -25,9 +24,9 @@ import javax.inject.Singleton;
 public class PlotMeCoreManager {
 
     private static final PlotMeCoreManager INSTANCE = new PlotMeCoreManager();
+    private final HashMap<String, PlotMapInfo> plotmaps;
     private PlotMe_Core plugin;
     private HashSet<UUID> playersignoringwelimit;
-    private HashMap<String, PlotMapInfo> plotmaps;
         
     private PlotMeCoreManager() { 
         setPlayersIgnoringWELimit(new HashSet<UUID>());
@@ -49,7 +48,7 @@ public class PlotMeCoreManager {
      * @return X Coordinate
      */
     public int getIdX(String id) {
-        return Integer.parseInt(id.substring(0, id.indexOf(";")));
+        return Integer.parseInt(id.substring(0, id.indexOf(';')));
     }
 
     /**
@@ -59,7 +58,7 @@ public class PlotMeCoreManager {
      * @return Z Coordinate
      */
     public int getIdZ(String id) {
-        return Integer.parseInt(id.substring(id.indexOf(";") + 1));
+        return Integer.parseInt(id.substring(id.indexOf(';') + 1));
     }
 
     /**
@@ -82,12 +81,16 @@ public class PlotMeCoreManager {
      * @param pmi PlotMapInfo
      * @return plot
      */
-
     public Plot getPlotById(IPlayer player, PlotMapInfo pmi) {
         String id = getPlotId(player);
         return getPlotById(id, pmi);
     }
 
+    /**
+     * Removes the plot from the plotmap
+     * @param pmi plotmap
+     * @param id plot id
+     */
     public void removePlot(PlotMapInfo pmi, String id) {
         if (pmi != null) {
             pmi.removePlot(id);
@@ -171,7 +174,7 @@ public class PlotMeCoreManager {
         String line1 = Util().C("SignForSale");
         String line2 = Util().C("SignPrice");
         String line3 = String.valueOf(plot.getCustomPrice());
-        String line4 = "/plotme " + Util().C("CommandBuy");
+        String line4 = "/plotme buy";
 
         getGenManager(world).setSellerDisplay(world, plot.getId(), line1, line2, line3, line4);
     }
@@ -355,10 +358,22 @@ public class PlotMeCoreManager {
     }
 */
 
+    /**
+     * Gets the plot with the given id in the given world.
+     * @param id plot id
+     * @param world the world the plot is in
+     * @return plot
+     */
     public Plot getPlotById(String id, IWorld world) {
         return getPlotById(id, world.getName());
     }
 
+    /**
+     * Gets the plot with the given id in the given world as a string.
+     * @param id plot id
+     * @param name the world the plot is in
+     * @return plot
+     */
     public Plot getPlotById(String id, String name) {
         PlotMapInfo pmi = getMap(name);
 
@@ -369,10 +384,21 @@ public class PlotMeCoreManager {
         return pmi.getPlot(id);
     }
 
+    /**
+     * Gets the plot with the given id and location based on the given player.
+     * @param id plot id
+     * @param player the player in the plot
+     * @return plot
+     */
     public Plot getPlotById(String id, IPlayer player) {
         return getPlotById(id, player.getWorld());
     }
 
+    /**
+     * Gets the plot with the given player which will have his location checked.
+     * @param player player standing in a plot
+     * @return plot
+     */
     public Plot getPlotById(IPlayer player) {
         PlotMapInfo pmi = getMap(player);
         String id = getPlotId(player);
@@ -610,7 +636,11 @@ public class PlotMeCoreManager {
 
         ILocation bottom = getGenManager(world).getBottom(world, id);
         ILocation top = getGenManager(world).getTop(world, id);
-
+        if(reason.equals(ClearReason.Clear)) {
+            adjustWall(world, plot.getId(), true);
+        } else {
+            adjustWall(world, plot.getId(), false);
+        }
         if (getMap(worldName).isUseProgressiveClear()) {
             plugin.addPlotToClear(new PlotToClear(worldName, id, reason, sender));
         } else {
