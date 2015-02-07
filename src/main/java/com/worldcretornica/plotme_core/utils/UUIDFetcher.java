@@ -109,6 +109,7 @@ public class UUIDFetcher implements Callable<Map<String, UUID>> {
                     List<String> sublist = names.subList(i * 100, Math.min((i + 1) * 100, names.size()));
                     String body = JSONArray.toJSONString(sublist);
                     writeBody(connection, body);
+                    /** Have when Mojang sends No content header, they don't close the connection **/
                     if (connection.getResponseCode() == HttpURLConnection.HTTP_NO_CONTENT){
                         connection.disconnect();
                         throw new Exception("No content");
@@ -167,6 +168,7 @@ public class UUIDFetcher implements Callable<Map<String, UUID>> {
                         
                         if (connection != null) {
                             try {
+                                /** Have when Mojang sends No content header, they don't close the connection **/
                                 if (connection.getResponseCode() == HttpURLConnection.HTTP_NO_CONTENT){
                                     connection.disconnect();
                                     throw new Exception("No content");
