@@ -107,7 +107,7 @@ public class CmdSetOwner extends PlotCommand {
                             plot.updateField("currentbidderid", null);
 
                             plot.setOwner(newOwner);
-                            plot.setOwnerId(Bukkit.getOfflinePlayer(newOwner).getUniqueId());
+                            plot.setOwnerId(UUIDFetcher.getUUIDOf(newOwner));
 
                             manager.setOwnerSign(world, plot);
 

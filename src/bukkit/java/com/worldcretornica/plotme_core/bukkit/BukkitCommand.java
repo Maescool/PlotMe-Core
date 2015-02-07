@@ -42,7 +42,6 @@ public class BukkitCommand implements CommandExecutor {
     private final CmdRedstone redstone;
     private final CmdInteract interact;
     private final CmdMiddle middle;
-    
     private final PlotMe_CorePlugin plugin;
 
     public BukkitCommand(PlotMe_CorePlugin instance) {
