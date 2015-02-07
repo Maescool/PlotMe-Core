@@ -25,7 +25,7 @@ public class CmdInfo extends PlotCommand {
                     Plot plot = manager.getPlotById(id, world);
 
                     player.sendMessage("§aID: §b" + id + "§a " + C("InfoOwner") + ": §b" + plot.getOwner()
-                                       + "§a " + C("InfoBiome") + ": §b" + ((BukkitBiome) plot.getBiome()).getBiome().name());
+                            + "§a " + C("InfoBiome") + ": §b" + ((BukkitBiome) plot.getBiome()).getBiome().name());
 
                     player.sendMessage("§a" + C("InfoExpire") + ": §b" + ((plot.getExpiredDate() == null )? C("WordNever") : plot.getExpiredDate())
                             + "§a " + C("InfoFinished") + ": §b" + ((plot.isFinished()) ? C("WordYes") : C("WordNo"))
@@ -48,36 +48,36 @@ public class CmdInfo extends PlotCommand {
                             if (plot.isAuctioned()) {
                                 if (plot.isForSale()) {
                                     player.sendMessage("§a" + C("InfoAuctionned") + ": §b" + (C("WordYes")
-                                                                                              + "§a " + C("InfoMinimumBid") + ": §b" + Math
+                                            + "§a " + C("InfoMinimumBid") + ": §b" + Math
                                             .round(plot.getCurrentBid()))
-                                                       + "§a " + C("InfoForSale") + ": §b" + ("§b" + Math.round(plot.getCustomPrice())));
+                                            + "§a " + C("InfoForSale") + ": §b" + ("§b" + Math.round(plot.getCustomPrice())));
                                 } else {
                                     player.sendMessage("§a" + C("InfoAuctionned") + ": §b" + (C("WordYes")
-                                                                                              + "§a " + C("InfoMinimumBid") + ": §b" + Math
+                                            + "§a " + C("InfoMinimumBid") + ": §b" + Math
                                             .round(plot.getCurrentBid()))
-                                                       + "§a " + C("InfoForSale") + ": §b" + C("WordNo"));
+                                            + "§a " + C("InfoForSale") + ": §b" + C("WordNo"));
                                 }
                             } else if (plot.isForSale()) {
                                 player.sendMessage("§a" + C("InfoAuctionned") + ": §b" + C("WordNo")
-                                                   + "§a " + C("InfoForSale") + ": §b" + ("§b" + Math.round(plot.getCustomPrice())));
+                                        + "§a " + C("InfoForSale") + ": §b" + ("§b" + Math.round(plot.getCustomPrice())));
                             } else {
                                 player.sendMessage("§a" + C("InfoAuctionned") + ": §b" + C("WordNo")
-                                                   + "§a " + C("InfoForSale") + ": §b" + C("WordNo"));
+                                        + "§a " + C("InfoForSale") + ": §b" + C("WordNo"));
                             }
                         } else {
                             if (plot.isAuctioned()) {
                                 player.sendMessage("§a" + C("InfoAuctionned") + ": §b" + (C("WordYes")
-                                                                                          + "§a " + C("InfoBidder") + ": §b" + plot.getCurrentBidder()
-                                                                                          + "§a " + C("InfoBid") + ": §b" + Math
-                                                                                                  .round(plot.getCurrentBid()))
-                                                   + "§a " + C("InfoForSale") + ": §b" + (plot.isForSale() ? "§b" + Math.round(plot.getCustomPrice())
-                                                                                                           : C("WordNo")));
+                                        + "§a " + C("InfoBidder") + ": §b" + plot.getCurrentBidder()
+                                        + "§a " + C("InfoBid") + ": §b" + Math
+                                        .round(plot.getCurrentBid()))
+                                        + "§a " + C("InfoForSale") + ": §b" + (plot.isForSale() ? "§b" + Math.round(plot.getCustomPrice())
+                                        : C("WordNo")));
                             } else if (plot.isForSale()) {
                                 player.sendMessage("§a" + C("InfoAuctionned") + ": §b" + C("WordNo")
-                                                   + "§a " + C("InfoForSale") + ": §b" + ("§b" + Math.round(plot.getCustomPrice())));
+                                        + "§a " + C("InfoForSale") + ": §b" + ("§b" + Math.round(plot.getCustomPrice())));
                             } else {
                                 player.sendMessage("§a" + C("InfoAuctionned") + ": §b" + C("WordNo")
-                                                   + "§a " + C("InfoForSale") + ": §b" + C("WordNo"));
+                                        + "§a " + C("InfoForSale") + ": §b" + C("WordNo"));
                             }
                         }
                     }

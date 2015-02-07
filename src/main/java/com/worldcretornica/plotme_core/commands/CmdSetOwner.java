@@ -79,7 +79,7 @@ public class CmdSetOwner extends PlotCommand {
                                     if (currentBidder != null) {
                                         currentBidder.sendMessage(
                                                 C("WordPlot") + " " + id + " " + C("MsgChangedOwnerFrom") + " " + oldowner + " " + C("WordTo") + " "
-                                                + newOwner + ". " + Util().moneyFormat(plot.getCurrentBid(), true));
+                                                        + newOwner + ". " + Util().moneyFormat(plot.getCurrentBid(), true));
                                     }
                                 } else {
                                     player.sendMessage(er.errorMessage);
@@ -123,7 +123,7 @@ public class CmdSetOwner extends PlotCommand {
                     if (isAdvancedLogging()) {
                         serverBridge.getLogger()
                                 .info(playerName + " " + C("MsgChangedOwnerOf") + " " + id + " " + C("WordFrom") + " " + oldowner + " " + C("WordTo")
-                                      + " " + newOwner);
+                                        + " " + newOwner);
                     }
                 }
             } else {
