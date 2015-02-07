@@ -34,7 +34,7 @@ public class CmdRedstone extends PlotCommand {
                             return true;
                         }
 
-                        if (plot.getOwner().equalsIgnoreCase(player.getName()) || player.hasPermission(PermissionNames.ADMIN_REDSTONE)) {
+                        if (player.getUniqueId().equals(plot.getOwnerId()) || player.hasPermission(PermissionNames.ADMIN_REDSTONE)) {
                             if (enabled && plot.isRedstoneProtect()) {
                                 player.sendMessage("§c" + C("MsgRedstoneAlreadyEnabled"));
                             } else if (!enabled && !plot.isRedstoneProtect()) {

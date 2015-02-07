@@ -34,7 +34,7 @@ public class CmdInteract extends PlotCommand {
                             return true;
                         }
 
-                        if (plot.getOwner().equalsIgnoreCase(player.getName()) || player.hasPermission(PermissionNames.ADMIN_INTERACT)) {
+                        if (player.getUniqueId().equals(plot.getOwnerId()) || player.hasPermission(PermissionNames.ADMIN_INTERACT)) {
                             if (enabled && plot.isInteractProtect()) {
                                 player.sendMessage("§c" + C("MsgInteractAlreadyEnabled"));
                             } else if (!enabled && !plot.isInteractProtect()) {
