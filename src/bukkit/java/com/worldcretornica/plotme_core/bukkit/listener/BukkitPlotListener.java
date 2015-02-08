@@ -298,7 +298,6 @@ public class BukkitPlotListener implements Listener {
                 }
 
                 if (pmi.isRedstoneBlock(block.getTypeId())) {
-                    id = manager.getPlotId(block.getLocation());
                     if (!id.isEmpty()) {
                         if (plot != null && plot.isRedstoneProtect()) {
                             if ((!plot.isAllowed(player.getName(), player.getUniqueId())) && canBuild) {
@@ -310,7 +309,6 @@ public class BukkitPlotListener implements Listener {
                 }
 
                 if (pmi.isInteractBlock(block.getTypeId())) {
-                    id = manager.getPlotId(block.getLocation());
                     if (!id.isEmpty()) {
                         if (plot != null && plot.isInteractProtect()) {
                             if ((!plot.isAllowed(player.getName(), player.getUniqueId())) && canBuild) {
@@ -730,30 +728,30 @@ public class BukkitPlotListener implements Listener {
             if (pmi != null && !pmi.canUseProjectiles()) {
                 event.getEntity().sendMessage(api.getUtil().C("ErrCannotUseEggs"));
                 event.setCancelled(true);
-            /* Player player = event.getPlayer();
-            BukkitLocation location = new BukkitLocation(event.getEgg().getLocation());
+                /* Player player = event.getPlayer();
+                 BukkitLocation location = new BukkitLocation(event.getEgg().getLocation());
 
-            if (manager.isPlotWorld(location)) {
-                boolean canBuild = player.hasPermission(PermissionNames.ADMIN_BUILDANYWHERE);
-                String id = manager.getPlotId(location);
+                 if (manager.isPlotWorld(location)) {
+                 boolean canBuild = player.hasPermission(PermissionNames.ADMIN_BUILDANYWHERE);
+                 String id = manager.getPlotId(location);
 
-                if (id.isEmpty()) {
-                    if (!canBuild) {
-                        player.sendMessage(api.getUtil().C("ErrCannotUseEggs"));
-                        event.setHatching(false);
-                    }
-                } else {
-                    Plot plot = pmi.getPlot(id);
+                 if (id.isEmpty()) {
+                 if (!canBuild) {
+                 player.sendMessage(api.getUtil().C("ErrCannotUseEggs"));
+                 event.setHatching(false);
+                 }
+                 } else {
+                 Plot plot = pmi.getPlot(id);
 
-                    if (plot == null || !plot.isAllowed(player.getName(), player.getUniqueId())) {
-                        if (!canBuild) {
-                            player.sendMessage(api.getUtil().C("ErrCannotUseEggs"));
-                            event.setHatching(false);
-                        }
-                    }
-                }
-            }
-            */
+                 if (plot == null || !plot.isAllowed(player.getName(), player.getUniqueId())) {
+                 if (!canBuild) {
+                 player.sendMessage(api.getUtil().C("ErrCannotUseEggs"));
+                 event.setHatching(false);
+                 }
+                 }
+                 }
+                 }
+                 */
             }
         }
     }
@@ -843,23 +841,41 @@ public class BukkitPlotListener implements Listener {
         plugin.removePlayer(playerUUID);
     }
 
-/*    @EventHandler
-    public void onPlayerMove(PlayerMoveEvent event) {
-        //TODO add a config to enable and disable this
-        BukkitPlayer player = (BukkitPlayer) plugin.wrapPlayer(event.getPlayer());
-        Plot plot = manager.getPlotById(player);
-        if (plot != null) {
-            player.sendMessage("Now entering " + plot.getOwner() + "'s plot");
-            player.sendMessage("Plot " + plot.getId());
-        }
-    }
-*/
+    /*    @EventHandler
+     public void onPlayerMove(PlayerMoveEvent event) {
+     //TODO add a config to enable and disable this
+     BukkitPlayer player = (BukkitPlayer) plugin.wrapPlayer(event.getPlayer());
+     Plot plot = manager.getPlotById(player);
+     if (plot != null) {
+     player.sendMessage("Now entering " + plot.getOwner() + "'s plot");
+     player.sendMessage("Plot " + plot.getId());
+     }
+     }
+     */
     @EventHandler(ignoreCancelled = true)
     public void onPlayerJoin(PlayerJoinEvent event) {
         Player p = event.getPlayer();
 
         if (p != null) {
             PlotMeCoreManager.getInstance().UpdatePlayerNameFromId(p.getUniqueId(), p.getName());
+        }
+    }
+
+    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
+    public void onEntityInteract(EntityInteractEvent event) {
+        BukkitBlock block = new BukkitBlock(event.getBlock());
+        PlotMapInfo pmi = manager.getMap(block.getWorld());
+
+        String id = manager.getPlotId(block.getLocation());
+        if (id.isEmpty()) {
+            return;
+        }
+        Plot plot = manager.getPlotById(id, pmi);
+        if (plot == null) {
+            return;
+        }
+        if ((plot.isRedstoneProtect() && pmi.isRedstoneBlock(block.getTypeId())) || (plot.isInteractProtect() && pmi.isInteractBlock(block.getTypeId()))) {
+            event.setCancelled(true);
         }
     }
 }
