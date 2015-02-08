@@ -23,7 +23,7 @@ public class PlotMe_Core {
     private final AbstractSchematicUtil schematicutil;
     private HashMap<String, IPlotMe_GeneratorManager> managers;
     private IWorld worldcurrentlyprocessingexpired;
-    private short counterExpired;
+    private int counterExpired;
     //Spool stuff
     private ConcurrentLinkedQueue<PlotToClear> plotsToClear;
     //Global variables
@@ -46,6 +46,7 @@ public class PlotMe_Core {
 
     public void disable() {
         getSqlManager().closeConnection();
+        PlotMeCoreManager.getInstance().getPlotMaps().clear();
         serverBridge.unHook();
         PlotMeCoreManager.getInstance().setPlayersIgnoringWELimit(null);
         setWorldCurrentlyProcessingExpired(null);
@@ -227,11 +228,11 @@ public class PlotMe_Core {
         this.worldcurrentlyprocessingexpired = worldcurrentlyprocessingexpired;
     }
 
-    public short getCounterExpired() {
+    public int getCounterExpired() {
         return counterExpired;
     }
 
-    public void setCounterExpired(short counterExpired) {
+    public void setCounterExpired(int counterExpired) {
         this.counterExpired = counterExpired;
     }
 

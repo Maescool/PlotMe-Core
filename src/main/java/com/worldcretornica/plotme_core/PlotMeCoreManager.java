@@ -197,7 +197,7 @@ public class PlotMeCoreManager {
         }
         String line3 = String.valueOf(plot.getCurrentBid());
         String line4 = "/plotme " + Util().C("CommandBid") + " <x>";
-        getGenManager(world).setAuctionDisplay(world,plot.getId(),line1,line2,line3,line4);
+        getGenManager(world).setAuctionDisplay(world, plot.getId(), line1, line2, line3, line4);
     }
 
     /**
@@ -293,17 +293,7 @@ public class PlotMeCoreManager {
     }
 
     public IPlotMe_GeneratorManager getGenManager(IWorld world) {
-        /*if (world.isPlotMeGenerator()) {
-            return world.getGenerator().getManager();
-        } else {
-            return null;
-        }*/
         return plugin.getGenManager(world.getName());
-    }
-
-    @Deprecated
-    public short getNbOwnedPlot(UUID uuid, String name, String world) {
-        return plugin.getSqlManager().getPlotCount(world, uuid, name);
     }
 
     /**
@@ -313,7 +303,7 @@ public class PlotMeCoreManager {
      * @param world plotworld
      * @return number of plots the player owns
      */
-    public short getNbOwnedPlot(UUID uuid, String world) {
+    public int getNbOwnedPlot(UUID uuid, String world) {
         return plugin.getSqlManager().getPlotCount(world, uuid, null);
     }
 
