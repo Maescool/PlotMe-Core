@@ -25,7 +25,7 @@ public class CmdReset extends PlotCommand {
                 } else if (plot.isProtect()) {
                     player.sendMessage("§c" + C("MsgPlotProtectedCannotReset"));
                 } else {
-                    String id = plot.getId();
+                    PlotId id = plot.getId();
 
                     if (player.getUniqueId().equals(plot.getOwnerId()) || player.hasPermission(PermissionNames.ADMIN_RESET)) {
 
@@ -51,17 +51,14 @@ public class CmdReset extends PlotCommand {
                                 }
 
                                 if (pmi.isRefundClaimPriceOnReset() && plot.getOwnerId() != null) {
-                                    IOfflinePlayer playerowner = serverBridge.getOfflinePlayer(plot.getOwnerId());
+                                    IPlayer playerOwner = serverBridge.getPlayer(plot.getOwnerId());
 
-                                    EconomyResponse er = serverBridge.depositPlayer(playerowner, pmi.getClaimPrice());
+                                    EconomyResponse er = serverBridge.depositPlayer(playerOwner, pmi.getClaimPrice());
 
                                     if (er.transactionSuccess()) {
-                                        IPlayer playerOwner = serverBridge.getPlayer(playerowner.getUniqueId());
-                                        if (playerOwner.getName().equalsIgnoreCase(plot.getOwner())) {
-                                            playerOwner.sendMessage(
-                                                    C("WordPlot") + " " + id + " " + C("MsgOwnedBy") + " " + plot.getOwner() + " " + C("MsgWasReset")
-                                                            + " " + Util().moneyFormat(pmi.getClaimPrice(), true));
-                                        }
+                                        playerOwner.sendMessage(
+                                                C("WordPlot") + " " + id + " " + C("MsgOwnedBy") + " " + plot.getOwner() + " " + C("MsgWasReset")
+                                                        + " " + Util().moneyFormat(pmi.getClaimPrice(), true));
                                     } else {
                                         player.sendMessage("§c" + er.errorMessage);
                                         serverBridge.getLogger().warning(er.errorMessage);
@@ -77,7 +74,7 @@ public class CmdReset extends PlotCommand {
                             manager.removeOwnerSign(world, id);
                             manager.removeSellSign(world, id);
                             manager.removeAuctionSign(world, id);
-                            plugin.getSqlManager().deletePlot(manager.getIdX(id), manager.getIdZ(id), world.getName());
+                            plugin.getSqlManager().deletePlot(id, world.getName());
 
                             if (isAdvancedLogging()) {
                                 serverBridge.getLogger().info(player.getName() + " " + C("MsgResetPlot") + " " + id);

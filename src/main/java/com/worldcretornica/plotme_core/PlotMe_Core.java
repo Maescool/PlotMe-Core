@@ -66,6 +66,7 @@ public class PlotMe_Core {
         serverBridge.setupHooks();
         serverBridge.setupListeners();
         setupClearSpools();
+        getSqlManager().createTables();
         getSqlManager().plotConvertToUUIDAsynchronously();
     }
 
@@ -250,9 +251,9 @@ public class PlotMe_Core {
         getLogger().info("removed taskid " + taskId);
     }
 
-    public PlotToClear getPlotLocked(String world, String id) {
+    public PlotToClear getPlotLocked(String world, PlotId id) {
         for (PlotToClear ptc : plotsToClear.toArray(new PlotToClear[plotsToClear.size()])) {
-            if (ptc.getWorld().equalsIgnoreCase(world) && ptc.getPlotId().equalsIgnoreCase(id)) {
+            if (ptc.getWorld().equalsIgnoreCase(world) && ptc.getPlotId().equals(id)) {
                 return ptc;
             }
         }
@@ -279,9 +280,5 @@ public class PlotMe_Core {
     private void setUtil(Util util) {
         this.util = util;
     }
-    
-    @Deprecated
-    public PlotMeCoreManager getPlotMeCoreManager() {
-        return PlotMeCoreManager.getInstance();
-    }
+
 }

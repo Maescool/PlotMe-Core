@@ -2,6 +2,7 @@ package com.worldcretornica.plotme_core.commands;
 
 import com.worldcretornica.plotme_core.PermissionNames;
 import com.worldcretornica.plotme_core.Plot;
+import com.worldcretornica.plotme_core.PlotId;
 import com.worldcretornica.plotme_core.PlotMe_Core;
 import com.worldcretornica.plotme_core.api.IOfflinePlayer;
 import com.worldcretornica.plotme_core.api.IPlayer;
@@ -19,9 +20,9 @@ public class CmdBid extends PlotCommand {
         IWorld world = player.getWorld();
         if (manager.isEconomyEnabled(world)) {
             if (player.hasPermission(PermissionNames.PLOT_ME_USE_BID)) {
-                String id = manager.getPlotId(player);
+                PlotId id = manager.getPlotId(player);
 
-                if (id.isEmpty()) {
+                if (id == null) {
                     player.sendMessage("§c" + C("MsgNoPlotFound"));
                 } else if (!manager.isPlotAvailable(id, world)) {
                     Plot plot = manager.getPlotById(id, world);
@@ -75,11 +76,12 @@ public class CmdBid extends PlotCommand {
                                                         serverBridge.getLogger().warning(er2.errorMessage);
                                                     }
                                                 }
-
                                                 plot.setCurrentBidder(bidder);
+                                                plot.setCurrentBidderId(player.getUniqueId());
                                                 plot.setCurrentBid(bid);
 
                                                 plot.updateField("currentbidder", bidder);
+                                                plot.updateField("currentbidderid", player.getUniqueId());
                                                 plot.updateField("currentbid", bid);
 
                                                 manager.setAuctionSign(player.getWorld(), plot);
@@ -124,10 +126,10 @@ public class CmdBid extends PlotCommand {
                                                 }
                                             }
 
-                                            plot.setCurrentBidder(bidder);
+                                            plot.setCurrentBidder(player.getName(), player.getUniqueId());
                                             plot.setCurrentBid(bid);
-
                                             plot.updateField("currentbidder", bidder);
+                                            plot.updateField("currentbidderId", player.getUniqueId());
                                             plot.updateField("currentbid", bid);
 
                                             manager.setAuctionSign(player.getWorld(), plot);

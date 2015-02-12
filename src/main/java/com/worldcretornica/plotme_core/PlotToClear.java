@@ -5,11 +5,11 @@ import com.worldcretornica.plotme_core.api.ICommandSender;
 public class PlotToClear {
 
     private String world;
-    private String plotId;
+    private PlotId plotId;
     private ClearReason reason;
     private ICommandSender requester;
 
-    public PlotToClear(String world, String id, ClearReason reason, ICommandSender requester) {
+    public PlotToClear(String world, PlotId id, ClearReason reason, ICommandSender requester) {
         setWorld(world);
         setPlotId(id);
         setReason(reason);
@@ -20,15 +20,15 @@ public class PlotToClear {
         return world;
     }
 
-    public final void setWorld(String world) {
+    private void setWorld(String world) {
         this.world = world;
     }
 
-    public final String getPlotId() {
+    public final PlotId getPlotId() {
         return plotId;
     }
 
-    public final void setPlotId(String plotId) {
+    public final void setPlotId(PlotId plotId) {
         this.plotId = plotId;
     }
 
@@ -44,7 +44,7 @@ public class PlotToClear {
         return requester;
     }
 
-    public final void setRequester(ICommandSender requester) {
+    private void setRequester(ICommandSender requester) {
         this.requester = requester;
     }
 }
