@@ -132,7 +132,7 @@ public class BukkitPlotListener implements Listener {
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     public void onPlayerBucketEmpty(PlayerBucketEmptyEvent event) {
         Player player = event.getPlayer();
-        BukkitLocation location = new BukkitLocation(event.getBlockClicked().getLocation());
+        BukkitLocation location = new BukkitLocation(event.getBlockClicked().getLocation().add(event.getBlockFace().getModX(), event.getBlockFace().getModY(), event.getBlockFace().getModZ()));
 
         if (!player.hasPermission(PermissionNames.ADMIN_BUILDANYWHERE)) {
             if (manager.isPlotWorld(location)) {
