@@ -298,7 +298,7 @@ public class BukkitPlotListener implements Listener {
                 }
 
                 if (pmi.isRedstoneBlock(block.getTypeId())) {
-                    if (!id.isEmpty()) {
+                    if (id != null) {
                         if (plot != null && plot.isRedstoneProtect()) {
                             if ((!plot.isAllowed(player.getName(), player.getUniqueId())) && canBuild) {
                                 player.sendMessage(api.getUtil().C("ErrCannotRedstone"));
@@ -309,7 +309,7 @@ public class BukkitPlotListener implements Listener {
                 }
 
                 if (pmi.isInteractBlock(block.getTypeId())) {
-                    if (!id.isEmpty()) {
+                    if (id != null) {
                         if (plot != null && plot.isInteractProtect()) {
                             if ((!plot.isAllowed(player.getName(), player.getUniqueId())) && canBuild) {
                                 player.sendMessage(api.getUtil().C("ErrCannotInteract"));
@@ -870,8 +870,8 @@ public class BukkitPlotListener implements Listener {
         BukkitBlock block = new BukkitBlock(event.getBlock());
         PlotMapInfo pmi = manager.getMap(block.getWorld());
 
-        String id = manager.getPlotId(block.getLocation());
-        if (id.isEmpty()) {
+        PlotId id = manager.getPlotId(block.getLocation());
+        if (id == null) {
             return;
         }
         Plot plot = manager.getPlotById(id, pmi);

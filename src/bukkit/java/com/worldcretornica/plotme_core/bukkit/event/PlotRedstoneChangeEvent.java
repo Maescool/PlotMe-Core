@@ -14,12 +14,12 @@ public class PlotRedstoneChangeEvent extends PlotEvent implements Cancellable {
     private final InternalPlotRedstoneChangeEvent event;
 
     public PlotRedstoneChangeEvent(PlotMe_Core instance, org.bukkit.World world, Plot plot, org.bukkit.entity.Player player, boolean protect) {
-        super(instance, plot, world);
+        super(plot, world);
         event = new InternalPlotRedstoneChangeEvent(instance, new BukkitWorld(world), plot, new BukkitPlayer(player), protect);
     }
 
     public PlotRedstoneChangeEvent(PlotMe_Core instance, IWorld world, Plot plot, IPlayer player, boolean protect) {
-        super(instance, plot, world);
+        super(plot, world);
         event = new InternalPlotRedstoneChangeEvent(instance, world, plot, player, protect);
     }
 

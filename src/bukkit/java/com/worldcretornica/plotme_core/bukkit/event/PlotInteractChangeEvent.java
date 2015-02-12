@@ -14,12 +14,12 @@ public class PlotInteractChangeEvent extends PlotEvent implements Cancellable {
     private final InternalPlotInteractChangeEvent event;
 
     public PlotInteractChangeEvent(PlotMe_Core instance, org.bukkit.World world, Plot plot, org.bukkit.entity.Player player, boolean protect) {
-        super(instance, plot, world);
+        super(plot, world);
         event = new InternalPlotInteractChangeEvent(instance, new BukkitWorld(world), plot, new BukkitPlayer(player), protect);
     }
 
     public PlotInteractChangeEvent(PlotMe_Core instance, IWorld world, Plot plot, IPlayer player, boolean protect) {
-        super(instance, plot, world);
+        super(plot, world);
         event = new InternalPlotInteractChangeEvent(instance, world, plot, player, protect);
     }
 

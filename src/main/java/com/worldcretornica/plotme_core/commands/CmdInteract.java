@@ -17,8 +17,8 @@ public class CmdInteract extends PlotCommand {
             IWorld world = player.getWorld();
             PlotMapInfo pmi = manager.getMap(world);
             if (manager.isPlotWorld(world)) {
-                String id = manager.getPlotId(player);
-                if (id.isEmpty()) {
+                PlotId id = manager.getPlotId(player);
+                if (id == null) {
                     player.sendMessage("§c" + C("MsgNoPlotFound"));
                 } else if (!manager.isPlotAvailable(id, pmi)) {
                     if (args.length < 2) {
@@ -43,7 +43,7 @@ public class CmdInteract extends PlotCommand {
                                 InternalPlotInteractChangeEvent event = serverBridge.getEventFactory().callPlotInteractChangeEvent(plugin, world, plot, player, enabled);
                                 if (!event.isCancelled()) {
                                     plot.setInteractProtect(enabled);
-                                    plugin.getSqlManager().updatePlot(manager.getIdX(id), manager.getIdZ(id), plot.getWorld(), "interactprotect", enabled);
+                                    plugin.getSqlManager().updatePlot(id, plot.getWorld(), "interactprotect", enabled);
                                     String word = C("WordDisabled");
                                     if (enabled) {
                                         player.sendMessage("§a" + C("MsgInteractNowEnabled"));

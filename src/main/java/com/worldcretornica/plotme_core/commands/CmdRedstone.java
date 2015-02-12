@@ -17,8 +17,8 @@ public class CmdRedstone extends PlotCommand {
             IWorld world = player.getWorld();
             PlotMapInfo pmi = manager.getMap(world);
             if (manager.isPlotWorld(world)) {
-                String id = manager.getPlotId(player);
-                if (id.isEmpty()) {
+                PlotId id = manager.getPlotId(player);
+                if (id == null) {
                     player.sendMessage("§c" + C("MsgNoPlotFound"));
                 } else if (!manager.isPlotAvailable(id, pmi)) {
                     if (args.length < 2) {
@@ -43,7 +43,7 @@ public class CmdRedstone extends PlotCommand {
                                 InternalPlotRedstoneChangeEvent event = serverBridge.getEventFactory().callPlotRedstoneChangeEvent(plugin, world, plot, player, enabled);
                                 if (!event.isCancelled()) {
                                     plot.setRedstoneProtect(enabled);
-                                    plugin.getSqlManager().updatePlot(manager.getIdX(id), manager.getIdZ(id), plot.getWorld(), "redstoneprotect", enabled);
+                                    plugin.getSqlManager().updatePlot(id, plot.getWorld(), "redstoneprotect", enabled);
                                     String word = C("WordDisabled");
                                     if (enabled) {
                                         player.sendMessage("§a" + C("MsgRedstoneNowEnabled"));
