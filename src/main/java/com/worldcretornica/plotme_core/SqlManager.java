@@ -144,7 +144,7 @@ public class SqlManager {
                                 + "`ownerId` BLOB(16)," //20
                                 + "`lastplotclear` DATETIME," //21
                                 + "`redstoneprotect` BOOLEAN NOT NULL DEFAULT TRUE," //22
-                                + "`interactprotect` BOOLEAN NOT NULL DEFAULT FALSE" //23
+                                + "`interactprotect` BOOLEAN NOT NULL DEFAULT FALSE," //23
                                 + "PRIMARY KEY (idX, idZ, world) "
                                 + ");";
             st.executeUpdate(PLOT_TABLE);
