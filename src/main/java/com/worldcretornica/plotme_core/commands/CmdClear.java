@@ -9,6 +9,10 @@ import com.worldcretornica.plotme_core.PlotMe_Core;
 import com.worldcretornica.plotme_core.api.IPlayer;
 import com.worldcretornica.plotme_core.api.IWorld;
 import com.worldcretornica.plotme_core.api.event.InternalPlotClearEvent;
+import java.sql.Date;
+import java.sql.Timestamp;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import net.milkbowl.vault.economy.EconomyResponse;
 
 public class CmdClear extends PlotCommand {
@@ -34,50 +38,57 @@ public class CmdClear extends PlotCommand {
                         String playerName = player.getName();
 
                         if (player.getUniqueId().equals(plot.getOwnerId()) || player.hasPermission(PermissionNames.ADMIN_CLEAR)) {
+                            Timestamp now = plugin.getSqlManager().currentDatabaseTime();
+                            if (plot.getLastPlotClear() == null || (new Timestamp(plot.getLastPlotClear().getTime() + plugin.getServerBridge().getConfig().getInt("PlotClearTime"))).before(now) || player.hasPermission(PermissionNames.ADMIN_CLEARTIME)) {
 
-                            double price = 0.0;
+                                double price = 0.0;
 
-                            InternalPlotClearEvent event;
+                                InternalPlotClearEvent event;
 
                             if (manager.isEconomyEnabled(pmi)) {
                                 price = pmi.getClearPrice();
                                 double balance = serverBridge.getBalance(player);
 
-                                if (balance >= price) {
-                                    event = serverBridge.getEventFactory().callPlotClearEvent(plugin, world, plot, player);
+                                    if (balance >= price) {
+                                        event = serverBridge.getEventFactory().callPlotClearEvent(plugin, world, plot, player);
 
-                                    if (event.isCancelled()) {
-                                        return true;
-                                    } else {
-                                        EconomyResponse er = serverBridge.withdrawPlayer(player, price);
-
-                                        if (!er.transactionSuccess()) {
-                                            player.sendMessage("§c" + er.errorMessage);
-                                            serverBridge.getLogger().warning(er.errorMessage);
+                                        if (event.isCancelled()) {
                                             return true;
+                                        } else {
+                                            EconomyResponse er = serverBridge.withdrawPlayer(player, price);
+
+                                            if (!er.transactionSuccess()) {
+                                                player.sendMessage("§c" + er.errorMessage);
+                                                serverBridge.getLogger().warning(er.errorMessage);
+
+                                                return true;
+                                            }
                                         }
+                                    } else {
+                                        player.sendMessage("§c" + C("MsgNotEnoughClear") + " " + C("WordMissing") + " §r" + (price - balance) + "§c " + serverBridge.getEconomy().currencyNamePlural());
+                                        return true;
                                     }
                                 } else {
-                                    player.sendMessage(
-                                            "§c" + C("MsgNotEnoughClear") + " " + C("WordMissing") + " §r" + (price - balance) + "§c " + serverBridge
-                                                    .getEconomy().currencyNamePlural());
-                                    return true;
+                                    event = serverBridge.getEventFactory().callPlotClearEvent(plugin, world, plot, player);
                                 }
-                            } else {
-                                event = serverBridge.getEventFactory().callPlotClearEvent(plugin, world, plot, player);
-                            }
 
                             if (!event.isCancelled()) {
                                 manager.clear(world, plot, player, ClearReason.Clear);
 
-                                if (isAdvancedLogging()) {
-                                    if (price == 0) {
-                                        serverBridge.getLogger().info(playerName + " " + C("MsgClearedPlot") + " " + id);
-                                    } else {
-                                        serverBridge.getLogger()
-                                                .info(playerName + " " + C("MsgClearedPlot") + " " + id + (" " + C("WordFor") + " " + price));
+                                    if (isAdvancedLogging()) {
+                                        if (price == 0) {
+                                            serverBridge.getLogger().info(playerName + " " + C("MsgClearedPlot") + " " + id);
+                                        } else {
+                                            serverBridge.getLogger().info(playerName + " " + C("MsgClearedPlot") + " " + id + (" " + C("WordFor") + " " + price));
+                                        }
                                     }
                                 }
+                                plot.setLastPlotClear(now);
+                                plugin.getSqlManager().updatePlot(id, plot.getWorld(), "lastplotclear", now);
+                            } else {
+                                Date timeLeft = new Date(plot.getLastPlotClear().getTime() + plugin.getServerBridge().getConfig().getInt("PlotClearTime") - now.getTime());
+                                DateFormat formatter = new SimpleDateFormat("HH:mm:ss");
+                                player.sendMessage("§c" + C("MsgThisPlot") + "(" + id + ") " + C("MsgNotAllowedClearYet").replace("{date}", formatter.format(timeLeft)));
                             }
                         } else {
                             player.sendMessage("§c" + C("MsgThisPlot") + "(" + id + ") " + C("MsgNotYoursNotAllowedClear"));

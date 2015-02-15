@@ -70,6 +70,22 @@ public class PlotMapInfo {
     public boolean isPreventedItem(String itemId) {
         return getPreventedItems().contains(itemId);
     }
+    
+    public List<Integer> getRedstoneBlocks() {
+        return config.getIntegerList("RedstoneBlocks");
+    }
+    
+    public List<Integer> getInteractBlocks() {
+        return config.getIntegerList("InteractBlocks");
+    }
+    
+    public boolean isRedstoneBlock(int blockId) {
+        return getRedstoneBlocks().contains(blockId);
+    }
+    
+    public boolean isInteractBlock(int blockId) {
+        return getInteractBlocks().contains(blockId);
+    }
 
     public int getPlotAutoLimit() {
         return config.getInt("PlotAutoLimit");

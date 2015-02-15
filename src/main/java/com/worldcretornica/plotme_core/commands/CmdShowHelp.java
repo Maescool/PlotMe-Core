@@ -94,6 +94,12 @@ public class CmdShowHelp extends PlotCommand {
         if (player.hasPermission(PermissionNames.ADMIN_ADDTIME)) {
             allowed_commands.add("addtime");
         }
+        if (player.hasPermission(PermissionNames.USER_REDSTONE) || player.hasPermission(PermissionNames.ADMIN_REDSTONE)){
+            allowed_commands.add("redstone");
+        }
+        if (player.hasPermission(PermissionNames.USER_INTERACT) || player.hasPermission(PermissionNames.ADMIN_INTERACT)){
+            allowed_commands.add("interact");
+        }
 
         PlotMapInfo pmi = manager.getMap(player);
 
@@ -114,9 +120,9 @@ public class CmdShowHelp extends PlotCommand {
             }
         }
 
-        int maxPage = (int) Math.ceil(allowed_commands.size() / 4);
+        int maxPage = (int) Math.ceil(allowed_commands.size() / 4.f);
 
-        if (page > maxPage) {
+        if (page > maxPage || page < 1) {
             page = 1;
         }
 
@@ -322,6 +328,12 @@ public class CmdShowHelp extends PlotCommand {
             } else if ("bid".equalsIgnoreCase(allowedCommand)) {
                 player.sendMessage("§a /plotme bid <" + C("WordAmount") + ">");
                 player.sendMessage("§b " + C("HelpBid"));
+            } else if ("redstone".equalsIgnoreCase(allowedCommand)){
+                player.sendMessage("§a /plotme redstone <" + C("WordEnable") + "|" + C("WordDisable") + ">");
+                player.sendMessage("§b "+ C("HelpRedstone"));
+            } else if ("interact".equalsIgnoreCase(allowedCommand)){
+                player.sendMessage("§a /plotme interact <" + C("WordEnable") + "|" + C("WordDisable") + ">");
+                player.sendMessage("§b "+ C("HelpInteract"));
             }
         }
         return true;

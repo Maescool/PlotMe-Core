@@ -18,10 +18,12 @@ import com.worldcretornica.plotme_core.commands.CmdDoneList;
 import com.worldcretornica.plotme_core.commands.CmdExpired;
 import com.worldcretornica.plotme_core.commands.CmdHome;
 import com.worldcretornica.plotme_core.commands.CmdInfo;
+import com.worldcretornica.plotme_core.commands.CmdInteract;
 import com.worldcretornica.plotme_core.commands.CmdMiddle;
 import com.worldcretornica.plotme_core.commands.CmdMove;
 import com.worldcretornica.plotme_core.commands.CmdPlotList;
 import com.worldcretornica.plotme_core.commands.CmdProtect;
+import com.worldcretornica.plotme_core.commands.CmdRedstone;
 import com.worldcretornica.plotme_core.commands.CmdReload;
 import com.worldcretornica.plotme_core.commands.CmdRemove;
 import com.worldcretornica.plotme_core.commands.CmdReset;
@@ -68,6 +70,8 @@ public class BukkitCommand implements CommandExecutor {
     private final CmdTP tp;
     private final CmdUndeny undeny;
     private final CmdWEAnywhere weAnywhere;
+    private final CmdRedstone redstone;
+    private final CmdInteract interact;
     private final CmdMiddle middle;
     private final PlotMe_CorePlugin plugin;
 
@@ -103,6 +107,8 @@ public class BukkitCommand implements CommandExecutor {
         undeny = new CmdUndeny(api);
         middle = new CmdMiddle(api);
         weAnywhere = new CmdWEAnywhere(api);
+        redstone = new CmdRedstone(api);
+        interact = new CmdInteract(api);
     }
 
     private String C(String caption) {
@@ -232,6 +238,12 @@ public class BukkitCommand implements CommandExecutor {
                     }
                     if ("buy".equalsIgnoreCase(args[0])) {
                         return buy.exec(player);
+                    }
+                    if ("redstone".equalsIgnoreCase(args[0])){
+                        return redstone.exec(player, args);
+                    }
+                    if ("interact".equalsIgnoreCase(args[0])){
+                        return interact.exec(player, args);
                     }
                     if ("middle".equalsIgnoreCase(args[0])) {
                         return middle.exec(player);

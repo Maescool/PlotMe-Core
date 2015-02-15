@@ -526,6 +526,10 @@ public class PlotMeCoreManager {
         if (getGenManager(world) == null) {
             return false;
         }
+        if (world.getName() == null) {
+            plugin.getLogger().severe("Hmm.. world.getName() got me a null? why null?");
+            return false;
+        }
         return getPlotMaps().containsKey(world.getName().toLowerCase());
     }
 

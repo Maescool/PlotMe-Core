@@ -5,6 +5,7 @@ import com.worldcretornica.plotme_core.api.IPlayer;
 import com.worldcretornica.plotme_core.api.IWorld;
 
 import java.sql.Date;
+import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -34,6 +35,9 @@ public class Plot implements Cloneable {
     private double currentBid;
     private UUID currentBidderId;
     private Map<String, Map<String, String>> metadata;
+    private Timestamp lastPlotClear;
+    private boolean redstoneProtect;
+    private boolean interactProtect;
 
     public Plot(PlotMe_Core plugin) {
         this.plugin = plugin;
@@ -57,6 +61,9 @@ public class Plot implements Cloneable {
         setCurrentBidder(null);
         setCurrentBidderId(null);
         setCurrentBid(0.0);
+        setLastPlotClear(null);
+        setRedstoneProtect(true);
+        setInteractProtect(false);
     }
 
     public Plot(PlotMe_Core plugin, String owner, UUID uuid, IWorld world, PlotId plotId, int days) {
@@ -87,13 +94,16 @@ public class Plot implements Cloneable {
         setCurrentBidderId(null);
         setCurrentBid(0.0);
         metadata = new HashMap<>();
+        setLastPlotClear(null);
+        setRedstoneProtect(true);
+        setInteractProtect(false);
     }
 
     public Plot(PlotMe_Core plugin, String owner, UUID ownerId, String world, String biome, Date expiredDate,
             boolean finished,
             PlayerList allowed, PlotId id, double customPrice, boolean sale, String finishedDate,
             boolean protect, String bidder, UUID bidderId, double bid, boolean isAuctioned, PlayerList denied,
-            Map<String, Map<String, String>> metadata) {
+            Map<String, Map<String, String>> metadata, Timestamp lastPlotClear, boolean redstoneProtect, boolean interactProtect) {
         this.plugin = plugin;
         setOwner(owner);
         setOwnerId(ownerId);
@@ -113,6 +123,9 @@ public class Plot implements Cloneable {
         setCurrentBid(bid);
         this.denied = denied;
         this.metadata = metadata;
+        setLastPlotClear(lastPlotClear);
+        setRedstoneProtect(redstoneProtect);
+        setInteractProtect(interactProtect);
     }
 
     public void resetExpire(int days) {
@@ -538,6 +551,30 @@ public class Plot implements Cloneable {
 
     public Map<String, Map<String, String>> getAllPlotProperties() {
         return metadata;
+    }
+
+    public Timestamp getLastPlotClear() {
+        return lastPlotClear;
+    }
+
+    public void setLastPlotClear(Timestamp lastPlotClear) {
+        this.lastPlotClear = lastPlotClear;
+    }
+
+    public boolean isRedstoneProtect() {
+        return redstoneProtect;
+    }
+
+    public void setRedstoneProtect(boolean redstoneProtect) {
+        this.redstoneProtect = redstoneProtect;
+    }
+    
+    public boolean isInteractProtect() {
+        return interactProtect;
+    }
+
+    public void setInteractProtect(boolean interactProtect) {
+        this.interactProtect = interactProtect;
     }
 
     @Override

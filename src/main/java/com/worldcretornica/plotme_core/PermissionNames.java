@@ -41,7 +41,12 @@ public class PermissionNames {
     public static final String ADMIN_PROTECT = "PlotMe.admin.protect";
     public static final String ADMIN_DENY = "PlotMe.admin.deny";
     public static final String ADMIN_REMOVE = "PlotMe.admin.remove";
+    public static final String ADMIN_CLEARTIME = "PlotMe.admin.cleartime";
     public static final String USER_PROTECT = "PlotMe.use.protect";
+    public static final String ADMIN_REDSTONE = "PlotMe.admin.redstone";
+    public static final String USER_REDSTONE = "PlotMe.use.redstone";
+    public static final String ADMIN_INTERACT = "PlotMe.admin.interact";
+    public static final String USER_INTERACT = "PlotMe.use.interact";
     public static final String USER_MIDDLE = "PlotMe.use.middle";
     public static final String ADMIN_MIDDLE_OTHER = "PlotMe.admin.middle";
 }

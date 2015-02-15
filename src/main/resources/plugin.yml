@@ -34,6 +34,8 @@ permissions:
         plotme.use.deny: true
         plotme.use.undeny: true
         plotme.use.reset: true
+        plotme.use.redstone: true
+        plotme.use.interact: true
         plotme.use.middle: true
         plotme.limit.1: true
     plotme.admin:
@@ -61,6 +63,8 @@ permissions:
         plotme.admin.undeny: true
         plotme.admin.bypassdeny: true
         plotme.admin.buildanywhere: true
+        plotme.admin.redstone: true
+        plotme.admin.interact: true
         plotme.admin.reload: true
         plotme.admin.middle: true
     plotme.unblock.*:
@@ -107,6 +111,10 @@ permissions:
       description: Gives the protect command
     plotme.use.nameplot:
       description: Gives the player the ability to name their plot.
+    plotme.use.redstone:
+      description: Gives the redstone command for plots owned
+    plotme.use.interact:
+      description: Gives the interact command for plots owned
     plotme.limit.*:
       description: Gives unlimited plots
     plotme.limit.1:
@@ -162,4 +170,8 @@ permissions:
     plotme.admin.buildanywhere:
       description: Allows to build anywhere in the plot world
     plotme.group.*:
-      description: Group of players
+      description: Group of players    
+    plotme.admin.redstone:
+      description: Gives the redstone command for any plots
+    plotme.admin.interact:
+      description: Gives the interact command for any plots

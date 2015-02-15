@@ -36,11 +36,13 @@ import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.entity.EntityShootBowEvent;
+import org.bukkit.event.entity.EntityInteractEvent;
 import org.bukkit.event.entity.ProjectileLaunchEvent;
 import org.bukkit.event.hanging.HangingBreakByEntityEvent;
 import org.bukkit.event.hanging.HangingPlaceEvent;
 import org.bukkit.event.player.PlayerBucketEvent;
 import org.bukkit.event.player.PlayerEggThrowEvent;
+import org.bukkit.event.player.PlayerInteractAtEntityEvent;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
@@ -158,7 +160,7 @@ public class BukkitPlotListener implements Listener {
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     public void onBucketEvent(PlayerBucketEvent event) {
         Player player = event.getPlayer();
-        BukkitLocation location = new BukkitLocation(event.getBlockClicked().getLocation());
+        BukkitLocation location = new BukkitLocation(event.getBlockClicked().getLocation().add(event.getBlockFace().getModX(), event.getBlockFace().getModY(), event.getBlockFace().getModZ()));
 
         if (!player.hasPermission(PermissionNames.ADMIN_BUILDANYWHERE)) {
             if (manager.isPlotWorld(location)) {
@@ -279,6 +281,28 @@ public class BukkitPlotListener implements Listener {
                                 player.sendMessage(api.getUtil().C("ErrCannotUse"));
                             }
                             event.setCancelled(true);
+                        }
+                    }
+                }
+
+                if (pmi.isRedstoneBlock(block.getTypeId())) {
+                    if (id != null) {
+                        if (plot != null && plot.isRedstoneProtect()) {
+                            if ((!plot.isAllowed(player.getName(), player.getUniqueId())) && canBuild) {
+                                player.sendMessage(api.getUtil().C("ErrCannotRedstone"));
+                                event.setCancelled(true);
+                            }
+                        }
+                    }
+                }
+
+                if (pmi.isInteractBlock(block.getTypeId())) {
+                    if (id != null) {
+                        if (plot != null && plot.isInteractProtect()) {
+                            if ((!plot.isAllowed(player.getName(), player.getUniqueId())) && canBuild) {
+                                player.sendMessage(api.getUtil().C("ErrCannotInteract"));
+                                event.setCancelled(true);
+                            }
                         }
                     }
                 }
@@ -685,6 +709,11 @@ public class BukkitPlotListener implements Listener {
     }
 
     @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
+    public void onPlayerInteractAtEntity(PlayerInteractAtEntityEvent event) {
+        onPlayerInteractEntity(event);
+    }
+
+    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
     public void onProjectileLaunchEvent(ProjectileLaunchEvent event) {
         if (event.getEntity() instanceof Player) {
             PlotMapInfo pmi = manager.getMap(event.getEntity().getWorld().getName());
@@ -797,6 +826,24 @@ public class BukkitPlotListener implements Listener {
 
         if (p != null) {
             PlotMeCoreManager.getInstance().UpdatePlayerNameFromId(p.getUniqueId(), p.getName());
+        }
+    }
+
+    @EventHandler(priority = EventPriority.HIGH, ignoreCancelled = true)
+    public void onEntityInteract(EntityInteractEvent event) {
+        BukkitBlock block = new BukkitBlock(event.getBlock());
+        PlotMapInfo pmi = manager.getMap(block.getWorld());
+
+        PlotId id = manager.getPlotId(block.getLocation());
+        if (id == null) {
+            return;
+        }
+        Plot plot = manager.getPlotById(id, pmi);
+        if (plot == null) {
+            return;
+        }
+        if ((plot.isRedstoneProtect() && pmi.isRedstoneBlock(block.getTypeId())) || (plot.isInteractProtect() && pmi.isInteractBlock(block.getTypeId()))) {
+            event.setCancelled(true);
         }
     }
 }
